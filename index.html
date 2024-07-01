@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Telegram Mini App</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+    <h1>Welcome to Telegram Mini App</h1>
+    <script>
+        window.Telegram.WebApp.ready();
+        document.body.style.backgroundColor = window.Telegram.WebApp.colorScheme === 'dark' ? '#2c2c2e' : '#ffffff';
+
+        // Пример использования Telegram WebApp API
+        const user = window.Telegram.WebApp.initDataUnsafe.user;
+        if (user) {
+            const userInfo = document.createElement('p');
+            userInfo.textContent = `Hello, ${user.first_name}!`;
+            document.body.appendChild(userInfo);
+        } else {
+            const loginPrompt = document.createElement('p');
+            loginPrompt.textContent = 'Please log in via Telegram to use this app.';
+            document.body.appendChild(loginPrompt);
+        }
+    </script>
+</body>
+</html>
