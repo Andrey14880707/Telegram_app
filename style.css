@@ -263,3 +263,49 @@ body:hover .background-canvas {
 .glass-bubble:hover svg {
     transform: scale(1.1);
 }
+
+/* ══ CUSTOM BARBER LOADER ════════════════════════════ */
+.loader-overlay {
+    position: fixed; inset: 0;
+    background: #05050A;
+    z-index: 99999;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    transition: opacity 0.8s cubic-bezier(.4,0,.2,1), visibility 0.8s;
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+}
+.loader-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+.loader-content {
+    display: flex; flex-direction: column; align-items: center; gap: 1.5rem;
+    animation: scissor-float 3s ease-in-out infinite;
+}
+.loader-scissors {
+    color: var(--gold);
+    filter: drop-shadow(0 0 15px rgba(255,215,0,0.4));
+}
+.blade-top {
+    transform-origin: 12px 12px;
+    animation: snip-top 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) infinite;
+}
+.blade-bottom {
+    transform-origin: 12px 12px;
+    animation: snip-bottom 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) infinite;
+}
+@keyframes snip-top {
+    0%, 100% { transform: rotate(30deg); }
+    45%, 55% { transform: rotate(44deg); }
+}
+@keyframes snip-bottom {
+    0%, 100% { transform: rotate(-30deg); }
+    45%, 55% { transform: rotate(-44deg); }
+}
+@keyframes scissor-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+.pl-bar { width: 140px; height: 1px; background: rgba(255,255,255,0.1); overflow: hidden; border-radius: 2px; }
+.pl-fill { height: 100%; width: 0; background: var(--gold); animation: load-fill 1.2s cubic-bezier(0.4,0,0.2,1) forwards; box-shadow: 0 0 10px var(--gold); }
+@keyframes load-fill {
+    0% { width: 0; }
+    100% { width: 100%; }
+}
