@@ -504,7 +504,8 @@ def export_csv():
 init_db()
 
 if not os.environ.get('WERKZEUG_RUN_MAIN'):
-    _sched = BackgroundScheduler(daemon=True)
+    import pytz
+    _sched = BackgroundScheduler(daemon=True, timezone=pytz.utc)
     _sched.add_job(check_reminders, IntervalTrigger(minutes=30), id='reminders', replace_existing=True)
     _sched.start()
     atexit.register(_sched.shutdown)
