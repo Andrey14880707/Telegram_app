@@ -169,7 +169,7 @@ function buildCarousel() {
   if (!track) return;
   track.innerHTML = _carFiltered.map(p => `
     <div class="car-slide">
-      <img src="/static/uploads/${p.filename}" alt="${p.caption || ''}" loading="lazy">
+      <img src="/uploads/${p.filename}" alt="${p.caption || ''}" loading="lazy">
       <div class="car-slide-info">
         <div class="car-slide-cat">${CAT_LABELS[p.category] || p.category}</div>
         ${p.caption ? `<div class="car-slide-cap">${p.caption}</div>` : ''}
