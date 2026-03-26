@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BarberShop — Профессиональные стрижки</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<!-- ── NAVBAR ── -->
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="#home" class="logo">✂ BARBER<span class="gold">SHOP</span></a>
+    <ul class="nav-links">
+      <li><a href="#services">Услуги</a></li>
+      <li><a href="#prices">Цены</a></li>
+      <li><a href="#booking">Запись</a></li>
+      <li><a href="#about">О мастере</a></li>
+      <li><a href="#contacts">Контакты</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Меню">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <ul>
+    <li><a href="#services" onclick="toggleMenu()">Услуги</a></li>
+    <li><a href="#prices" onclick="toggleMenu()">Цены</a></li>
+    <li><a href="#booking" onclick="toggleMenu()">Запись</a></li>
+    <li><a href="#about" onclick="toggleMenu()">О мастере</a></li>
+    <li><a href="#contacts" onclick="toggleMenu()">Контакты</a></li>
+  </ul>
+</div>
+
+<!-- ── HERO ── -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="clock-widget">
+      <div class="clock-time" id="clockTime">00:00:00</div>
+      <div class="clock-date" id="clockDate">—</div>
+    </div>
+    <div class="hero-badge">✦ Профессиональный барбер ✦</div>
+    <h1 class="hero-title">
+      Искусство<br>
+      <span class="gold">Идеального</span><br>
+      Образа
+    </h1>
+    <p class="hero-sub">Стрижки, бритьё и уход за бородой премиум-класса</p>
+    <div class="hero-btns">
+      <a href="#booking" class="btn btn-gold">Записаться онлайн</a>
+      <a href="#services" class="btn btn-ghost">Наши услуги</a>
+    </div>
+  </div>
+  <a href="#services" class="scroll-down" aria-label="Вниз">
+    <div class="scroll-arrow"></div>
+  </a>
+</section>
+
+<!-- ── STATS ── -->
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num">500+</span><span class="stat-lbl">Довольных клиентов</span></div>
+  <div class="stat"><span class="stat-num">5</span><span class="stat-lbl">Лет опыта</span></div>
+  <div class="stat"><span class="stat-num">20+</span><span class="stat-lbl">Техник стрижки</span></div>
+  <div class="stat"><span class="stat-num">4.9★</span><span class="stat-lbl">Рейтинг</span></div>
+</div>
+
+<!-- ── SERVICES ── -->
+<section class="section" id="services">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="sec-tag">ЧТО МЫ ДЕЛАЕМ</span>
+      <h2>Наши <span class="gold">Услуги</span></h2>
+      <p>Каждая стрижка — произведение искусства, созданное с вниманием к деталям</p>
+    </div>
+    <div class="services-grid">
+      <div class="svc-card reveal">
+        <div class="svc-icon">✂</div>
+        <h3>Классическая стрижка</h3>
+        <p>Элегантная классика, адаптированная под ваш тип лица</p>
+        <span class="svc-price">от 500₽</span>
+      </div>
+      <div class="svc-card featured reveal">
+        <div class="svc-badge">Хит</div>
+        <div class="svc-icon">⚔</div>
+        <h3>Стрижка + Борода</h3>
+        <p>Комплексный уход — идеальный образ с головы до бороды</p>
+        <span class="svc-price">от 800₽</span>
+      </div>
+      <div class="svc-card reveal">
+        <div class="svc-icon">🪒</div>
+        <h3>Горячее бритьё</h3>
+        <p>Традиционное бритьё с горячим полотенцем и маслами</p>
+        <span class="svc-price">от 600₽</span>
+      </div>
+      <div class="svc-card reveal">
+        <div class="svc-icon">💈</div>
+        <h3>Фейд / Скин-фейд</h3>
+        <p>Градиентная стрижка с чистыми линиями и переходами</p>
+        <span class="svc-price">от 600₽</span>
+      </div>
+      <div class="svc-card reveal">
+        <div class="svc-icon">👶</div>
+        <h3>Детская стрижка</h3>
+        <p>Бережная стрижка для юных клиентов до 12 лет</p>
+        <span class="svc-price">от 400₽</span>
+      </div>
+      <div class="svc-card reveal">
+        <div class="svc-icon">✨</div>
+        <h3>Камуфляж седины</h3>
+        <p>Натуральное тонирование для свежего и молодого образа</p>
+        <span class="svc-price">от 700₽</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PRICES ── -->
+<section class="section bg-alt" id="prices">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="sec-tag">ПРОЗРАЧНОСТЬ</span>
+      <h2>Прайс<span class="gold">-лист</span></h2>
+      <p>Честные цены без скрытых доплат</p>
+    </div>
+    <div class="price-table reveal">
+      <div class="price-row price-head">
+        <span>Услуга</span><span>Время</span><span>Цена</span>
+      </div>
+      <div class="price-row"><span>Классическая стрижка</span><span>45 мин</span><span class="ptag">500₽</span></div>
+      <div class="price-row"><span>Стрижка машинкой</span><span>30 мин</span><span class="ptag">400₽</span></div>
+      <div class="price-row"><span>Фейд / Скин-фейд</span><span>60 мин</span><span class="ptag">600₽</span></div>
+      <div class="price-row hot"><span>✦ Стрижка + Борода</span><span>75 мин</span><span class="ptag">800₽</span></div>
+      <div class="price-row"><span>Оформление бороды</span><span>30 мин</span><span class="ptag">400₽</span></div>
+      <div class="price-row"><span>Горячее бритьё</span><span>45 мин</span><span class="ptag">600₽</span></div>
+      <div class="price-row"><span>Детская стрижка (до 12 лет)</span><span>30 мин</span><span class="ptag">400₽</span></div>
+      <div class="price-row"><span>Укладка</span><span>20 мин</span><span class="ptag">300₽</span></div>
+      <div class="price-row"><span>Камуфляж седины</span><span>60 мин</span><span class="ptag">700₽</span></div>
+      <div class="price-row"><span>Стрижка + Укладка</span><span>60 мин</span><span class="ptag">700₽</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── BOOKING ── -->
+<section class="section" id="booking">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="sec-tag">ОНЛАЙН-ЗАПИСЬ</span>
+      <h2>Записаться <span class="gold">Онлайн</span></h2>
+      <p>Выберите удобное время — подтверждение придёт сразу</p>
+    </div>
+    <div class="booking-wrap">
+      <div class="booking-info reveal">
+        <h3>Режим работы</h3>
+        <div class="hours">
+          <div class="hours-row"><span>Пн — Пт</span><span class="gold">9:00 — 20:00</span></div>
+          <div class="hours-row"><span>Суббота</span><span class="gold">10:00 — 19:00</span></div>
+          <div class="hours-row"><span>Воскресенье</span><span class="gold">10:00 — 17:00</span></div>
+        </div>
+        <div class="contact-block">
+          <h3>Контакты</h3>
+          <p>📞 +7 (999) 123-45-67</p>
+          <p>📍 ул. Примерная, д. 1</p>
+          <p>📱 @barbershop_tg</p>
+        </div>
+        <div class="work-indicator" id="workIndicator"></div>
+      </div>
+      <form class="booking-form reveal" id="bookingForm" novalidate>
+        <div class="form-group">
+          <label>Ваше имя *</label>
+          <input type="text" id="bookName" placeholder="Иван Иванов" required>
+        </div>
+        <div class="form-group">
+          <label>Телефон *</label>
+          <input type="tel" id="bookPhone" placeholder="+7 (999) 000-00-00" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Email <small>(для напоминания)</small></label>
+            <input type="email" id="bookEmail" placeholder="email@example.com">
+          </div>
+          <div class="form-group">
+            <label>Telegram <small>(для напоминания)</small></label>
+            <input type="text" id="bookTelegram" placeholder="@username">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Услуга *</label>
+          <select id="bookService" required>
+            <option value="">Выберите услугу</option>
+            <option value="Классическая стрижка|500">Классическая стрижка — 500₽</option>
+            <option value="Стрижка машинкой|400">Стрижка машинкой — 400₽</option>
+            <option value="Фейд / Скин-фейд|600">Фейд / Скин-фейд — 600₽</option>
+            <option value="Стрижка + Борода|800">★ Стрижка + Борода — 800₽</option>
+            <option value="Оформление бороды|400">Оформление бороды — 400₽</option>
+            <option value="Горячее бритьё|600">Горячее бритьё — 600₽</option>
+            <option value="Детская стрижка|400">Детская стрижка — 400₽</option>
+            <option value="Укладка|300">Укладка — 300₽</option>
+            <option value="Камуфляж седины|700">Камуфляж седины — 700₽</option>
+            <option value="Стрижка + Укладка|700">Стрижка + Укладка — 700₽</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Дата *</label>
+            <input type="date" id="bookDate" required>
+          </div>
+          <div class="form-group">
+            <label>Время *</label>
+            <select id="bookTime" required>
+              <option value="">Сначала выберите дату</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Комментарий</label>
+          <textarea id="bookComment" placeholder="Особые пожелания..." rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-gold btn-full" id="submitBtn">Записаться ✂</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ── ABOUT ── -->
+<section class="section bg-alt" id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-img reveal">
+        <div class="about-img-box">
+          <span class="scissors-big">✂</span>
+          <div class="about-years"><span>5+</span><small>лет опыта</small></div>
+        </div>
+      </div>
+      <div class="about-text reveal">
+        <span class="sec-tag">О МАСТЕРЕ</span>
+        <h2>Мастерство &<br><span class="gold">Страсть</span></h2>
+        <p>Более 5 лет я создаю уникальные образы для каждого клиента. Каждая стрижка — это искусство, которое учитывает ваш тип лица, стиль жизни и пожелания.</p>
+        <p style="margin-top:1rem">Использую только профессиональные инструменты и материалы премиум-класса, чтобы результат превзошёл ваши ожидания.</p>
+        <div class="skills">
+          <div class="skill"><span>Классические стрижки</span><div class="skill-bar"><div class="skill-fill" data-w="98"></div></div></div>
+          <div class="skill"><span>Работа с бородой</span><div class="skill-bar"><div class="skill-fill" data-w="95"></div></div></div>
+          <div class="skill"><span>Фейд и скин-фейд</span><div class="skill-bar"><div class="skill-fill" data-w="92"></div></div></div>
+        </div>
+        <a href="#booking" class="btn btn-gold" style="margin-top:2rem;display:inline-flex">Записаться</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACTS ── -->
+<section class="section" id="contacts">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="sec-tag">КАК НАС НАЙТИ</span>
+      <h2>Наши <span class="gold">Контакты</span></h2>
+    </div>
+    <div class="contacts-grid">
+      <div class="contact-card reveal"><div class="cc-icon">📞</div><h3>Телефон</h3><p>+7 (999) 123-45-67</p></div>
+      <div class="contact-card reveal"><div class="cc-icon">📍</div><h3>Адрес</h3><p>ул. Примерная, д. 1<br>г. Москва</p></div>
+      <div class="contact-card reveal">
+        <div class="cc-icon">⏰</div>
+        <h3>Часы работы</h3>
+        <p>Пн–Пт: 9:00 — 20:00<br>Сб: 10:00 — 19:00<br>Вс: 10:00 — 17:00</p>
+      </div>
+      <div class="contact-card reveal"><div class="cc-icon">📱</div><h3>Telegram</h3><p>@barbershop_tg</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-top">
+      <div class="logo footer-logo">✂ BARBER<span class="gold">SHOP</span></div>
+      <p>Записывайтесь онлайн или по телефону</p>
+      <div class="footer-links">
+        <a href="#booking">Записаться</a>
+        <a href="#prices">Цены</a>
+        <a href="/admin">Панель управления</a>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2024 BarberShop. Все права защищены.</div>
+  </div>
+</footer>
+
+<!-- ── SUCCESS MODAL ── -->
+<div class="overlay" id="overlay" onclick="closeModal()"></div>
+<div class="modal" id="modal">
+  <div class="modal-icon">✓</div>
+  <h3>Запись создана!</h3>
+  <p id="modalMsg">Ждём вас! Мы свяжемся для подтверждения.</p>
+  <button class="btn btn-gold" onclick="closeModal()">Отлично!</button>
+</div>
+
+<script src="/static/script.js"></script>
+</body>
+</html>
