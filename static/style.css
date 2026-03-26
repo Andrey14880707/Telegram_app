@@ -255,7 +255,7 @@ em { font-style: italic; color: var(--gold); }
   min-height: 100vh;
   display: flex; flex-direction: column;
   justify-content: center;
-  padding: 0 5vw;
+  padding: 9rem 5vw 4rem 5vw;
   overflow: hidden;
 }
 .hero-noise {
@@ -282,10 +282,13 @@ em { font-style: italic; color: var(--gold); }
   user-select: none; pointer-events: none;
   letter-spacing: -0.02em;
 }
-.hero-body { position: relative; z-index: 1; }
+.hero-body { 
+  position: relative; z-index: 1; 
+  width: 100%; max-width: 1200px; margin: 0 auto;
+}
 .hero-meta {
   font-size: .72rem;
-  letter-spacing: 3px;
+  letter-spacing: 2px;
   color: var(--gray);
   text-transform: uppercase;
   margin-bottom: 1.5rem;
@@ -294,7 +297,7 @@ em { font-style: italic; color: var(--gold); }
 .dot { color: var(--gold3); }
 .hero-title {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(5rem, 16vw, 18rem);
+  font-size: clamp(5rem, 14vw, 15rem);
   line-height: .92;
   letter-spacing: -0.01em;
   margin-bottom: 1.5rem;
