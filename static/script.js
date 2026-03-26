@@ -130,112 +130,84 @@ const numObs = new IntersectionObserver((entries) => {
 }, { threshold: .3 });
 document.querySelectorAll('.about-nums').forEach(el => numObs.observe(el));
 
-// ── Work Carousel ─────────────────────────────────────
-let _carPhotos = [], _carFiltered = [], _carIdx = 0;
+// ── Work Slider (Premium Snap) ──────────────────────
+let _workPhotos = [], _workFiltered = [], _workIdx = 0;
 const CAT_LABELS = {Fade:'✂ Fade',Classic:'💈 Classic',Bart:'🪒 Bart',FullLook:'⚡ Full Look',Sonstiges:'📷 Sonstiges'};
 
-(async function initCarousel() {
+(async function initWork() {
+  const grid = document.getElementById('workGrid');
+  const prev = document.getElementById('workPrev');
+  const next = document.getElementById('workNext');
+  if (!grid) return;
+
   try {
     const res  = await fetch('/api/photos');
     const data = await res.json();
-    if (!data.photos || !data.photos.length) return; // keep fallback grid
-    _carPhotos = data.photos;
+    if (data.photos && data.photos.length) {
+      _workPhotos = data.photos;
+      _workFiltered = data.photos;
+      buildWork();
+    }
+  } catch { /* keep fallbacks */ }
 
-    // Hide fallback grid, show carousel + pills
-    document.getElementById('workGrid').style.display    = 'none';
-    document.getElementById('carouselWrap').style.display = 'block';
-    document.getElementById('workCats').style.display    = 'flex';
+  // Arrows
+  prev?.addEventListener('click', () => {
+    grid.scrollBy({ left: -grid.offsetWidth * 0.8, behavior: 'smooth' });
+  });
+  next?.addEventListener('click', () => {
+    grid.scrollBy({ left: grid.offsetWidth * 0.8, behavior: 'smooth' });
+  });
 
-    // Category pill listeners
-    document.querySelectorAll('.wcat').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.wcat').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        _carFiltered = btn.dataset.cat === 'all' ? _carPhotos : _carPhotos.filter(p => p.category === btn.dataset.cat);
-        _carIdx = 0;
-        buildCarousel();
-      });
+  // Category pills
+  document.querySelectorAll('.wcat').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.wcat').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      _workFiltered = btn.dataset.cat === 'all' ? _workPhotos : _workPhotos.filter(p => p.category === btn.dataset.cat);
+      buildWork();
     });
+  });
 
-    _carFiltered = _carPhotos;
-    buildCarousel();
-    initCarouselDrag();
-  } catch { /* keep placeholders */ }
+  // Track scroll for dots
+  grid.addEventListener('scroll', () => {
+    const idx = Math.round(grid.scrollLeft / (grid.querySelector('.wc')?.offsetWidth || 1));
+    updateWorkDots(idx);
+  }, { passive: true });
 })();
 
-function buildCarousel() {
-  const track = document.getElementById('carTrack');
-  const dots  = document.getElementById('carDots');
-  if (!track) return;
-  track.innerHTML = _carFiltered.map(p => `
-    <div class="car-slide">
-      <img src="/uploads/${p.filename}" alt="${p.caption || ''}" loading="lazy">
-      <div class="car-slide-info">
-        <div class="car-slide-cat">${CAT_LABELS[p.category] || p.category}</div>
-        ${p.caption ? `<div class="car-slide-cap">${p.caption}</div>` : ''}
-      </div>
-      <a href="#termin" class="car-slide-book">BUCHEN</a>
-    </div>`).join('');
+function buildWork() {
+  const grid = document.getElementById('workGrid');
+  const dots = document.getElementById('workDots');
+  if (!grid) return;
 
-  // Dots — one per slide group
-  const visible  = getVisible();
-  const maxIdx   = Math.max(0, _carFiltered.length - visible);
-  dots.innerHTML = '';
-  for (let i = 0; i <= maxIdx; i++) {
-    const d = document.createElement('button');
-    d.className = 'car-dot' + (i === _carIdx ? ' active' : '');
-    d.onclick   = () => carGoTo(i);
-    dots.appendChild(d);
+  if (_workFiltered.length) {
+    grid.innerHTML = _workFiltered.map((p, i) => `
+      <div class="wc" style="--i:${i}">
+        <img src="/uploads/${p.filename}" alt="${p.caption || ''}" loading="lazy">
+        <div class="wc-bottom">
+          <span class="wc-t">${p.category}</span>
+          <span class="wc-sub">${p.caption || 'Haircut & Design'}</span>
+        </div>
+        <a href="#termin" class="wc-overlay">Buchen ↗</a>
+      </div>`).join('');
   }
-  carGoTo(_carIdx, false);
+
+  // Build dots
+  if (dots) {
+    dots.innerHTML = _workFiltered.map((_, i) => `<div class="w-dot ${i===0?'active':''}" onclick="workTo(${i})"></div>`).join('');
+  }
 }
 
-function getVisible() {
-  const w = window.innerWidth;
-  return w <= 480 ? 1 : w <= 768 ? 2 : 3;
+function updateWorkDots(idx) {
+  document.querySelectorAll('.w-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
 }
 
-function carGoTo(idx, animate = true) {
-  const track   = document.getElementById('carTrack');
-  const slides  = track.querySelectorAll('.car-slide');
-  const visible = getVisible();
-  const max     = Math.max(0, slides.length - visible);
-  _carIdx       = Math.max(0, Math.min(idx, max));
-
-  const slideW  = slides[0] ? slides[0].offsetWidth + 8 : 0;
-  track.style.transition = animate ? '' : 'none';
-  track.style.transform  = `translateX(-${_carIdx * slideW}px)`;
-
-  document.querySelectorAll('.car-dot').forEach((d, i) => d.classList.toggle('active', i === _carIdx));
-  document.getElementById('carPrev').disabled = _carIdx === 0;
-  document.getElementById('carNext').disabled = _carIdx >= max;
-}
-
-document.getElementById('carPrev')?.addEventListener('click', () => carGoTo(_carIdx - 1));
-document.getElementById('carNext')?.addEventListener('click', () => carGoTo(_carIdx + 1));
-window.addEventListener('resize', () => buildCarousel());
-
-function initCarouselDrag() {
-  const car = document.getElementById('carousel');
-  if (!car) return;
-  let startX = 0, isDragging = false, moved = false;
-  car.addEventListener('pointerdown', e => {
-    startX = e.clientX; isDragging = true; moved = false;
-    car.classList.add('dragging');
-  });
-  car.addEventListener('pointermove', e => {
-    if (!isDragging) return;
-    if (Math.abs(e.clientX - startX) > 6) moved = true;
-  });
-  car.addEventListener('pointerup', e => {
-    if (!isDragging) return;
-    isDragging = false; car.classList.remove('dragging');
-    if (!moved) return;
-    const diff = e.clientX - startX;
-    if (diff < -40) carGoTo(_carIdx + 1);
-    else if (diff > 40) carGoTo(_carIdx - 1);
-  });
-  car.addEventListener('pointercancel', () => { isDragging = false; car.classList.remove('dragging'); });
+function workTo(idx) {
+  const grid = document.getElementById('workGrid');
+  const cards = grid.querySelectorAll('.wc');
+  if (cards[idx]) {
+    cards[idx].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }
 }
 
 // ── Flatpickr date picker ─────────────────────────────
