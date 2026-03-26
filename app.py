@@ -897,6 +897,19 @@ def remove_blocked(date_str):
     return jsonify({'success': True})
 
 
+@app.route('/api/admin/test-email')
+def test_email():
+    if not session.get('admin'):
+        return jsonify({'error': 'Unauthorized'}), 401
+    if not SMTP_USER or not SMTP_PASS:
+        return jsonify({'ok': False, 'error': f'SMTP_USER/SMTP_PASS not set. SMTP_USER={SMTP_USER!r}'})
+    ok = send_email(SMTP_USER, 'München Barber — Test Email', '<h2>Email funktioniert!</h2><p>SMTP ist korrekt konfiguriert.</p>')
+    if ok:
+        return jsonify({'ok': True, 'message': f'Test email sent to {SMTP_USER}'})
+    else:
+        return jsonify({'ok': False, 'error': 'send_email returned False — check server logs'})
+
+
 # ── Boot ──────────────────────────────────────────────────────────────────────
 
 init_db()
