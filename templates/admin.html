@@ -833,7 +833,7 @@ function renderPhotos() {
   const catLabels = {Fade:'✂ Fade',Classic:'💈 Classic',Bart:'🪒 Bart',FullLook:'⚡ Full Look',Sonstiges:'📷 Sonstiges'};
   grid.innerHTML = list.map(p => `
     <div class="ph-card">
-      <img src="/static/uploads/${esc(p.filename)}" alt="${esc(p.caption)}" loading="lazy">
+      <img src="/uploads/${esc(p.filename)}" alt="${esc(p.caption)}" loading="lazy">
       <div class="ph-card-cat">${catLabels[p.category] || p.category}</div>
       ${p.caption ? `<div class="ph-card-cap">${esc(p.caption)}</div>` : ''}
       <button class="ph-del" onclick="deletePhoto(${p.id})" title="Löschen">✕</button>
