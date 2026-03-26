@@ -16,7 +16,7 @@
       --green: #22c55e; --red: #ef4444; --yellow: #f59e0b; --blue: #3b82f6;
       --tr: .25s ease;
     }
-    html, body { height: 100%; }
+    html, body { height: 100%; overflow-x: hidden; max-width: 100vw; }
     body { background: var(--bg); color: var(--text); font-family: 'Poppins', sans-serif; font-size: 14px; }
 
     /* ── Login ── */
@@ -110,9 +110,9 @@
     .f-ts { font-size: .72rem; color: var(--gray2); }
 
     /* Table */
-    .tbl-wrap { flex: 1; overflow: auto; padding: 1.5rem; }
+    .tbl-wrap { flex: 1; overflow-x: auto; -webkit-overflow-scrolling: touch; padding: 1.5rem; }
     .rec-cnt { font-size: .75rem; color: var(--gray2); margin-bottom: .75rem; }
-    table { width: 100%; border-collapse: collapse; min-width: 880px; }
+    table { width: 100%; border-collapse: collapse; min-width: 700px; }
     thead th {
       padding: .7rem 1rem; text-align: left;
       font-size: .65rem; text-transform: uppercase; letter-spacing: 2px;
@@ -134,9 +134,65 @@
     .tprice { color: var(--gold); font-weight: 600; }
     .tdt { white-space: nowrap; }
 
-    /* Clients tab */
-    .client-row td { cursor: pointer; }
-    .client-row:hover td { background: rgba(212,175,55,.04) !important; }
+    /* ── Kunden cards ── */
+    .kunden-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px,1fr));
+      gap: 1rem; padding: 1.5rem;
+    }
+    .kc {
+      background: var(--card); border: 1px solid var(--border);
+      padding: 1.25rem; cursor: pointer;
+      transition: border-color var(--tr), transform var(--tr);
+      position: relative; overflow: hidden;
+    }
+    .kc::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+      background: var(--gold); opacity: 0; transition: opacity var(--tr);
+    }
+    .kc:hover { border-color: rgba(212,175,55,.4); transform: translateY(-2px); }
+    .kc:hover::before { opacity: 1; }
+    .kc-head { display: flex; align-items: center; gap: .9rem; margin-bottom: 1rem; }
+    .kc-av {
+      width: 42px; height: 42px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem;
+      letter-spacing: 1px; flex-shrink: 0;
+    }
+    .kc-name { font-weight: 600; font-size: .92rem; }
+    .kc-phone { font-size: .75rem; color: var(--gray); margin-top: .1rem; }
+    .kc-stats { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; margin-bottom: .9rem; }
+    .kc-stat { background: var(--surface); padding: .5rem .75rem; }
+    .kc-stat-v { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 1px; line-height: 1; }
+    .kc-stat-l { font-size: .6rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gray2); margin-top: .15rem; }
+    .kc-bar { height: 3px; background: var(--border2); margin-bottom: .9rem; }
+    .kc-bar-fill { height: 100%; background: linear-gradient(90deg, var(--gold3), var(--gold)); transition: width .6s ease; }
+    .kc-foot { display: flex; align-items: center; justify-content: space-between; font-size: .74rem; color: var(--gray2); }
+    .kc-tags { display: flex; gap: .3rem; flex-wrap: wrap; }
+    .kc-tag { font-size: .62rem; padding: .15rem .5rem; background: rgba(212,175,55,.08); color: var(--gold3); border: 1px solid rgba(212,175,55,.15); letter-spacing: .5px; }
+
+    /* ── Photo categories ── */
+    .ph-cats {
+      display: flex; gap: .4rem; flex-wrap: wrap;
+      padding: .75rem 1.5rem; border-bottom: 1px solid var(--border);
+      background: var(--dark);
+    }
+    .ph-cat-btn {
+      padding: .35rem .9rem; background: transparent;
+      border: 1px solid var(--border2); color: var(--gray);
+      font-family: inherit; font-size: .74rem; cursor: pointer;
+      transition: all var(--tr);
+    }
+    .ph-cat-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .ph-cat-btn.active { background: var(--gold); color: #000; border-color: var(--gold); font-weight: 600; }
+    .ph-card-cat {
+      position: absolute; top: .4rem; left: .4rem;
+      background: rgba(0,0,0,.75); font-size: .6rem;
+      padding: .2rem .5rem; color: var(--gold); letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* Legacy (unused now, keep for compat) */
     .visits { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: var(--gold); }
     .spent  { color: var(--green); font-weight: 600; }
 
@@ -177,11 +233,76 @@
     #toast.ok  { border-color: var(--green); color: var(--green); }
     #toast.err { border-color: var(--red);   color: var(--red); }
 
+    /* ── Mobile / photo grid / hours / blocked ── */
+    .ph-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap: 1rem; padding: 1.5rem; }
+    .ph-card { position: relative; aspect-ratio: 3/4; overflow: hidden; border: 1px solid var(--border); background: var(--card); }
+    .ph-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .ph-card-cap { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,.7); font-size: .72rem; padding: .4rem .6rem; color: var(--text); }
+    .ph-del { position: absolute; top: .4rem; right: .4rem; background: rgba(239,68,68,.85); border: none; color: #fff; width: 28px; height: 28px; cursor: pointer; font-size: .9rem; display: flex; align-items: center; justify-content: center; }
+    .ph-upload { padding: 1.5rem; border-bottom: 1px solid var(--border); display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end; }
+    .ph-upload input[type=file] { display: none; }
+    .ph-upload label.btn { cursor: pointer; }
+    .ph-upload input[type=text] { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: .55rem .9rem; font-family: inherit; font-size: .82rem; outline: none; width: 220px; }
+    .ph-upload input[type=text]:focus { border-color: var(--gold); }
+    .ph-empty { padding: 3rem; text-align: center; color: var(--gray2); font-size: .85rem; }
+
+    .hours-table { padding: 1.5rem; max-width: 500px; }
+    .hr-row { display: grid; grid-template-columns: 80px 1fr 80px 80px; gap: .75rem; align-items: center; margin-bottom: .75rem; }
+    .hr-day { font-size: .75rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--gray); }
+    .hr-toggle { display: flex; align-items: center; gap: .5rem; }
+    .hr-toggle input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--gold); cursor: pointer; }
+    .hr-inp { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: .45rem .6rem; font-family: inherit; font-size: .82rem; width: 100%; outline: none; text-align: center; }
+    .hr-inp:focus { border-color: var(--gold); }
+    .hr-inp:disabled { opacity: .35; }
+    .hr-label { font-size: .65rem; color: var(--gray2); text-align: center; }
+
+    .bl-wrap { padding: 1.5rem; }
+    .bl-add { display: flex; gap: .75rem; flex-wrap: wrap; align-items: flex-end; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+    .bl-add input { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: .55rem .9rem; font-family: inherit; font-size: .82rem; outline: none; }
+    .bl-add input:focus { border-color: var(--gold); }
+    .bl-list { display: flex; flex-direction: column; gap: .5rem; }
+    .bl-item { display: flex; align-items: center; justify-content: space-between; padding: .75rem 1rem; background: var(--card); border: 1px solid var(--border); }
+    .bl-date { font-weight: 500; }
+    .bl-reason { font-size: .78rem; color: var(--gray); }
+
+    /* Tab panel */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* Scrollable tabs on mobile */
     @media (max-width: 768px) {
       .stats { grid-template-columns: repeat(2, 1fr); }
       .cd-panel { width: 100%; }
       .dh-date { display: none; }
       .filters { padding: .75rem 1rem; }
+      .tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .tabs::-webkit-scrollbar { display: none; }
+      .tab-btn { padding: .9rem 1.2rem; font-size: .7rem; white-space: nowrap; flex-shrink: 0; }
+      .dash-head { padding: .75rem 1rem; gap: .75rem; }
+      .dh-logo { font-size: 1rem; letter-spacing: 2px; }
+      .dh-right { gap: .5rem; }
+      .dh-right .btn { padding: .4rem .75rem; font-size: .72rem; }
+      /* Card view for appointment table on mobile */
+      .tbl-wrap { padding: .75rem; }
+      table { min-width: unset; width: 100%; }
+      thead { display: none; }
+      tr { display: block; background: var(--card); border: 1px solid var(--border); margin-bottom: .75rem; padding: .75rem; }
+      td { display: flex; justify-content: space-between; align-items: center; padding: .3rem 0; border: none; font-size: .82rem; }
+      td::before { content: attr(data-label); font-size: .65rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gray2); flex-shrink: 0; margin-right: .5rem; }
+      .ph-grid { grid-template-columns: repeat(auto-fill, minmax(130px,1fr)); gap: .75rem; padding: 1rem; }
+      .kunden-grid { grid-template-columns: 1fr 1fr; gap: .75rem; padding: 1rem; }
+      .hours-table { padding: 1rem; }
+      .hr-row { grid-template-columns: 70px 1fr 65px 65px; gap: .5rem; }
+      .bl-wrap { padding: 1rem; }
+      .ph-upload { padding: 1rem; }
+    }
+    @media (max-width: 480px) {
+      .stats { grid-template-columns: 1fr 1fr; }
+      .stat-c { padding: 1rem; }
+      .stat-c .sv { font-size: 1.6rem; }
+      .hr-row { grid-template-columns: 60px 1fr 58px 58px; gap: .4rem; }
+      .ph-grid { grid-template-columns: repeat(2, 1fr); }
+      .kunden-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -232,10 +353,13 @@
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('termine', this)">Termine</button>
     <button class="tab-btn" onclick="switchTab('kunden', this)">Kunden</button>
+    <button class="tab-btn" onclick="switchTab('fotos', this)">Fotos</button>
+    <button class="tab-btn" onclick="switchTab('zeiten', this)">Öffnungszeiten</button>
+    <button class="tab-btn" onclick="switchTab('sperren', this)">Datum sperren</button>
   </div>
 
   <!-- ── TERMINE TAB ── -->
-  <div id="tab-termine">
+  <div id="tab-termine" class="tab-panel active">
     <div class="filters">
       <input type="text" id="fSearch" placeholder="🔍 Name oder Telefon" oninput="debounce(loadTermine)" style="width:180px">
       <input type="date" id="fDate" onchange="loadTermine()">
@@ -267,25 +391,76 @@
   </div>
 
   <!-- ── KUNDEN TAB ── -->
-  <div id="tab-kunden" style="display:none">
+  <div id="tab-kunden" class="tab-panel">
     <div class="filters">
-      <input type="text" id="cSearch" placeholder="🔍 Name oder Telefon" oninput="debounce(loadKunden)" style="width:180px">
+      <input type="text" id="cSearch" placeholder="🔍 Name oder Telefon" oninput="debounce(()=>renderKunden(allClients))" style="width:220px">
       <span class="f-ts" id="cTs">—</span>
       <div class="f-right">
+        <span class="rec-cnt" id="cCnt" style="margin:0"></span>
         <button class="btn btn-ghost" onclick="loadKunden()">↻</button>
       </div>
     </div>
-    <div class="tbl-wrap">
-      <div class="rec-cnt" id="cCnt"></div>
-      <table>
-        <thead>
-          <tr>
-            <th>#</th><th>Name</th><th>Telefon</th><th>Besuche</th>
-            <th>Abgeschlossen</th><th>Ausgegeben</th><th>Letzter Besuch</th><th>Kontakt</th>
-          </tr>
-        </thead>
-        <tbody id="cBody"><tr><td colspan="8" style="text-align:center;padding:3rem"><div class="spinner"></div></td></tr></tbody>
-      </table>
+    <div id="kGrid" class="kunden-grid"><div class="empty"><div class="empty-icon">👤</div><div class="spinner"></div></div></div>
+  </div>
+
+  <!-- ── FOTOS TAB ── -->
+  <div id="tab-fotos" class="tab-panel">
+    <div class="ph-upload">
+      <div>
+        <label class="btn btn-gold" for="photoFile">+ Foto wählen</label>
+        <input type="file" id="photoFile" accept="image/*" onchange="previewPhoto(this)">
+      </div>
+      <select id="photoCat" style="background:var(--card);border:1px solid var(--border);color:var(--text);padding:.55rem .9rem;font-family:inherit;font-size:.82rem;outline:none;cursor:pointer">
+        <option value="Fade">✂ Fade / Skin Fade</option>
+        <option value="Classic">💈 Classic Cut</option>
+        <option value="Bart">🪒 Bart & Rasur</option>
+        <option value="FullLook">⚡ Full Look</option>
+        <option value="Sonstiges">📷 Sonstiges</option>
+      </select>
+      <input type="text" id="photoCap" placeholder="Beschriftung (optional)" style="background:var(--card);border:1px solid var(--border);color:var(--text);padding:.55rem .9rem;font-family:inherit;font-size:.82rem;outline:none;width:180px">
+      <button class="btn btn-ghost" id="photoUploadBtn" onclick="uploadPhoto()" style="display:none">Hochladen ↑</button>
+      <span id="photoPreviewName" style="font-size:.78rem;color:var(--gray);align-self:center"></span>
+    </div>
+    <!-- Category filter tabs -->
+    <div class="ph-cats" id="phCats">
+      <button class="ph-cat-btn active" onclick="filterPhotos('all',this)">Alle</button>
+      <button class="ph-cat-btn" onclick="filterPhotos('Fade',this)">✂ Fade</button>
+      <button class="ph-cat-btn" onclick="filterPhotos('Classic',this)">💈 Classic</button>
+      <button class="ph-cat-btn" onclick="filterPhotos('Bart',this)">🪒 Bart</button>
+      <button class="ph-cat-btn" onclick="filterPhotos('FullLook',this)">⚡ Full Look</button>
+      <button class="ph-cat-btn" onclick="filterPhotos('Sonstiges',this)">📷 Sonstiges</button>
+    </div>
+    <div id="photoGrid" class="ph-grid"><div class="ph-empty">Noch keine Fotos hochgeladen</div></div>
+  </div>
+
+  <!-- ── ÖFFNUNGSZEITEN TAB ── -->
+  <div id="tab-zeiten" class="tab-panel">
+    <div class="hours-table">
+      <div style="font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--gray2);margin-bottom:1.25rem">Wochentag-Zeiten bearbeiten</div>
+      <div style="display:grid;grid-template-columns:80px 1fr 80px 80px;gap:.75rem;margin-bottom:.5rem">
+        <div class="hr-label">Tag</div><div class="hr-label">Offen</div>
+        <div class="hr-label">Von</div><div class="hr-label">Bis</div>
+      </div>
+      <div id="hoursRows"></div>
+      <button class="btn btn-gold" style="margin-top:1.25rem" onclick="saveHours()">Speichern</button>
+    </div>
+  </div>
+
+  <!-- ── SPERREN TAB ── -->
+  <div id="tab-sperren" class="tab-panel">
+    <div class="bl-wrap">
+      <div class="bl-add">
+        <div>
+          <div class="hr-label" style="margin-bottom:.4rem">Datum</div>
+          <input type="date" id="blDate">
+        </div>
+        <div>
+          <div class="hr-label" style="margin-bottom:.4rem">Grund (optional)</div>
+          <input type="text" id="blReason" placeholder="z.B. Urlaub" style="width:180px">
+        </div>
+        <button class="btn btn-gold" onclick="addBlocked()">Datum sperren</button>
+      </div>
+      <div id="blockedList" class="bl-list"></div>
     </div>
   </div>
 
@@ -335,6 +510,18 @@ function showDash() {
   setInterval(() => { loadStats(); loadTermine(); }, 30000);
 }
 
+// ── Tab switch ──────────────────────────────────────────
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (name === 'kunden')  loadKunden();
+  if (name === 'fotos')   loadPhotos();
+  if (name === 'zeiten')  loadHours();
+  if (name === 'sperren') loadBlocked();
+}
+
 // ── Clock ──────────────────────────────────────────────
 function startClock() {
   const DAYS   = ['So','Mo','Di','Mi','Do','Fr','Sa'];
@@ -364,13 +551,6 @@ async function loadStats() {
 }
 
 // ── Tabs ───────────────────────────────────────────────
-function switchTab(name, btn) {
-  document.getElementById('tab-termine').style.display = name==='termine' ? 'block' : 'none';
-  document.getElementById('tab-kunden').style.display  = name==='kunden'  ? 'block' : 'none';
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  if (name==='kunden') loadKunden();
-}
 
 // ── Termine ────────────────────────────────────────────
 let dTimer;
@@ -426,15 +606,15 @@ function renderTermine(list) {
       a.telegram ? `<div class="tsub">${esc(a.telegram)}</div>` : '',
     ].join('');
     return `<tr>
-      <td style="color:var(--gray2)">${a.id}</td>
-      <td><div class="tname">${esc(a.name)}</div>${a.comment?`<div class="tsub">${esc(a.comment)}</div>`:''}</td>
-      <td>${esc(a.service)}</td>
-      <td class="tprice">${a.price}€</td>
-      <td class="tdt"><div>${a.date}</div></td>
-      <td class="tdt"><div class="tname">${a.time}</div></td>
-      <td><div>${esc(a.phone)}</div>${contact}</td>
-      <td>${badge(a.status)}</td>
-      <td><div class="act-row">${acts.join('')}</div></td>
+      <td data-label="#" style="color:var(--gray2)">${a.id}</td>
+      <td data-label="Kunde"><div class="tname">${esc(a.name)}</div>${a.comment?`<div class="tsub">${esc(a.comment)}</div>`:''}</td>
+      <td data-label="Service">${esc(a.service)}</td>
+      <td data-label="Preis" class="tprice">${a.price}€</td>
+      <td data-label="Datum" class="tdt"><div>${a.date}</div></td>
+      <td data-label="Zeit" class="tdt"><div class="tname">${a.time}</div></td>
+      <td data-label="Kontakt"><div>${esc(a.phone)}</div>${contact}</td>
+      <td data-label="Status">${badge(a.status)}</td>
+      <td data-label="Aktionen"><div class="act-row">${acts.join('')}</div></td>
     </tr>`;
   }).join('');
 }
@@ -453,36 +633,68 @@ async function loadKunden() {
     `${new Date().toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})} · ${d.clients.length} Kunden`;
 }
 
+const AV_COLORS = [
+  ['#D4AF37','#1a1200'],['#22c55e','#0a1a0a'],['#3b82f6','#0a0f1a'],
+  ['#f59e0b','#1a1200'],['#a855f7','#120a1a'],['#ef4444','#1a0a0a'],
+  ['#06b6d4','#0a1518'],['#84cc16','#0f1a0a'],
+];
+function avColor(name) {
+  let h = 0;
+  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) & 0xffff;
+  return AV_COLORS[h % AV_COLORS.length];
+}
+function initials(name) {
+  const parts = name.trim().split(/\s+/);
+  return parts.length >= 2
+    ? (parts[0][0] + parts[parts.length-1][0]).toUpperCase()
+    : name.slice(0,2).toUpperCase();
+}
+
 function renderKunden(list) {
-  const body = document.getElementById('cBody');
+  const grid = document.getElementById('kGrid');
   const q = (document.getElementById('cSearch')?.value || '').toLowerCase();
   const filtered = q ? list.filter(c => (c.name+c.phone).toLowerCase().includes(q)) : list;
   document.getElementById('cCnt').textContent = filtered.length ? `${filtered.length} Kunden` : '';
   if (!filtered.length) {
-    body.innerHTML = `<tr><td colspan="8"><div class="empty"><div class="empty-icon">👤</div><div>Keine Kunden gefunden</div></div></td></tr>`;
+    grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><div class="empty-icon">👤</div><div>Keine Kunden gefunden</div></div>`;
     return;
   }
-  body.innerHTML = filtered.map((c, i) => {
-    const contact = [
-      c.email ? `<div class="tsub">${esc(c.email)}</div>` : '',
-      c.telegram ? `<div class="tsub">${esc(c.telegram)}</div>` : '',
+  const maxSpent = Math.max(...filtered.map(c => c.total_spent), 1);
+  grid.innerHTML = filtered.map(c => {
+    const [fg, bg] = avColor(c.name);
+    const ini  = initials(c.name);
+    const barW = Math.round((c.total_spent / maxSpent) * 100);
+    const tags = [
+      c.email    ? `<span class="kc-tag">📧 Email</span>` : '',
+      c.telegram ? `<span class="kc-tag">📱 TG</span>`    : '',
     ].join('');
-    return `<tr class="client-row" onclick="openCd('${esc(c.phone)}')">
-      <td style="color:var(--gray2)">${i+1}</td>
-      <td class="tname">${esc(c.name)}</td>
-      <td>${esc(c.phone)}</td>
-      <td><span class="visits">${c.total_bookings}</span></td>
-      <td>${c.completed}</td>
-      <td class="spent">${c.total_spent}€</td>
-      <td class="tdt">${c.last_date || '—'}</td>
-      <td>${contact}</td>
-    </tr>`;
+    return `
+    <div class="kc" onclick="openCd('${esc(c.phone)}')">
+      <div class="kc-head">
+        <div class="kc-av" style="background:${bg};color:${fg}">${ini}</div>
+        <div>
+          <div class="kc-name">${esc(c.name)}</div>
+          <div class="kc-phone">${esc(c.phone)}</div>
+        </div>
+      </div>
+      <div class="kc-stats">
+        <div class="kc-stat">
+          <div class="kc-stat-v" style="color:var(--gold)">${c.total_bookings}</div>
+          <div class="kc-stat-l">Besuche</div>
+        </div>
+        <div class="kc-stat">
+          <div class="kc-stat-v" style="color:var(--green)">${c.total_spent}€</div>
+          <div class="kc-stat-l">Ausgegeben</div>
+        </div>
+      </div>
+      <div class="kc-bar"><div class="kc-bar-fill" style="width:${barW}%"></div></div>
+      <div class="kc-foot">
+        <div class="kc-tags">${tags}</div>
+        <span>${c.last_date ? 'Zuletzt: ' + c.last_date : '—'}</span>
+      </div>
+    </div>`;
   }).join('');
 }
-
-document.getElementById('cSearch')?.addEventListener('input', () => {
-  debounce(() => renderKunden(allClients));
-});
 
 // ── Client detail ──────────────────────────────────────
 async function openCd(phone) {
@@ -515,7 +727,7 @@ async function openCd(phone) {
           <span class="cd-svc">${esc(h.service)}</span>
           <span class="tprice">${h.price}€</span>
         </div>
-        <div class="cd-meta">${h.date} · ${h.time} · ${{pending:'⏳ Ausstehend',confirmed:'✅ Bestätigt',cancelled:'❌ Abgesagt'}[h.status]||h.status}</div>
+        <div class="cd-meta">${h.date} · ${h.time} · ${h.status==='confirmed'?'✅ Bestätigt':h.status==='cancelled'?'❌ Abgesagt':'⏳ Ausstehend'}</div>
         ${h.comment ? `<div class="cd-meta" style="margin-top:.3rem">💬 ${esc(h.comment)}</div>` : ''}
       </div>`).join('');
 }
@@ -557,6 +769,171 @@ function toast(msg, type='ok') {
   el.textContent = msg; el.className = 'show ' + type;
   clearTimeout(toastT);
   toastT = setTimeout(() => el.className = '', 3200);
+}
+
+// ── Photos ────────────────────────────────────────────
+let _photoFile = null;
+let _allPhotos = [];
+let _activeCat = 'all';
+
+function previewPhoto(input) {
+  _photoFile = input.files[0] || null;
+  const btn  = document.getElementById('photoUploadBtn');
+  const name = document.getElementById('photoPreviewName');
+  if (_photoFile) {
+    btn.style.display = 'inline-flex';
+    name.textContent  = _photoFile.name;
+  } else {
+    btn.style.display = 'none';
+    name.textContent  = '';
+  }
+}
+async function uploadPhoto() {
+  if (!_photoFile) return;
+  const btn = document.getElementById('photoUploadBtn');
+  btn.disabled = true; btn.textContent = '…';
+  const fd = new FormData();
+  fd.append('file',    _photoFile);
+  fd.append('caption', document.getElementById('photoCap').value.trim());
+  fd.append('category', document.getElementById('photoCat').value);
+  const r = await fetch('/api/admin/photos', {method:'POST', body: fd});
+  const d = await r.json();
+  btn.disabled = false; btn.textContent = 'Hochladen ↑';
+  if (d.success) {
+    toast('✓ Foto hochgeladen', 'ok');
+    document.getElementById('photoFile').value = '';
+    document.getElementById('photoCap').value  = '';
+    _photoFile = null;
+    btn.style.display = 'none';
+    document.getElementById('photoPreviewName').textContent = '';
+    loadPhotos();
+  } else {
+    toast(d.error || 'Fehler', 'err');
+  }
+}
+async function loadPhotos() {
+  const r = await fetch('/api/photos');
+  const d = await r.json();
+  _allPhotos = d.photos;
+  renderPhotos();
+}
+function filterPhotos(cat, btn) {
+  _activeCat = cat;
+  document.querySelectorAll('.ph-cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderPhotos();
+}
+function renderPhotos() {
+  const grid = document.getElementById('photoGrid');
+  const list = _activeCat === 'all' ? _allPhotos : _allPhotos.filter(p => p.category === _activeCat);
+  if (!list.length) {
+    grid.innerHTML = `<div class="ph-empty">${_activeCat === 'all' ? 'Noch keine Fotos hochgeladen' : 'Keine Fotos in dieser Kategorie'}</div>`;
+    return;
+  }
+  const catLabels = {Fade:'✂ Fade',Classic:'💈 Classic',Bart:'🪒 Bart',FullLook:'⚡ Full Look',Sonstiges:'📷 Sonstiges'};
+  grid.innerHTML = list.map(p => `
+    <div class="ph-card">
+      <img src="/static/uploads/${esc(p.filename)}" alt="${esc(p.caption)}" loading="lazy">
+      <div class="ph-card-cat">${catLabels[p.category] || p.category}</div>
+      ${p.caption ? `<div class="ph-card-cap">${esc(p.caption)}</div>` : ''}
+      <button class="ph-del" onclick="deletePhoto(${p.id})" title="Löschen">✕</button>
+    </div>`).join('');
+}
+async function deletePhoto(id) {
+  if (!confirm('Foto löschen?')) return;
+  const r = await fetch(`/api/admin/photos/${id}`, {method:'DELETE'});
+  const d = await r.json();
+  if (d.success) { toast('Foto gelöscht', 'ok'); loadPhotos(); }
+  else toast('Fehler', 'err');
+}
+
+// ── Working hours ─────────────────────────────────────
+const DAYS_DE = ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'];
+let _hoursData = [];
+async function loadHours() {
+  const r = await fetch('/api/admin/hours');
+  const d = await r.json();
+  _hoursData = d.hours;
+  const cont = document.getElementById('hoursRows');
+  cont.innerHTML = _hoursData.map(h => `
+    <div class="hr-row">
+      <div class="hr-day">${DAYS_DE[h.weekday].slice(0,2)}</div>
+      <div class="hr-toggle">
+        <input type="checkbox" id="hr-open-${h.weekday}" ${h.is_open ? 'checked' : ''}
+          onchange="toggleHrRow(${h.weekday})">
+        <label for="hr-open-${h.weekday}" style="font-size:.78rem;color:var(--gray);cursor:pointer">
+          ${h.is_open ? 'Offen' : 'Zu'}
+        </label>
+      </div>
+      <input type="number" class="hr-inp" id="hr-oh-${h.weekday}" value="${h.open_hour}"
+        min="0" max="23" ${h.is_open ? '' : 'disabled'}>
+      <input type="number" class="hr-inp" id="hr-ch-${h.weekday}" value="${h.close_hour}"
+        min="1" max="24" ${h.is_open ? '' : 'disabled'}>
+    </div>`).join('');
+}
+function toggleHrRow(wd) {
+  const cb  = document.getElementById(`hr-open-${wd}`);
+  const oh  = document.getElementById(`hr-oh-${wd}`);
+  const ch  = document.getElementById(`hr-ch-${wd}`);
+  const lbl = cb.nextElementSibling;
+  oh.disabled = !cb.checked;
+  ch.disabled = !cb.checked;
+  lbl.textContent = cb.checked ? 'Offen' : 'Zu';
+}
+async function saveHours() {
+  const hours = _hoursData.map(h => ({
+    weekday:    h.weekday,
+    is_open:    document.getElementById(`hr-open-${h.weekday}`).checked,
+    open_hour:  parseInt(document.getElementById(`hr-oh-${h.weekday}`).value) || 10,
+    close_hour: parseInt(document.getElementById(`hr-ch-${h.weekday}`).value) || 20,
+  }));
+  const r = await fetch('/api/admin/hours', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({hours})
+  });
+  const d = await r.json();
+  toast(d.success ? '✓ Zeiten gespeichert' : 'Fehler', d.success ? 'ok' : 'err');
+}
+
+// ── Blocked dates ─────────────────────────────────────
+async function loadBlocked() {
+  const r = await fetch('/api/admin/blocked');
+  const d = await r.json();
+  const list = document.getElementById('blockedList');
+  if (!d.blocked.length) {
+    list.innerHTML = '<div style="color:var(--gray2);font-size:.82rem">Keine gesperrten Daten</div>';
+    return;
+  }
+  list.innerHTML = d.blocked.map(b => `
+    <div class="bl-item">
+      <div>
+        <div class="bl-date">${b.date}</div>
+        ${b.reason ? `<div class="bl-reason">${esc(b.reason)}</div>` : ''}
+      </div>
+      <button class="btn btn-sm btn-red" onclick="removeBlocked('${b.date}')">✕ Freigeben</button>
+    </div>`).join('');
+}
+async function addBlocked() {
+  const date   = document.getElementById('blDate').value;
+  const reason = document.getElementById('blReason').value.trim();
+  if (!date) { toast('Bitte Datum wählen', 'err'); return; }
+  const r = await fetch('/api/admin/blocked', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({date, reason})
+  });
+  const d = await r.json();
+  if (d.success) {
+    toast('✓ Datum gesperrt', 'ok');
+    document.getElementById('blDate').value   = '';
+    document.getElementById('blReason').value = '';
+    loadBlocked();
+  } else toast(d.error || 'Fehler', 'err');
+}
+async function removeBlocked(date) {
+  const r = await fetch(`/api/admin/blocked/${date}`, {method:'DELETE'});
+  const d = await r.json();
+  if (d.success) { toast('✓ Datum freigegeben', 'ok'); loadBlocked(); }
+  else toast('Fehler', 'err');
 }
 
 // ── Init ─────────────────────────────────────────────────

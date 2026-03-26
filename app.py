@@ -1,9 +1,11 @@
-from flask import Flask, render_template, request, jsonify, session, Response
+from flask import Flask, render_template, request, jsonify, session, Response, send_from_directory
 import sqlite3
 import os
 import csv
 import io
+import uuid
 from datetime import datetime, timedelta
+from werkzeug.utils import secure_filename
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 import requests as http_requests
@@ -25,7 +27,11 @@ SMTP_HOST = os.getenv('SMTP_HOST', 'smtp.gmail.com')
 SMTP_PORT = int(os.getenv('SMTP_PORT', '587'))
 SMTP_USER = os.getenv('SMTP_USER', '')
 SMTP_PASS = os.getenv('SMTP_PASS', '')
-DB_PATH   = os.path.join(os.path.dirname(__file__), 'barber.db')
+N8N_WEBHOOK = os.getenv('N8N_WEBHOOK', 'https://usteem.app.n8n.cloud/webhook-test/barber-booking')
+DB_PATH      = os.path.join(os.path.dirname(__file__), 'barber.db')
+UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'static', 'uploads')
+ALLOWED_EXT  = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # Optional Google Sheets
 try:
@@ -64,6 +70,51 @@ def init_db():
             created_at TEXT DEFAULT (datetime('now','localtime'))
         )
     ''')
+    conn.execute('''
+        CREATE TABLE IF NOT EXISTS photos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            filename TEXT NOT NULL,
+            caption TEXT DEFAULT '',
+            category TEXT DEFAULT 'Sonstiges',
+            sort_order INTEGER DEFAULT 0,
+            created_at TEXT DEFAULT (datetime('now','localtime'))
+        )
+    ''')
+    # Add category column to existing photos tables (migration)
+    try:
+        conn.execute("ALTER TABLE photos ADD COLUMN category TEXT DEFAULT 'Sonstiges'")
+    except Exception:
+        pass
+    conn.execute('''
+        CREATE TABLE IF NOT EXISTS blocked_dates (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            date TEXT NOT NULL UNIQUE,
+            reason TEXT DEFAULT ''
+        )
+    ''')
+    conn.execute('''
+        CREATE TABLE IF NOT EXISTS working_hours (
+            weekday INTEGER PRIMARY KEY,
+            is_open INTEGER DEFAULT 1,
+            open_hour INTEGER DEFAULT 10,
+            close_hour INTEGER DEFAULT 20
+        )
+    ''')
+    # Insert default hours if table is empty
+    if conn.execute('SELECT COUNT(*) FROM working_hours').fetchone()[0] == 0:
+        defaults = [
+            (0, 0, 10, 20),  # Mo closed
+            (1, 1, 10, 20),  # Di
+            (2, 1, 10, 20),  # Mi
+            (3, 1, 10, 20),  # Do
+            (4, 1, 10, 20),  # Fr
+            (5, 1, 9,  18),  # Sa
+            (6, 0, 10, 20),  # So closed
+        ]
+        conn.executemany(
+            'INSERT INTO working_hours (weekday, is_open, open_hour, close_hour) VALUES (?,?,?,?)',
+            defaults
+        )
     conn.commit()
     conn.close()
 
@@ -112,6 +163,16 @@ def notify_client(row, text):
         send_email(row['email'], 'München Barber — Termininfo', html)
         sent = True
     return sent
+
+
+def send_to_n8n(payload: dict):
+    """POST booking data to n8n webhook (fire-and-forget)."""
+    if not N8N_WEBHOOK:
+        return
+    try:
+        http_requests.post(N8N_WEBHOOK, json=payload, timeout=8)
+    except Exception as e:
+        print(f'[n8n] {e}')
 
 
 def sync_to_sheets(row_data):
@@ -170,7 +231,7 @@ def check_reminders():
 # ── Working hours ─────────────────────────────────────────────────────────────
 
 HOURS = {
-    # weekday() 0=Mon, 6=Sun
+    # weekday() 0=Mon, 6=Sun  (fallback defaults)
     0: None,              # Mo — Geschlossen
     1: (10, 20),          # Di
     2: (10, 20),          # Mi
@@ -179,6 +240,25 @@ HOURS = {
     5: (9, 18),           # Sa
     6: None,              # So — Geschlossen
 }
+
+
+def get_hours():
+    """Load working hours from DB; fall back to HOURS dict if DB is empty."""
+    try:
+        conn = get_db()
+        rows = conn.execute('SELECT * FROM working_hours ORDER BY weekday').fetchall()
+        conn.close()
+        if not rows:
+            return HOURS
+        result = {}
+        for r in rows:
+            if r['is_open']:
+                result[r['weekday']] = (r['open_hour'], r['close_hour'])
+            else:
+                result[r['weekday']] = None
+        return result
+    except Exception:
+        return HOURS
 
 
 # ── Routes ────────────────────────────────────────────────────────────────────
@@ -221,7 +301,8 @@ def get_slots():
     except ValueError:
         return jsonify({'slots': [], 'closed': True})
 
-    h_range = HOURS.get(d.weekday())
+    hours = get_hours()
+    h_range = hours.get(d.weekday())
     if h_range is None:
         return jsonify({'slots': [], 'closed': True})
 
@@ -234,6 +315,10 @@ def get_slots():
             m, h = 0, h + 1
 
     conn = get_db()
+    # Check manual block
+    if conn.execute("SELECT id FROM blocked_dates WHERE date=?", (date_str,)).fetchone():
+        conn.close()
+        return jsonify({'slots': [], 'closed': True})
     booked = {r['time'] for r in conn.execute(
         "SELECT time FROM appointments WHERE date=? AND status!='cancelled'", (date_str,)
     ).fetchall()}
@@ -249,7 +334,37 @@ def get_slots():
                 continue
         available.append(slot)
 
-    return jsonify({'slots': available, 'closed': False})
+    return jsonify({'slots': available, 'booked': sorted(booked), 'closed': False})
+
+
+@app.route('/api/availability')
+def availability():
+    today = datetime.now().date()
+    disabled = []
+    hours = get_hours()
+    conn = get_db()
+    blocked = {r['date'] for r in conn.execute('SELECT date FROM blocked_dates').fetchall()}
+    for i in range(61):
+        d = today + timedelta(days=i)
+        date_str = d.strftime('%Y-%m-%d')
+        if date_str in blocked:
+            disabled.append(date_str)
+            continue
+        wd = d.weekday()
+        h_range = hours.get(wd)
+        if h_range is None:
+            disabled.append(date_str)
+            continue
+        start_h, end_h = h_range
+        total_slots = (end_h - start_h) * 2
+        booked_count = conn.execute(
+            "SELECT COUNT(*) as cnt FROM appointments WHERE date=? AND status!='cancelled'",
+            (date_str,)
+        ).fetchone()['cnt']
+        if booked_count >= total_slots:
+            disabled.append(date_str)
+    conn.close()
+    return jsonify({'disabled': disabled})
 
 
 @app.route('/api/book', methods=['POST'])
@@ -292,6 +407,24 @@ def book():
             f"📅 {data['date']} · ⏰ {data['time']}\n"
             f"💬 {data.get('comment') or '—'}"
         )
+
+    # n8n webhook
+    send_to_n8n({
+        'id':       apt_id,
+        'name':     data['name'],
+        'phone':    data['phone'],
+        'email':    data.get('email', ''),
+        'telegram': data.get('telegram', ''),
+        'service':  service_name,
+        'price':    price,
+        'currency': 'EUR',
+        'date':     data['date'],
+        'time':     data['time'],
+        'comment':  data.get('comment', ''),
+        'status':   'pending',
+        'created_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        'source':   'website',
+    })
 
     # Google Sheets sync
     sync_to_sheets([
@@ -377,8 +510,22 @@ def patch_appointment(apt_id):
     conn.execute('UPDATE appointments SET status=? WHERE id=?', (new_status, apt_id))
     conn.commit()
 
+    row = conn.execute('SELECT * FROM appointments WHERE id=?', (apt_id,)).fetchone()
+    if row:
+        send_to_n8n({
+            'event':    'status_changed',
+            'id':       apt_id,
+            'name':     row['name'],
+            'phone':    row['phone'],
+            'service':  row['service'],
+            'price':    row['price'],
+            'currency': 'EUR',
+            'date':     row['date'],
+            'time':     row['time'],
+            'status':   new_status,
+        })
+
     if new_status == 'confirmed':
-        row = conn.execute('SELECT * FROM appointments WHERE id=?', (apt_id,)).fetchone()
         if row:
             notify_client(row,
                 f"✅ <b>Termin bestätigt!</b>\n\n"
@@ -456,12 +603,134 @@ def export_csv():
     )
 
 
+# ── Photos ────────────────────────────────────────────────────────────────────
+
+@app.route('/api/photos')
+def list_photos():
+    conn = get_db()
+    rows = conn.execute('SELECT * FROM photos ORDER BY sort_order, created_at DESC').fetchall()
+    conn.close()
+    return jsonify({'photos': [dict(r) for r in rows]})
+
+
+@app.route('/api/admin/photos', methods=['POST'])
+def upload_photo():
+    if not session.get('admin'):
+        return jsonify({'error': 'Unauthorized'}), 401
+    if 'file' not in request.files:
+        return jsonify({'success': False, 'error': 'Keine Datei'}), 400
+    f = request.files['file']
+    if not f.filename:
+        return jsonify({'success': False, 'error': 'Kein Dateiname'}), 400
+    ext = f.filename.rsplit('.', 1)[-1].lower() if '.' in f.filename else ''
+    if ext not in ALLOWED_EXT:
+        return jsonify({'success': False, 'error': 'Dateityp nicht erlaubt'}), 400
+    filename = f'{uuid.uuid4().hex}.{ext}'
+    f.save(os.path.join(UPLOAD_FOLDER, filename))
+    caption  = request.form.get('caption', '')
+    category = request.form.get('category', 'Sonstiges')
+    conn = get_db()
+    conn.execute('INSERT INTO photos (filename, caption, category) VALUES (?, ?, ?)', (filename, caption, category))
+    conn.commit()
+    conn.close()
+    return jsonify({'success': True, 'filename': filename})
+
+
+@app.route('/api/admin/photos/<int:photo_id>', methods=['DELETE'])
+def delete_photo(photo_id):
+    if not session.get('admin'):
+        return jsonify({'error': 'Unauthorized'}), 401
+    conn = get_db()
+    row = conn.execute('SELECT filename FROM photos WHERE id=?', (photo_id,)).fetchone()
+    if row:
+        try:
+            os.remove(os.path.join(UPLOAD_FOLDER, row['filename']))
+        except OSError:
+            pass
+        conn.execute('DELETE FROM photos WHERE id=?', (photo_id,))
+        conn.commit()
+    conn.close()
+    return jsonify({'success': True})
+
+
+# ── Working hours (admin) ──────────────────────────────────────────────────────
+
+@app.route('/api/admin/hours', methods=['GET'])
+def get_hours_api():
+    if not session.get('admin'):
+        return jsonify({'error': 'Unauthorized'}), 401
+    conn = get_db()
+    rows = conn.execute('SELECT * FROM working_hours ORDER BY weekday').fetchall()
+    conn.close()
+    return jsonify({'hours': [dict(r) for r in rows]})
+
+
+@app.route('/api/admin/hours', methods=['POST'])
+def save_hours():
+    if not session.get('admin'):
+        return jsonify({'error': 'Unauthorized'}), 401
+    data = request.get_json() or {}
+    hours_list = data.get('hours', [])
+    conn = get_db()
+    for h in hours_list:
+        conn.execute(
+            'UPDATE working_hours SET is_open=?, open_hour=?, close_hour=? WHERE weekday=?',
+            (1 if h.get('is_open') else 0, h.get('open_hour', 10), h.get('close_hour', 20), h['weekday'])
+        )
+    conn.commit()
+    conn.close()
+    return jsonify({'success': True})
+
+
+# ── Blocked dates (admin) ──────────────────────────────────────────────────────
+
+@app.route('/api/admin/blocked', methods=['GET'])
+def list_blocked():
+    if not session.get('admin'):
+        return jsonify({'error': 'Unauthorized'}), 401
+    conn = get_db()
+    rows = conn.execute('SELECT * FROM blocked_dates ORDER BY date').fetchall()
+    conn.close()
+    return jsonify({'blocked': [dict(r) for r in rows]})
+
+
+@app.route('/api/admin/blocked', methods=['POST'])
+def add_blocked():
+    if not session.get('admin'):
+        return jsonify({'error': 'Unauthorized'}), 401
+    data = request.get_json() or {}
+    date_str = data.get('date', '')
+    reason   = data.get('reason', '')
+    if not date_str:
+        return jsonify({'success': False, 'error': 'Datum fehlt'}), 400
+    conn = get_db()
+    try:
+        conn.execute('INSERT INTO blocked_dates (date, reason) VALUES (?, ?)', (date_str, reason))
+        conn.commit()
+    except sqlite3.IntegrityError:
+        pass  # already blocked
+    conn.close()
+    return jsonify({'success': True})
+
+
+@app.route('/api/admin/blocked/<date_str>', methods=['DELETE'])
+def remove_blocked(date_str):
+    if not session.get('admin'):
+        return jsonify({'error': 'Unauthorized'}), 401
+    conn = get_db()
+    conn.execute('DELETE FROM blocked_dates WHERE date=?', (date_str,))
+    conn.commit()
+    conn.close()
+    return jsonify({'success': True})
+
+
 # ── Boot ──────────────────────────────────────────────────────────────────────
 
 init_db()
 
 if not os.environ.get('WERKZEUG_RUN_MAIN'):
-    _sched = BackgroundScheduler(daemon=True)
+    import pytz
+    _sched = BackgroundScheduler(daemon=True, timezone=pytz.utc)
     _sched.add_job(check_reminders, IntervalTrigger(minutes=30), id='reminders', replace_existing=True)
     _sched.start()
     atexit.register(_sched.shutdown)
