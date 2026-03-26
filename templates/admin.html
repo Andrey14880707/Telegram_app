@@ -108,6 +108,84 @@
       transition: all var(--tr);
     }
     .tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); text-shadow: 0 0 10px rgba(212,175,55,0.3); }
+    
+    /* ── Schedule Timeline ── */
+    .sch-wrap { padding: 1.5rem; max-width: 900px; margin: 0 auto; }
+    .sch-day-nav { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; background: var(--surface); padding: 1rem; border-radius: 12px; border: 1px solid var(--border); }
+    .sch-grid { display: flex; flex-direction: column; gap: 12px; }
+    .sch-slot { 
+      display: flex; align-items: center; background: var(--surface); border: 1px solid var(--border); 
+      padding: 0.8rem 1.2rem; border-radius: 12px; transition: all var(--tr); min-height: 75px;
+      backdrop-filter: blur(10px);
+    }
+    .sch-slot:hover { border-color: rgba(212,175,55,0.3); transform: translateX(5px); }
+    .sch-time { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: var(--gold); width: 80px; flex-shrink: 0; }
+    .sch-info { flex: 1; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .sch-status { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1.5px; padding: 4px 10px; border-radius: 6px; }
+    .sch-free { color: var(--gray2); font-style: italic; font-size: 0.85rem; }
+    .sch-booked { border-left: 3px solid var(--gold); padding-left: 15px; }
+    .sch-blocked-slot { border-left: 3px solid var(--red); padding-left: 15px; opacity: 0.7; }
+    
+    /* ── Modals ── */
+    .modal-overlay { 
+      position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); 
+      z-index: 1000; display: none; align-items: center; justify-content: center; padding: 1rem;
+    }
+    .modal { 
+      background: #0a0a0f; border: 1px solid var(--border); border-radius: 20px; 
+      width: 100%; max-width: 500px; padding: 2.5rem; position: relative;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    }
+    .modal-head { font-family: 'Bebas Neue'; font-size: 2rem; color: var(--gold); margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+    .m-close { background: none; border: none; color: var(--gray); font-size: 1.5rem; cursor: pointer; }
+    .m-form { display: grid; gap: 1.2rem; }
+    .m-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .m-label { font-size: 0.7rem; text-transform: uppercase; color: var(--gray2); letter-spacing: 1px; }
+    .m-input { 
+      background: var(--surface); border: 1px solid var(--border); color: #fff; padding: 0.8rem; 
+      border-radius: 8px; font-family: inherit; outline: none; transition: border-color 0.3s;
+    }
+    .m-input:focus { border-color: var(--gold); }
+
+    
+    /* ── Schedule Timeline ── */
+    .sch-wrap { padding: 1.5rem; max-width: 900px; margin: 0 auto; }
+    .sch-day-nav { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; background: var(--surface); padding: 1rem; border-radius: 12px; border: 1px solid var(--border); }
+    .sch-grid { display: flex; flex-direction: column; gap: 12px; }
+    .sch-slot { 
+      display: flex; align-items: center; background: var(--surface); border: 1px solid var(--border); 
+      padding: 0.8rem 1.2rem; border-radius: 12px; transition: all var(--tr); min-height: 75px;
+      backdrop-filter: blur(10px);
+    }
+    .sch-slot:hover { border-color: rgba(212,175,55,0.3); transform: translateX(5px); }
+    .sch-time { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: var(--gold); width: 80px; flex-shrink: 0; }
+    .sch-info { flex: 1; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .sch-status { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1.5px; padding: 4px 10px; border-radius: 6px; }
+    .sch-free { color: var(--gray2); font-style: italic; font-size: 0.85rem; }
+    .sch-booked { border-left: 3px solid var(--gold); padding-left: 15px; }
+    .sch-blocked { border-left: 3px solid var(--red); padding-left: 15px; opacity: 0.7; }
+    
+    /* ── Modals ── */
+    .modal-overlay { 
+      position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); 
+      z-index: 1000; display: none; align-items: center; justify-content: center; padding: 1rem;
+    }
+    .modal { 
+      background: #0a0a0f; border: 1px solid var(--border); border-radius: 20px; 
+      width: 100%; max-width: 500px; padding: 2.5rem; position: relative;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    }
+    .modal-head { font-family: 'Bebas Neue'; font-size: 2rem; color: var(--gold); margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+    .m-close { background: none; border: none; color: var(--gray); font-size: 1.5rem; cursor: pointer; }
+    .m-form { display: grid; gap: 1.2rem; }
+    .m-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .m-label { font-size: 0.7rem; text-transform: uppercase; color: var(--gray2); letter-spacing: 1px; }
+    .m-input { 
+      background: var(--surface); border: 1px solid var(--border); color: #fff; padding: 0.8rem; 
+      border-radius: 8px; font-family: inherit; outline: none; transition: border-color 0.3s;
+    }
+    .m-input:focus { border-color: var(--gold); }
+
 
     /* Filters */
     .filters {
@@ -405,15 +483,32 @@
 
   <!-- Tabs -->
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('termine', this)">Termine</button>
-    <button class="tab-btn" onclick="switchTab('kunden', this)">Kunden</button>
-    <button class="tab-btn" onclick="switchTab('fotos', this)">Fotos</button>
-    <button class="tab-btn" onclick="switchTab('zeiten', this)">Öffnungszeiten</button>
-    <button class="tab-btn" onclick="switchTab('sperren', this)">Datum sperren</button>
+    <button class="tab-btn active" onclick="switchTab('zeitplan', this)">📅 Zeitplan</button>
+    <button class="tab-btn" onclick="switchTab('termine', this)">📋 Buchungen</button>
+    <button class="tab-btn" onclick="switchTab('kunden', this)">👤 Kunden</button>
+    <button class="tab-btn" onclick="switchTab('fotos', this)">📷 Portfolio</button>
+    <button class="tab-btn" onclick="switchTab('zeiten', this)">⚙️ Öffnungszeiten</button>
+    <button class="tab-btn" onclick="switchTab('sperren', this)">🚫 Datum sperren</button>
+  </div>
+
+  <!-- ── ZEITPLAN TAB ── -->
+  <div id="tab-zeitplan" class="tab-panel active">
+    <div class="sch-wrap">
+      <div class="sch-day-nav">
+        <input type="date" id="schDate" class="m-input" style="width:165px">
+        <button class="btn btn-gold" onclick="loadSchedule()">Anzeigen</button>
+        <div style="flex:1"></div>
+        <button class="btn btn-blue" onclick="openModal('bookModal')">+ Neue Buchung</button>
+      </div>
+      <div id="schList" class="sch-grid">
+         <!-- Slots injected here -->
+         <div style="text-align:center;padding:5rem;color:var(--gray2)">Datum wählen, um Zeitplan zu sehen</div>
+      </div>
+    </div>
   </div>
 
   <!-- ── TERMINE TAB ── -->
-  <div id="tab-termine" class="tab-panel active">
+  <div id="tab-termine" class="tab-panel">
     <div class="filters">
       <input type="text" id="fSearch" placeholder="🔍 Name oder Telefon" oninput="debounce(loadTermine)" style="width:180px">
       <input type="date" id="fDate" onchange="loadTermine()">
@@ -531,6 +626,70 @@
 </div>
 <div class="m-overlay" id="cdOverlay" onclick="closeCd()" style="position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:199;display:none"></div>
 
+  <!-- ── Modals ── -->
+  <div id="bookModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-head">
+        <span>Neue Buchung</span>
+        <button class="m-close" onclick="closeModal('bookModal')">✕</button>
+      </div>
+      <div class="m-form">
+        <div class="m-group">
+          <label class="m-label">Name</label>
+          <input type="text" id="bmName" class="m-input" placeholder="Z.B. Max Mustermann">
+        </div>
+        <div class="m-group">
+          <label class="m-label">Telefon</label>
+          <input type="text" id="bmPhone" class="m-input" placeholder="+49...">
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="m-group">
+            <label class="m-label">Datum</label>
+            <input type="date" id="bmDate" class="m-input">
+          </div>
+          <div class="m-group">
+            <label class="m-label">Zeit</label>
+             <input type="time" id="bmTime" class="m-input">
+          </div>
+        </div>
+        <div class="m-group">
+          <label class="m-label">Service</label>
+          <select id="bmService" class="m-input">
+            <option value="Haarschnitt|35">Haarschnitt (35€)</option>
+            <option value="Bartpflege|20">Bartpflege (20€)</option>
+            <option value="Haarschnitt & Bart|50">Full Service (50€)</option>
+          </select>
+        </div>
+        <div class="m-group">
+          <label class="m-label">Kommentar</label>
+          <input type="text" id="bmComment" class="m-input" placeholder="Optional...">
+        </div>
+        <button class="btn btn-gold btn-full" onclick="saveManualBooking()">Buchung erstellen</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="rescheduleModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-head">
+        <span>Termin verschieben</span>
+        <button class="m-close" onclick="closeModal('rescheduleModal')">✕</button>
+      </div>
+      <div class="m-form">
+        <input type="hidden" id="rsId">
+        <div class="m-group">
+          <label class="m-label">Neues Datum</label>
+          <input type="date" id="rsDate" class="m-input">
+        </div>
+        <div class="m-group">
+          <label class="m-label">Neue Zeit</label>
+          <input type="time" id="rsTime" class="m-input">
+        </div>
+        <button class="btn btn-gold btn-full" onclick="saveReschedule()">Verschieben</button>
+      </div>
+    </div>
+  </div>
+
 <div id="toast"></div>
 
 <script>
@@ -602,6 +761,93 @@ async function loadStats() {
   $('s-clients').textContent = d.clients;
   $('s-rev-d').textContent   = d.rev_today + '€';
   $('s-rev-m').textContent   = d.rev_month + '€';
+  
+  // Set default date for schedule
+  if (!document.getElementById('schDate').value) {
+    document.getElementById('schDate').value = new Date().toISOString().split('T')[0];
+    loadSchedule();
+  }
+}
+
+// ── Schedule Logic ────────────────────────────────────
+async function loadSchedule() {
+  const dateStr = document.getElementById('schDate').value;
+  if (!dateStr) return;
+  const list = document.getElementById('schList');
+  list.innerHTML = '<div class="spinner"></div>';
+  const r = await fetch(`/api/slots?date=${dateStr}`);
+  const d = await r.json();
+  if (d.closed) {
+    list.innerHTML = '<div style="text-align:center;padding:5rem;color:var(--gray2)">Geschlossen / Blockiert</div>';
+    return;
+  }
+  
+  // We need to fetch all appointments for this day to show names in schedule
+  const r2 = await fetch(`/api/admin/appointments?date=${dateStr}`);
+  const d2 = await r2.json();
+  const dayApps = d2.appointments || [];
+
+  // Generate all possible slots from 08:00 to 21:00 (broad range) or use working hours
+  // Let's use the slots returned by the API + booked/blocked slots
+  const allSlots = Array.from(new Set([...d.slots, ...d.booked, ...d.blocked])).sort();
+
+  list.innerHTML = allSlots.map(time => {
+    const app = dayApps.find(a => a.time === time);
+    const isBlocked = d.blocked.includes(time);
+    let html = '';
+    if (app) {
+      html = `
+        <div class="sch-slot sch-booked">
+          <div class="sch-time">${time}</div>
+          <div class="sch-info">
+            <div>
+              <div class="tname">${esc(app.name)}</div>
+              <div class="tsub">${esc(app.service)} · ${app.status}</div>
+            </div>
+            <div class="act-row">
+               <button class="btn btn-sm btn-ghost" onclick="openReschedule(${app.id},'${app.date}','${app.time}')">🕒</button>
+               <button class="btn btn-sm btn-red" onclick="setStatus(${app.id},'cancelled')">✕</button>
+            </div>
+          </div>
+        </div>`;
+    } else if (isBlocked) {
+      html = `
+        <div class="sch-slot sch-blocked-slot">
+          <div class="sch-time">${time}</div>
+          <div class="sch-info">
+            <div class="sch-free">Blockiert / Pause</div>
+            <button class="btn btn-sm btn-ghost" onclick="unblockSlot('${dateStr}','${time}')">Freigeben</button>
+          </div>
+        </div>`;
+    } else {
+      html = `
+        <div class="sch-slot">
+          <div class="sch-time">${time}</div>
+          <div class="sch-info">
+            <div class="sch-free">Frei</div>
+            <div class="act-row">
+              <button class="btn btn-sm btn-ghost" onclick="blockSlot('${dateStr}','${time}')">Sperren</button>
+              <button class="btn btn-sm btn-gold" onclick="openQuickBook('${dateStr}','${time}')">+ Buchen</button>
+            </div>
+          </div>
+        </div>`;
+    }
+    return html;
+  }).join('');
+}
+async function blockSlot(date, time) {
+  const r = await fetch('/api/admin/block-slots', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({date, times:[time]})
+  });
+  if ((await r.json()).success) { toast('Slot blockiert'); loadSchedule(); }
+}
+async function unblockSlot(date, time) {
+  const r = await fetch('/api/admin/block-slots', {
+    method: 'DELETE', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({date, times:[time]})
+  });
+  if ((await r.json()).success) { toast('Slot freigegeben'); loadSchedule(); }
 }
 
 // ── Tabs ───────────────────────────────────────────────
@@ -640,7 +886,9 @@ function renderTermine(list) {
   const badge = s => ({
     pending:   '<span class="badge badge-p">Ausstehend</span>',
     confirmed: '<span class="badge badge-c">Bestätigt</span>',
+    completed: '<span class="badge badge-c" style="background:rgba(34,197,94,.1);color:var(--green)">Abgeschlossen</span>',
     cancelled: '<span class="badge badge-x">Abgesagt</span>',
+    deleted:   '<span class="badge badge-x" style="opacity:0.5">Gelöscht</span>',
   }[s] || s);
 
   body.innerHTML = list.map(a => {
@@ -650,10 +898,15 @@ function renderTermine(list) {
       acts.push(`<button class="btn btn-sm btn-red" onclick="setStatus(${a.id},'cancelled')">✕</button>`);
     }
     if (a.status==='confirmed') {
-      acts.push(`<button class="btn btn-sm btn-red" onclick="setStatus(${a.id},'cancelled')">✕</button>`);
+      acts.push(`<button class="btn btn-sm btn-green" title="Abschließen" onclick="setStatus(${a.id},'completed')">✓</button>`);
+      acts.push(`<button class="btn btn-sm btn-ghost" title="Reschedule" onclick="openReschedule(${a.id},'${a.date}','${a.time}')">🕒</button>`);
+      acts.push(`<button class="btn btn-sm btn-red" title="Cancel" onclick="setStatus(${a.id},'cancelled')">✕</button>`);
     }
-    if (a.status!=='cancelled') {
+    if (a.status!=='cancelled' && a.status!=='deleted') {
       acts.push(`<button class="btn btn-sm btn-blue" onclick="remind(${a.id})">📱</button>`);
+    }
+    if (a.status==='cancelled' || a.status==='completed') {
+      acts.push(`<button class="btn btn-sm btn-red" style="opacity:0.4" title="Delete" onclick="setStatus(${a.id},'deleted')">🗑</button>`);
     }
     const contact = [
       a.email ? `<div class="tsub">${esc(a.email)}</div>` : '',
@@ -811,6 +1064,59 @@ function clearFilters() {
     if (el) el.value = '';
   });
   loadTermine();
+}
+
+// ── Modals JS ──────────────────────────────────────────
+function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+function openQuickBook(date, time) {
+  document.getElementById('bmDate').value = date;
+  document.getElementById('bmTime').value = time;
+  openModal('bookModal');
+}
+async function saveManualBooking() {
+  const data = {
+    name: $('bmName').value,
+    phone: $('bmPhone').value,
+    date: $('bmDate').value,
+    time: $('bmTime').value,
+    service: $('bmService').value,
+    comment: $('bmComment').value
+  };
+  if(!data.name || !data.phone) return toast('Name/Telefon fehlt', 'err');
+  const r = await fetch('/api/book', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(data)
+  });
+  const d = await r.json();
+  if(d.success) {
+    toast('✓ Buchung erstellt'); closeModal('bookModal');
+    loadSchedule(); loadTermine(); loadStats();
+  } else toast(d.error, 'err');
+}
+
+function openReschedule(id, date, time) {
+  document.getElementById('rsId').value = id;
+  document.getElementById('rsDate').value = date;
+  document.getElementById('rsTime').value = time;
+  openModal('rescheduleModal');
+}
+async function saveReschedule() {
+  const data = {
+    id: $('rsId').value,
+    date: $('rsDate').value,
+    time: $('rsTime').value
+  };
+  const r = await fetch('/api/admin/appointments/reschedule', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(data)
+  });
+  const d = await r.json();
+  if(d.success) {
+    toast('✓ Termin verschoben'); closeModal('rescheduleModal');
+    loadSchedule(); loadTermine();
+  } else toast(d.error, 'err');
 }
 
 // ── Utils ────────────────────────────────────────────────

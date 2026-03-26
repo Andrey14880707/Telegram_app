@@ -108,6 +108,15 @@ def init_db():
             close_hour INTEGER DEFAULT 20
         )
     ''')
+    conn.execute('''
+        CREATE TABLE IF NOT EXISTS blocked_slots (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            date TEXT NOT NULL,
+            time TEXT NOT NULL,
+            reason TEXT DEFAULT '',
+            UNIQUE(date, time)
+        )
+    ''')
     # Insert default hours if table is empty
     if conn.execute('SELECT COUNT(*) FROM working_hours').fetchone()[0] == 0:
         defaults = [
@@ -323,26 +332,44 @@ def get_slots():
             m, h = 0, h + 1
 
     conn = get_db()
-    # Check manual block
+    # Check full day block
     if conn.execute("SELECT id FROM blocked_dates WHERE date=?", (date_str,)).fetchone():
         conn.close()
         return jsonify({'slots': [], 'closed': True})
+
+    # Get bookings
     booked = {r['time'] for r in conn.execute(
-        "SELECT time FROM appointments WHERE date=? AND status!='cancelled'", (date_str,)
+        "SELECT time FROM appointments WHERE date=? AND status NOT IN ('cancelled', 'deleted')", (date_str,)
     ).fetchall()}
+
+    # Get blocked slots
+    blocked_s = {r['time'] for r in conn.execute(
+        "SELECT time FROM appointments WHERE date=? AND status='blocked'", (date_str,)
+    ).fetchall()}
+    # Also check the new blocked_slots table
+    blocked_s.update({r['time'] for r in conn.execute(
+        "SELECT time FROM blocked_slots WHERE date=?", (date_str,)
+    ).fetchall()})
+
     conn.close()
 
     now = datetime.now()
     available = []
     for slot in all_slots:
-        if slot in booked:
+        if slot in booked or slot in blocked_s:
             continue
+        # If today, hide past slots
         if date_str == now.strftime('%Y-%m-%d'):
-            if datetime.strptime(f'{date_str} {slot}', '%Y-%m-%d %H:%M') <= now + timedelta(minutes=30):
+            if datetime.strptime(f'{date_str} {slot}', '%Y-%m-%d %H:%M') <= now + timedelta(minutes=15):
                 continue
         available.append(slot)
 
-    return jsonify({'slots': available, 'booked': sorted(booked), 'closed': False})
+    return jsonify({
+        'slots': available,
+        'booked': sorted(list(booked)),
+        'blocked': sorted(list(blocked_s)),
+        'closed': False
+    })
 
 
 @app.route('/api/availability')
@@ -511,7 +538,7 @@ def patch_appointment(apt_id):
         return jsonify({'error': 'Unauthorized'}), 401
     data = request.get_json() or {}
     new_status = data.get('status')
-    if new_status not in ('pending', 'confirmed', 'cancelled'):
+    if new_status not in ('pending', 'confirmed', 'cancelled', 'completed', 'deleted'):
         return jsonify({'error': 'Invalid status'})
 
     conn = get_db()
@@ -541,6 +568,73 @@ def patch_appointment(apt_id):
                 f"📅 {row['date']} · ⏰ {row['time']}\n"
                 f"💈 {row['service']} — {row['price']}€\n\nBis dann! ✂"
             )
+    conn.close()
+    return jsonify({'success': True})
+
+
+@app.route('/api/admin/appointments/reschedule', methods=['POST'])
+def reschedule():
+    if not session.get('admin'):
+        return jsonify({'error': 'Unauthorized'}), 401
+    data = request.get_json() or {}
+    apt_id = data.get('id')
+    new_date = data.get('date')
+    new_time = data.get('time')
+
+    if not all([apt_id, new_date, new_time]):
+        return jsonify({'success': False, 'error': 'Fehlende Daten'})
+
+    conn = get_db()
+    # Check if slot is taken
+    conflict = conn.execute(
+        "SELECT id FROM appointments WHERE date=? AND time=? AND status NOT IN ('cancelled', 'deleted') AND id!=?",
+        (new_date, new_time, apt_id)
+    ).fetchone()
+    if conflict:
+        conn.close()
+        return jsonify({'success': False, 'error': 'Dieser Slot ist bereits belegt'})
+
+    conn.execute('UPDATE appointments SET date=?, time=? WHERE id=?', (new_date, new_time, apt_id))
+    conn.commit()
+    conn.close()
+    return jsonify({'success': True})
+
+
+@app.route('/api/admin/block-slots', methods=['POST'])
+def block_slots():
+    if not session.get('admin'):
+        return jsonify({'error': 'Unauthorized'}), 401
+    data = request.get_json() or {}
+    date_str = data.get('date')
+    times = data.get('times', []) # List of times like ["10:00", "10:30"]
+    reason = data.get('reason', 'Blockiert')
+
+    if not date_str or not times:
+        return jsonify({'success': False, 'error': 'Datum/Uhrzeit fehlt'})
+
+    conn = get_db()
+    for t in times:
+        try:
+            conn.execute('INSERT INTO blocked_slots (date, time, reason) VALUES (?, ?, ?)', (date_str, t, reason))
+        except sqlite3.IntegrityError:
+            pass
+    conn.commit()
+    conn.close()
+    return jsonify({'success': True})
+
+
+@app.route('/api/admin/block-slots', methods=['DELETE'])
+def unblock_slots():
+    if not session.get('admin'):
+        return jsonify({'error': 'Unauthorized'}), 401
+    data = request.get_json() or {}
+    date_str = data.get('date')
+    times = data.get('times', [])
+
+    conn = get_db()
+    for t in times:
+        conn.execute('DELETE FROM blocked_slots WHERE date=? AND time=?', (date_str, t))
+    conn.commit()
     conn.close()
     return jsonify({'success': True})
 
