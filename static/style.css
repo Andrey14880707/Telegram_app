@@ -88,33 +88,28 @@ em { font-style: italic; color: var(--gold); }
   100%{ transform: translate(0,0); }
 }
 
-/* ══ CURSOR ══════════════════════════════════════════ */
-.cursor {
-  position: fixed; top: 0; left: 0;
-  width: 8px; height: 8px;
-  background: var(--gold);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 10000;
-  transform: translate(-50%,-50%);
-  transition: transform .08s ease;
-  mix-blend-mode: difference;
+/* ══ CURSOR — только на десктопе с мышью ════════════ */
+.cursor, .cursor-ring { display: none; }
+@media (hover: hover) and (pointer: fine) {
+  .cursor {
+    display: block;
+    position: fixed; top: 0; left: 0;
+    width: 8px; height: 8px;
+    background: var(--gold); border-radius: 50%;
+    pointer-events: none; z-index: 10000;
+    transform: translate(-50%,-50%);
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    display: block;
+    position: fixed; top: 0; left: 0;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(212,175,55,.5); border-radius: 50%;
+    pointer-events: none; z-index: 9999;
+    transform: translate(-50%,-50%);
+    transition: width .2s ease, height .2s ease;
+  }
 }
-.cursor-ring {
-  position: fixed; top: 0; left: 0;
-  width: 36px; height: 36px;
-  border: 1px solid rgba(212,175,55,.5);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 9999;
-  transform: translate(-50%,-50%);
-  transition: transform .18s ease, width .2s ease, height .2s ease;
-}
-body:has(a:hover, button:hover) .cursor-ring {
-  width: 48px; height: 48px;
-  border-color: var(--gold);
-}
-@media (hover: none) { .cursor, .cursor-ring { display: none; } }
 
 /* ══ NAVBAR ══════════════════════════════════════════ */
 .nav {
