@@ -693,6 +693,7 @@
 <div id="toast"></div>
 
 <script>
+const $ = id => document.getElementById(id);
 // ── Auth ──────────────────────────────────────────────
 async function checkAuth() {
   const r = await fetch('/api/admin/check');
@@ -753,7 +754,6 @@ async function loadStats() {
   const r = await fetch('/api/admin/stats');
   if (!r.ok) return;
   const d = await r.json();
-  const $ = id => document.getElementById(id);
   $('s-today').textContent   = d.today;
   $('s-week').textContent    = d.week;
   $('s-total').textContent   = d.total;
