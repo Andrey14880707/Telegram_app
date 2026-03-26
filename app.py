@@ -25,6 +25,7 @@ SMTP_HOST = os.getenv('SMTP_HOST', 'smtp.gmail.com')
 SMTP_PORT = int(os.getenv('SMTP_PORT', '587'))
 SMTP_USER = os.getenv('SMTP_USER', '')
 SMTP_PASS = os.getenv('SMTP_PASS', '')
+N8N_WEBHOOK = os.getenv('N8N_WEBHOOK', 'https://usteem.app.n8n.cloud/webhook-test/barber-booking')
 DB_PATH   = os.path.join(os.path.dirname(__file__), 'barber.db')
 
 # Optional Google Sheets
@@ -112,6 +113,16 @@ def notify_client(row, text):
         send_email(row['email'], 'München Barber — Termininfo', html)
         sent = True
     return sent
+
+
+def send_to_n8n(payload: dict):
+    """POST booking data to n8n webhook (fire-and-forget)."""
+    if not N8N_WEBHOOK:
+        return
+    try:
+        http_requests.post(N8N_WEBHOOK, json=payload, timeout=8)
+    except Exception as e:
+        print(f'[n8n] {e}')
 
 
 def sync_to_sheets(row_data):
@@ -293,6 +304,24 @@ def book():
             f"💬 {data.get('comment') or '—'}"
         )
 
+    # n8n webhook
+    send_to_n8n({
+        'id':       apt_id,
+        'name':     data['name'],
+        'phone':    data['phone'],
+        'email':    data.get('email', ''),
+        'telegram': data.get('telegram', ''),
+        'service':  service_name,
+        'price':    price,
+        'currency': 'EUR',
+        'date':     data['date'],
+        'time':     data['time'],
+        'comment':  data.get('comment', ''),
+        'status':   'pending',
+        'created_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        'source':   'website',
+    })
+
     # Google Sheets sync
     sync_to_sheets([
         apt_id, data['name'], data['phone'],
@@ -377,8 +406,22 @@ def patch_appointment(apt_id):
     conn.execute('UPDATE appointments SET status=? WHERE id=?', (new_status, apt_id))
     conn.commit()
 
+    row = conn.execute('SELECT * FROM appointments WHERE id=?', (apt_id,)).fetchone()
+    if row:
+        send_to_n8n({
+            'event':    'status_changed',
+            'id':       apt_id,
+            'name':     row['name'],
+            'phone':    row['phone'],
+            'service':  row['service'],
+            'price':    row['price'],
+            'currency': 'EUR',
+            'date':     row['date'],
+            'time':     row['time'],
+            'status':   new_status,
+        })
+
     if new_status == 'confirmed':
-        row = conn.execute('SELECT * FROM appointments WHERE id=?', (apt_id,)).fetchone()
         if row:
             notify_client(row,
                 f"✅ <b>Termin bestätigt!</b>\n\n"
