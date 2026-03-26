@@ -150,6 +150,9 @@
     .tsub { font-size: .72rem; color: var(--gray); }
     .tprice { color: var(--gold); font-weight: 600; }
     .tdt { white-space: nowrap; }
+    .stack-right { display: flex; flex-direction: column; gap: 0.2rem; max-width: 100%; }
+    .stack-right div { word-break: break-word; overflow-wrap: anywhere; }
+    @media (max-width: 768px) { .stack-right { align-items: flex-end; text-align: right; } }
 
     /* ── Kunden cards ── */
     .kunden-grid {
@@ -633,7 +636,7 @@ function renderTermine(list) {
       <td data-label="Preis" class="tprice">${a.price}€</td>
       <td data-label="Datum" class="tdt"><div>${a.date}</div></td>
       <td data-label="Zeit" class="tdt"><div class="tname">${a.time}</div></td>
-      <td data-label="Kontakt"><div>${esc(a.phone)}</div>${contact}</td>
+      <td data-label="Kontakt"><div class="stack-right"><div>${esc(a.phone)}</div>${contact}</div></td>
       <td data-label="Status">${badge(a.status)}</td>
       <td data-label="Aktionen"><div class="act-row">${acts.join('')}</div></td>
     </tr>`;
