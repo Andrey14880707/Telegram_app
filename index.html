@@ -2,24 +2,62 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Barber Cyber Lounge</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-    <h1>Welcome!</h1>
-    <button onclick="loginWithTelegram()">Login with Telegram</button>
+    <div class="background-canvas"></div>
+    <div class="noise-overlay"></div>
+
+    <main class="container">
+        <header class="brand">
+            <h1 class="glow-text">NEON<br>BLADE</h1>
+            <p class="subtitle">PREMIUM BARBER LOUNGE</p>
+        </header>
+
+        <section class="glass-card auth-card" id="auth-section">
+            <div class="card-content">
+                <h2>Welcome, Guest</h2>
+                <p>Book your next aesthetic upgrade.</p>
+                <button class="glass-btn primary" onclick="loginWithTelegram()">
+                    <span class="btn-text">Authenticate Access</span>
+                    <div class="btn-glow"></div>
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <div class="floating-controls">
+        <button class="glass-bubble social-btn" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+        </button>
+        <button class="glass-bubble social-btn" aria-label="Location">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+        </button>
+    </div>
+
     <script>
+        // Init Telegram WebApp
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.ready();
+            window.Telegram.WebApp.expand();
+        }
+
         function loginWithTelegram() {
-            const botToken = "7249695336:AAFELK_6plwS7pt2G9QvoS8BFjZ1LYIZADM";
             const botUsername = "CondomCoin_bot";
-            window.Telegram.WebApp.auth({
-                bot_username: botUsername,
-                request_access: true,
-                auth_url: "https://andrey14880707.github.io/Telegram_app"
-            });
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData) {
+                window.Telegram.WebApp.auth({
+                    bot_username: botUsername,
+                    request_access: true,
+                    auth_url: "https://andrey14880707.github.io/Telegram_app"
+                });
+            } else {
+                alert("Please open this seamless web app inside Telegram to authenticate.");
+            }
         }
     </script>
 </body>
 </html>
-
