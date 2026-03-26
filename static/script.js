@@ -8,7 +8,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const pl   = document.getElementById('preloader');
   if (!pl) return;
   if (fill) fill.style.width = '100%';
-  setTimeout(() => pl.classList.add('out'), 1800);
+  setTimeout(() => pl.classList.add('out'), 1200);
 });
 
 // ── Custom Cursor ────────────────────────────────────
