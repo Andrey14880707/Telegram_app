@@ -308,7 +308,7 @@ body:has(a:hover, button:hover) .cursor-ring {
 }
 .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
 
-/* Clock */
+/* Clock — desktop (absolute) */
 .hero-clock {
   position: absolute; top: 8rem; right: 5vw;
   text-align: right; z-index: 1;
@@ -327,6 +327,37 @@ body:has(a:hover, button:hover) .cursor-ring {
   text-transform: uppercase;
   margin-top: .3rem;
 }
+/* Clock — mobile (inline, hidden on desktop) */
+.hero-clock-inline {
+  display: none;
+  align-items: center; gap: .75rem;
+  margin-bottom: 1.25rem;
+}
+.hci-time {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.6rem;
+  letter-spacing: 3px;
+  color: var(--gold);
+  line-height: 1;
+}
+.hci-label {
+  font-size: .6rem;
+  letter-spacing: 2px;
+  color: var(--gray2);
+  text-transform: uppercase;
+}
+/* Social pill buttons */
+.btn-social-pill {
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .6rem 1.2rem;
+  border: 1px solid var(--border2);
+  font-size: .78rem;
+  letter-spacing: .5px;
+  color: var(--gray);
+  transition: all var(--tr);
+  border-radius: 50px;
+}
+.btn-social-pill:hover { border-color: var(--gold); color: var(--gold); }
 /* Scroll cue */
 .hero-scroll {
   position: absolute; bottom: 3rem; left: 5vw;
@@ -405,64 +436,123 @@ body:has(a:hover, button:hover) .cursor-ring {
 }
 
 /* ══ WORK ════════════════════════════════════════════ */
-.work-head { margin-bottom: 3rem; }
-.work-head-row { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+.work-head { margin-bottom: 2.5rem; }
+.work-head-row {
+  display: flex; align-items: flex-end;
+  justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+}
 .work-head-row h2 { margin-top: .5rem; }
+
+/* Grid — desktop: masonry 3 cols */
 .work-grid {
   columns: 3;
-  column-gap: 3px;
+  column-gap: 4px;
 }
 .wc {
   break-inside: avoid;
-  margin-bottom: 3px;
+  margin-bottom: 4px;
   background: var(--g, var(--surface));
   position: relative;
   overflow: hidden;
   cursor: pointer;
   display: block;
+  transition: transform var(--tr);
 }
-/* Heights per card */
-.wc:nth-child(1) { height: 260px; }
-.wc:nth-child(2) { height: 380px; }
-.wc:nth-child(3) { height: 300px; }
-.wc:nth-child(4) { height: 320px; }
-.wc:nth-child(5) { height: 260px; }
-.wc:nth-child(6) { height: 360px; }
-.wc::before {
-  content: '';
+.wc:hover { transform: scale(1.01); z-index: 1; }
+
+/* Heights per position */
+.wc:nth-child(1) { height: 240px; }
+.wc:nth-child(2) { height: 360px; }
+.wc:nth-child(3) { height: 280px; }
+.wc:nth-child(4) { height: 340px; }
+.wc:nth-child(5) { height: 240px; }
+.wc:nth-child(6) { height: 300px; }
+
+/* Diagonal stripe pattern */
+.wc-stripe {
   position: absolute; inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,.8) 0%, transparent 60%);
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent 0, transparent 12px,
+    rgba(212,175,55,.025) 12px, rgba(212,175,55,.025) 13px
+  );
 }
-.wc-n {
-  position: absolute; top: 1.5rem; left: 1.5rem;
+/* Big faded icon */
+.wc-ico-bg {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -55%);
+  font-size: 6rem;
+  opacity: .07;
+  filter: grayscale(1);
+  pointer-events: none;
+  user-select: none;
+}
+/* Price badge */
+.wc-price-tag {
+  position: absolute; top: 1.1rem; right: 1.1rem;
+  background: var(--gold);
+  color: #000;
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 3rem; line-height: 1;
-  color: rgba(212,175,55,.15);
+  font-size: 1rem;
+  letter-spacing: 1px;
+  padding: .2rem .6rem;
+}
+/* "TOP" / "BELIEBT" label */
+.wc-label-top {
+  position: absolute; top: 1.1rem; left: 1.1rem;
+  font-size: .6rem; font-weight: 700;
   letter-spacing: 2px;
+  color: var(--gold);
+  border: 1px solid rgba(212,175,55,.4);
+  padding: .2rem .5rem;
+}
+/* Bottom info */
+.wc-bottom {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 2.5rem 1.25rem 1.25rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.88));
+  display: flex; flex-direction: column; gap: .1rem;
 }
 .wc-t {
-  position: absolute; bottom: 1.5rem; left: 1.5rem;
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.4rem; letter-spacing: 2px;
+  font-size: 1.5rem;
+  letter-spacing: 2px;
   color: var(--white);
+  line-height: 1;
   transition: color var(--tr);
 }
-.wc-h {
+.wc-sub {
+  font-size: .7rem;
+  color: var(--gray2);
+  letter-spacing: 1px;
+}
+/* Hover overlay */
+.wc-overlay {
   position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: center;
-  background: rgba(212,175,55,.08);
+  background: rgba(212,175,55,.1);
+  backdrop-filter: blur(2px);
+  color: var(--gold);
+  font-size: .8rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
   opacity: 0;
   transition: opacity var(--tr);
 }
-.wc-h a {
-  font-size: .85rem; letter-spacing: 2px;
-  color: var(--gold); text-transform: uppercase;
-}
-.wc:hover .wc-h { opacity: 1; }
+.wc:hover .wc-overlay { opacity: 1; }
 .wc:hover .wc-t { color: var(--gold); }
-.work-note { margin-top: 2rem; font-size: .85rem; color: var(--gray2); }
-.work-note a { color: var(--gold); transition: opacity var(--tr); }
-.work-note a:hover { opacity: .7; }
+
+/* Instagram CTA below grid */
+.work-ig-cta {
+  margin-top: 2.5rem;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 1rem;
+  padding: 1.5rem 2rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+.work-ig-cta p { font-size: .9rem; color: var(--gray); }
 
 /* ══ SERVICES + PRICES ═══════════════════════════════ */
 .sp-wrap {
@@ -695,33 +785,113 @@ body:has(a:hover, button:hover) .cursor-ring {
 }
 
 /* ══ RESPONSIVE ══════════════════════════════════════ */
+
+/* ── Tablet ≤1024px ── */
 @media (max-width: 1024px) {
   .about-grid { grid-template-columns: 1fr; gap: 3rem; }
-  .about-nums { border-right: none; border-bottom: 1px solid var(--border); padding-right: 0; padding-bottom: 2rem; display: flex; gap: 0; }
-  .bstat { flex: 1; text-align: center; padding: 1.5rem; }
+  .about-nums {
+    border-right: none; border-bottom: 1px solid var(--border);
+    padding-right: 0; padding-bottom: 2rem;
+    display: grid; grid-template-columns: 1fr 1px 1fr 1px 1fr; gap: 0;
+  }
+  .bstat { text-align: center; padding: 1.5rem .5rem; }
   .bstat-line { width: 1px; height: auto; }
-  .sp-wrap { grid-template-columns: 1fr; gap: 4rem; }
+  .sp-wrap { grid-template-columns: 1fr; gap: 3rem; }
   .price-col { position: static; }
-  .bk-wrap { grid-template-columns: 1fr; gap: 3rem; }
+  .bk-wrap { grid-template-columns: 1fr; gap: 2.5rem; }
 }
+
+/* ── Mobile ≤768px ── */
 @media (max-width: 768px) {
-  .nav-links { display: none; }
-  .nav-soc { display: none; }
+  /* Nav */
+  .nav-links, .nav-soc { display: none; }
   .nav-burger { display: flex; }
-  .hero-clock { top: 6rem; }
-  .work-grid { columns: 2; }
-  .wc:nth-child(5), .wc:nth-child(6) { display: none; }
-  .soc-cards { grid-template-columns: 1fr; }
-  .bf-row { grid-template-columns: 1fr; }
-  .bk-form { padding: 1.5rem; }
-  .ft-top { flex-direction: column; gap: 2rem; }
-  .ft-soc { margin-left: 0; }
-}
-@media (max-width: 480px) {
-  .con { padding: 0 1.2rem; }
-  .sec { padding: 4.5rem 0; }
+  .nav-c { padding: 0 1.25rem; }
+
+  /* Hero */
+  .hero { padding: 0 1.25rem; min-height: 100svh; justify-content: center; }
+  .hero-body { padding-top: 4.5rem; padding-bottom: 4rem; }
+  .hero-clock { display: none; }                  /* скрыть абсолютный */
+  .hero-clock-inline { display: flex; }           /* показать инлайн */
   .hero-bg-text { display: none; }
   .hero-scroll { display: none; }
+  .hero-meta { font-size: .6rem; gap: .4rem; flex-wrap: wrap; }
+  .hero-title { font-size: clamp(3.2rem, 17vw, 6rem); }
+  .hero-tag { font-size: .95rem; }
+  .hero-cta { flex-wrap: wrap; gap: .75rem; }
+  .btn-primary { width: 100%; justify-content: center; }
+  .btn-social-pill { flex: 1; justify-content: center; }
+
+  /* Sections */
+  .sec { padding: 4rem 0; }
+
+  /* About stats — 3 columns compact */
+  .about-txt h2 { font-size: 1.9rem; }
+  .bnum { font-size: 2.5rem; }
+  .blbl { font-size: .58rem; }
+
+  /* Work grid — 2 cols, equal heights */
+  .work-grid { columns: 2; column-gap: 3px; }
+  .wc:nth-child(1) { height: 190px; }
+  .wc:nth-child(2) { height: 190px; }
+  .wc:nth-child(3) { height: 190px; }
+  .wc:nth-child(4) { height: 190px; }
+  .wc:nth-child(5) { height: 190px; }
+  .wc:nth-child(6) { height: 190px; }
+  .wc-ico-bg { font-size: 4rem; }
+  .work-ig-cta { flex-direction: column; text-align: center; }
+  .work-ig-cta .btn-primary { width: 100%; justify-content: center; }
+
+  /* Services */
+  .svc-item { padding: 1rem 0; }
+
+  /* Prices */
+  .pm { font-size: .82rem; padding: .75rem 1rem; }
+  .price-col .btn-primary { width: 100%; justify-content: center; }
+
+  /* Booking */
+  .bf-row { grid-template-columns: 1fr; }
+  .bk-form { padding: 1.25rem; }
+  .bk-info h2 { font-size: 1.9rem; }
+
+  /* Social */
+  .soc-cards { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
+
+  /* Footer */
+  .ft-top { flex-direction: column; gap: 1.5rem; }
+  .ft-soc { margin-left: 0; }
+  .ft-bottom { flex-direction: column; gap: .4rem; text-align: center; }
+}
+
+/* ── Small phones ≤480px ── */
+@media (max-width: 480px) {
+  .con { padding: 0 1rem; }
+  .sec { padding: 3rem 0; }
+
+  /* Hero */
+  .hero-title { font-size: clamp(2.8rem, 19vw, 4.5rem); }
+  .hci-time { font-size: 1.3rem; }
+
+  /* About stats — vertical */
+  .about-nums {
+    display: flex; flex-direction: column;
+    border-bottom: 1px solid var(--border);
+  }
+  .bstat { padding: 1rem 0; text-align: left; border-bottom: 1px solid var(--border); }
+  .bstat:last-child { border-bottom: none; }
+  .bstat-line { display: none; }
+  .bnum { font-size: 2.2rem; }
+
+  /* Work grid — 1 col on very small */
   .work-grid { columns: 1; }
-  .wc:nth-child(5), .wc:nth-child(6) { display: block; }
+  .wc:nth-child(n) { height: 180px; }
+
+  /* Prices table */
+  .pm { grid-template-columns: 1fr auto; }
+  .pmdots { display: none; }
+
+  /* Social */
+  .soc-cards { max-width: 100%; }
+  .soc-card { padding: 2.5rem 1.5rem; }
+  .eyebrow { font-size: .62rem; letter-spacing: 2px; }
 }
