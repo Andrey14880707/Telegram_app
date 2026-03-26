@@ -177,11 +177,74 @@
     #toast.ok  { border-color: var(--green); color: var(--green); }
     #toast.err { border-color: var(--red);   color: var(--red); }
 
+    /* ── Mobile / photo grid / hours / blocked ── */
+    .ph-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap: 1rem; padding: 1.5rem; }
+    .ph-card { position: relative; aspect-ratio: 3/4; overflow: hidden; border: 1px solid var(--border); background: var(--card); }
+    .ph-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .ph-card-cap { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,.7); font-size: .72rem; padding: .4rem .6rem; color: var(--text); }
+    .ph-del { position: absolute; top: .4rem; right: .4rem; background: rgba(239,68,68,.85); border: none; color: #fff; width: 28px; height: 28px; cursor: pointer; font-size: .9rem; display: flex; align-items: center; justify-content: center; }
+    .ph-upload { padding: 1.5rem; border-bottom: 1px solid var(--border); display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end; }
+    .ph-upload input[type=file] { display: none; }
+    .ph-upload label.btn { cursor: pointer; }
+    .ph-upload input[type=text] { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: .55rem .9rem; font-family: inherit; font-size: .82rem; outline: none; width: 220px; }
+    .ph-upload input[type=text]:focus { border-color: var(--gold); }
+    .ph-empty { padding: 3rem; text-align: center; color: var(--gray2); font-size: .85rem; }
+
+    .hours-table { padding: 1.5rem; max-width: 500px; }
+    .hr-row { display: grid; grid-template-columns: 80px 1fr 80px 80px; gap: .75rem; align-items: center; margin-bottom: .75rem; }
+    .hr-day { font-size: .75rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--gray); }
+    .hr-toggle { display: flex; align-items: center; gap: .5rem; }
+    .hr-toggle input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--gold); cursor: pointer; }
+    .hr-inp { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: .45rem .6rem; font-family: inherit; font-size: .82rem; width: 100%; outline: none; text-align: center; }
+    .hr-inp:focus { border-color: var(--gold); }
+    .hr-inp:disabled { opacity: .35; }
+    .hr-label { font-size: .65rem; color: var(--gray2); text-align: center; }
+
+    .bl-wrap { padding: 1.5rem; }
+    .bl-add { display: flex; gap: .75rem; flex-wrap: wrap; align-items: flex-end; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+    .bl-add input { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: .55rem .9rem; font-family: inherit; font-size: .82rem; outline: none; }
+    .bl-add input:focus { border-color: var(--gold); }
+    .bl-list { display: flex; flex-direction: column; gap: .5rem; }
+    .bl-item { display: flex; align-items: center; justify-content: space-between; padding: .75rem 1rem; background: var(--card); border: 1px solid var(--border); }
+    .bl-date { font-weight: 500; }
+    .bl-reason { font-size: .78rem; color: var(--gray); }
+
+    /* Tab panel */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* Scrollable tabs on mobile */
     @media (max-width: 768px) {
       .stats { grid-template-columns: repeat(2, 1fr); }
       .cd-panel { width: 100%; }
       .dh-date { display: none; }
       .filters { padding: .75rem 1rem; }
+      .tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .tabs::-webkit-scrollbar { display: none; }
+      .tab-btn { padding: .9rem 1.2rem; font-size: .7rem; white-space: nowrap; flex-shrink: 0; }
+      .dash-head { padding: .75rem 1rem; gap: .75rem; }
+      .dh-logo { font-size: 1rem; letter-spacing: 2px; }
+      .dh-right { gap: .5rem; }
+      .dh-right .btn { padding: .4rem .75rem; font-size: .72rem; }
+      /* Card view for appointment table on mobile */
+      .tbl-wrap { padding: .75rem; }
+      table { min-width: unset; width: 100%; }
+      thead { display: none; }
+      tr { display: block; background: var(--card); border: 1px solid var(--border); margin-bottom: .75rem; padding: .75rem; }
+      td { display: flex; justify-content: space-between; align-items: center; padding: .3rem 0; border: none; font-size: .82rem; }
+      td::before { content: attr(data-label); font-size: .65rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gray2); flex-shrink: 0; margin-right: .5rem; }
+      .ph-grid { grid-template-columns: repeat(auto-fill, minmax(130px,1fr)); gap: .75rem; padding: 1rem; }
+      .hours-table { padding: 1rem; }
+      .hr-row { grid-template-columns: 70px 1fr 65px 65px; gap: .5rem; }
+      .bl-wrap { padding: 1rem; }
+      .ph-upload { padding: 1rem; }
+    }
+    @media (max-width: 480px) {
+      .stats { grid-template-columns: 1fr 1fr; }
+      .stat-c { padding: 1rem; }
+      .stat-c .sv { font-size: 1.6rem; }
+      .hr-row { grid-template-columns: 60px 1fr 58px 58px; gap: .4rem; }
+      .ph-grid { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
@@ -232,10 +295,13 @@
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('termine', this)">Termine</button>
     <button class="tab-btn" onclick="switchTab('kunden', this)">Kunden</button>
+    <button class="tab-btn" onclick="switchTab('fotos', this)">Fotos</button>
+    <button class="tab-btn" onclick="switchTab('zeiten', this)">Öffnungszeiten</button>
+    <button class="tab-btn" onclick="switchTab('sperren', this)">Datum sperren</button>
   </div>
 
   <!-- ── TERMINE TAB ── -->
-  <div id="tab-termine">
+  <div id="tab-termine" class="tab-panel active">
     <div class="filters">
       <input type="text" id="fSearch" placeholder="🔍 Name oder Telefon" oninput="debounce(loadTermine)" style="width:180px">
       <input type="date" id="fDate" onchange="loadTermine()">
@@ -267,7 +333,7 @@
   </div>
 
   <!-- ── KUNDEN TAB ── -->
-  <div id="tab-kunden" style="display:none">
+  <div id="tab-kunden" class="tab-panel">
     <div class="filters">
       <input type="text" id="cSearch" placeholder="🔍 Name oder Telefon" oninput="debounce(loadKunden)" style="width:180px">
       <span class="f-ts" id="cTs">—</span>
@@ -286,6 +352,51 @@
         </thead>
         <tbody id="cBody"><tr><td colspan="8" style="text-align:center;padding:3rem"><div class="spinner"></div></td></tr></tbody>
       </table>
+    </div>
+  </div>
+
+  <!-- ── FOTOS TAB ── -->
+  <div id="tab-fotos" class="tab-panel">
+    <div class="ph-upload">
+      <div>
+        <label class="btn btn-gold" for="photoFile">+ Foto hochladen</label>
+        <input type="file" id="photoFile" accept="image/*" onchange="previewPhoto(this)">
+      </div>
+      <input type="text" id="photoCap" placeholder="Beschriftung (optional)" style="width:200px">
+      <button class="btn btn-ghost" id="photoUploadBtn" onclick="uploadPhoto()" style="display:none">Hochladen</button>
+      <span id="photoPreviewName" style="font-size:.78rem;color:var(--gray);align-self:center"></span>
+    </div>
+    <div id="photoGrid" class="ph-grid"><div class="ph-empty">Noch keine Fotos hochgeladen</div></div>
+  </div>
+
+  <!-- ── ÖFFNUNGSZEITEN TAB ── -->
+  <div id="tab-zeiten" class="tab-panel">
+    <div class="hours-table">
+      <div style="font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--gray2);margin-bottom:1.25rem">Wochentag-Zeiten bearbeiten</div>
+      <div style="display:grid;grid-template-columns:80px 1fr 80px 80px;gap:.75rem;margin-bottom:.5rem">
+        <div class="hr-label">Tag</div><div class="hr-label">Offen</div>
+        <div class="hr-label">Von</div><div class="hr-label">Bis</div>
+      </div>
+      <div id="hoursRows"></div>
+      <button class="btn btn-gold" style="margin-top:1.25rem" onclick="saveHours()">Speichern</button>
+    </div>
+  </div>
+
+  <!-- ── SPERREN TAB ── -->
+  <div id="tab-sperren" class="tab-panel">
+    <div class="bl-wrap">
+      <div class="bl-add">
+        <div>
+          <div class="hr-label" style="margin-bottom:.4rem">Datum</div>
+          <input type="date" id="blDate">
+        </div>
+        <div>
+          <div class="hr-label" style="margin-bottom:.4rem">Grund (optional)</div>
+          <input type="text" id="blReason" placeholder="z.B. Urlaub" style="width:180px">
+        </div>
+        <button class="btn btn-gold" onclick="addBlocked()">Datum sperren</button>
+      </div>
+      <div id="blockedList" class="bl-list"></div>
     </div>
   </div>
 
@@ -335,6 +446,18 @@ function showDash() {
   setInterval(() => { loadStats(); loadTermine(); }, 30000);
 }
 
+// ── Tab switch ──────────────────────────────────────────
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (name === 'kunden')  loadKunden();
+  if (name === 'fotos')   loadPhotos();
+  if (name === 'zeiten')  loadHours();
+  if (name === 'sperren') loadBlocked();
+}
+
 // ── Clock ──────────────────────────────────────────────
 function startClock() {
   const DAYS   = ['So','Mo','Di','Mi','Do','Fr','Sa'];
@@ -364,13 +487,6 @@ async function loadStats() {
 }
 
 // ── Tabs ───────────────────────────────────────────────
-function switchTab(name, btn) {
-  document.getElementById('tab-termine').style.display = name==='termine' ? 'block' : 'none';
-  document.getElementById('tab-kunden').style.display  = name==='kunden'  ? 'block' : 'none';
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  if (name==='kunden') loadKunden();
-}
 
 // ── Termine ────────────────────────────────────────────
 let dTimer;
@@ -426,15 +542,15 @@ function renderTermine(list) {
       a.telegram ? `<div class="tsub">${esc(a.telegram)}</div>` : '',
     ].join('');
     return `<tr>
-      <td style="color:var(--gray2)">${a.id}</td>
-      <td><div class="tname">${esc(a.name)}</div>${a.comment?`<div class="tsub">${esc(a.comment)}</div>`:''}</td>
-      <td>${esc(a.service)}</td>
-      <td class="tprice">${a.price}€</td>
-      <td class="tdt"><div>${a.date}</div></td>
-      <td class="tdt"><div class="tname">${a.time}</div></td>
-      <td><div>${esc(a.phone)}</div>${contact}</td>
-      <td>${badge(a.status)}</td>
-      <td><div class="act-row">${acts.join('')}</div></td>
+      <td data-label="#" style="color:var(--gray2)">${a.id}</td>
+      <td data-label="Kunde"><div class="tname">${esc(a.name)}</div>${a.comment?`<div class="tsub">${esc(a.comment)}</div>`:''}</td>
+      <td data-label="Service">${esc(a.service)}</td>
+      <td data-label="Preis" class="tprice">${a.price}€</td>
+      <td data-label="Datum" class="tdt"><div>${a.date}</div></td>
+      <td data-label="Zeit" class="tdt"><div class="tname">${a.time}</div></td>
+      <td data-label="Kontakt"><div>${esc(a.phone)}</div>${contact}</td>
+      <td data-label="Status">${badge(a.status)}</td>
+      <td data-label="Aktionen"><div class="act-row">${acts.join('')}</div></td>
     </tr>`;
   }).join('');
 }
@@ -557,6 +673,154 @@ function toast(msg, type='ok') {
   el.textContent = msg; el.className = 'show ' + type;
   clearTimeout(toastT);
   toastT = setTimeout(() => el.className = '', 3200);
+}
+
+// ── Photos ────────────────────────────────────────────
+let _photoFile = null;
+function previewPhoto(input) {
+  _photoFile = input.files[0] || null;
+  const btn  = document.getElementById('photoUploadBtn');
+  const name = document.getElementById('photoPreviewName');
+  if (_photoFile) {
+    btn.style.display = 'inline-flex';
+    name.textContent  = _photoFile.name;
+  } else {
+    btn.style.display = 'none';
+    name.textContent  = '';
+  }
+}
+async function uploadPhoto() {
+  if (!_photoFile) return;
+  const btn = document.getElementById('photoUploadBtn');
+  btn.disabled = true; btn.textContent = '…';
+  const fd = new FormData();
+  fd.append('file', _photoFile);
+  fd.append('caption', document.getElementById('photoCap').value.trim());
+  const r = await fetch('/api/admin/photos', {method:'POST', body: fd});
+  const d = await r.json();
+  btn.disabled = false; btn.textContent = 'Hochladen';
+  if (d.success) {
+    toast('✓ Foto hochgeladen', 'ok');
+    document.getElementById('photoFile').value = '';
+    document.getElementById('photoCap').value  = '';
+    _photoFile = null;
+    btn.style.display = 'none';
+    document.getElementById('photoPreviewName').textContent = '';
+    loadPhotos();
+  } else {
+    toast(d.error || 'Fehler', 'err');
+  }
+}
+async function loadPhotos() {
+  const r = await fetch('/api/photos');
+  const d = await r.json();
+  const grid = document.getElementById('photoGrid');
+  if (!d.photos.length) {
+    grid.innerHTML = '<div class="ph-empty">Noch keine Fotos hochgeladen</div>';
+    return;
+  }
+  grid.innerHTML = d.photos.map(p => `
+    <div class="ph-card">
+      <img src="/static/uploads/${esc(p.filename)}" alt="${esc(p.caption)}">
+      ${p.caption ? `<div class="ph-card-cap">${esc(p.caption)}</div>` : ''}
+      <button class="ph-del" onclick="deletePhoto(${p.id})" title="Löschen">✕</button>
+    </div>`).join('');
+}
+async function deletePhoto(id) {
+  if (!confirm('Foto löschen?')) return;
+  const r = await fetch(`/api/admin/photos/${id}`, {method:'DELETE'});
+  const d = await r.json();
+  if (d.success) { toast('Foto gelöscht', 'ok'); loadPhotos(); }
+  else toast('Fehler', 'err');
+}
+
+// ── Working hours ─────────────────────────────────────
+const DAYS_DE = ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'];
+let _hoursData = [];
+async function loadHours() {
+  const r = await fetch('/api/admin/hours');
+  const d = await r.json();
+  _hoursData = d.hours;
+  const cont = document.getElementById('hoursRows');
+  cont.innerHTML = _hoursData.map(h => `
+    <div class="hr-row">
+      <div class="hr-day">${DAYS_DE[h.weekday].slice(0,2)}</div>
+      <div class="hr-toggle">
+        <input type="checkbox" id="hr-open-${h.weekday}" ${h.is_open ? 'checked' : ''}
+          onchange="toggleHrRow(${h.weekday})">
+        <label for="hr-open-${h.weekday}" style="font-size:.78rem;color:var(--gray);cursor:pointer">
+          ${h.is_open ? 'Offen' : 'Zu'}
+        </label>
+      </div>
+      <input type="number" class="hr-inp" id="hr-oh-${h.weekday}" value="${h.open_hour}"
+        min="0" max="23" ${h.is_open ? '' : 'disabled'}>
+      <input type="number" class="hr-inp" id="hr-ch-${h.weekday}" value="${h.close_hour}"
+        min="1" max="24" ${h.is_open ? '' : 'disabled'}>
+    </div>`).join('');
+}
+function toggleHrRow(wd) {
+  const cb  = document.getElementById(`hr-open-${wd}`);
+  const oh  = document.getElementById(`hr-oh-${wd}`);
+  const ch  = document.getElementById(`hr-ch-${wd}`);
+  const lbl = cb.nextElementSibling;
+  oh.disabled = !cb.checked;
+  ch.disabled = !cb.checked;
+  lbl.textContent = cb.checked ? 'Offen' : 'Zu';
+}
+async function saveHours() {
+  const hours = _hoursData.map(h => ({
+    weekday:    h.weekday,
+    is_open:    document.getElementById(`hr-open-${h.weekday}`).checked,
+    open_hour:  parseInt(document.getElementById(`hr-oh-${h.weekday}`).value) || 10,
+    close_hour: parseInt(document.getElementById(`hr-ch-${h.weekday}`).value) || 20,
+  }));
+  const r = await fetch('/api/admin/hours', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({hours})
+  });
+  const d = await r.json();
+  toast(d.success ? '✓ Zeiten gespeichert' : 'Fehler', d.success ? 'ok' : 'err');
+}
+
+// ── Blocked dates ─────────────────────────────────────
+async function loadBlocked() {
+  const r = await fetch('/api/admin/blocked');
+  const d = await r.json();
+  const list = document.getElementById('blockedList');
+  if (!d.blocked.length) {
+    list.innerHTML = '<div style="color:var(--gray2);font-size:.82rem">Keine gesperrten Daten</div>';
+    return;
+  }
+  list.innerHTML = d.blocked.map(b => `
+    <div class="bl-item">
+      <div>
+        <div class="bl-date">${b.date}</div>
+        ${b.reason ? `<div class="bl-reason">${esc(b.reason)}</div>` : ''}
+      </div>
+      <button class="btn btn-sm btn-red" onclick="removeBlocked('${b.date}')">✕ Freigeben</button>
+    </div>`).join('');
+}
+async function addBlocked() {
+  const date   = document.getElementById('blDate').value;
+  const reason = document.getElementById('blReason').value.trim();
+  if (!date) { toast('Bitte Datum wählen', 'err'); return; }
+  const r = await fetch('/api/admin/blocked', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({date, reason})
+  });
+  const d = await r.json();
+  if (d.success) {
+    toast('✓ Datum gesperrt', 'ok');
+    document.getElementById('blDate').value   = '';
+    document.getElementById('blReason').value = '';
+    loadBlocked();
+  } else toast(d.error || 'Fehler', 'err');
+}
+async function removeBlocked(date) {
+  const r = await fetch(`/api/admin/blocked/${date}`, {method:'DELETE'});
+  const d = await r.json();
+  if (d.success) { toast('✓ Datum freigegeben', 'ok'); loadBlocked(); }
+  else toast('Fehler', 'err');
 }
 
 // ── Init ─────────────────────────────────────────────────

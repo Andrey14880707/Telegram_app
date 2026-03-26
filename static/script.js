@@ -130,6 +130,28 @@ const numObs = new IntersectionObserver((entries) => {
 }, { threshold: .3 });
 document.querySelectorAll('.about-nums').forEach(el => numObs.observe(el));
 
+// ── Work photos ───────────────────────────────────────
+(async function loadWorkPhotos() {
+  try {
+    const res  = await fetch('/api/photos');
+    const data = await res.json();
+    if (!data.photos || !data.photos.length) return; // keep placeholders
+    const grid = document.getElementById('workGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    data.photos.forEach((p, i) => {
+      const div = document.createElement('div');
+      div.className = 'wc wc-photo reveal' + (i % 3 === 1 ? ' wc-tall' : '');
+      div.innerHTML = `
+        <img src="/static/uploads/${p.filename}" alt="${p.caption || 'Arbeit'}" loading="lazy">
+        ${p.caption ? `<div class="wc-bottom"><span class="wc-t">${p.caption}</span></div>` : ''}
+        <a href="#termin" class="wc-overlay">Buchen ↗</a>`;
+      grid.appendChild(div);
+      revealObs.observe(div);
+    });
+  } catch { /* keep placeholders on error */ }
+})();
+
 // ── Flatpickr date picker ─────────────────────────────
 let _disabledDates = [];
 async function initDatePicker() {
