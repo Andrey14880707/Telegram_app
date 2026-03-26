@@ -3,22 +3,22 @@
    ═══════════════════════════════════════════════════ */
 
 :root {
-  --black:   #05050a;
-  --dark:    rgba(10, 10, 15, 0.4);
-  --surface: rgba(20, 20, 25, 0.35);
-  --card:    rgba(255, 255, 255, 0.04);
-  --border:  rgba(255, 255, 255, 0.15);
-  --border2: rgba(255, 255, 255, 0.25);
-  --gold:    #D4AF37;
-  --gold2:   #F0CC5A;
-  --gold3:   #9A7E1A;
-  --cyan:    rgba(0, 255, 255, 0.4);
-  --violet:  rgba(138, 43, 226, 0.4);
-  --white:   #ffffff;
-  --gray:    rgba(255, 255, 255, 0.7);
-  --gray2:   rgba(255, 255, 255, 0.5);
-  --red:     #ef4444;
-  --green:   #22c55e;
+  --black:   #f8f8fb;
+  --dark:    rgba(250, 250, 252, 0.6);
+  --surface: rgba(255, 255, 255, 0.65);
+  --card:    rgba(0, 0, 0, 0.02);
+  --border:  rgba(0, 0, 0, 0.1);
+  --border2: rgba(0, 0, 0, 0.18);
+  --gold:    #A67C00;
+  --gold2:   #856100;
+  --gold3:   #C29D2B;
+  --cyan:    rgba(0, 150, 150, 0); 
+  --violet:  rgba(100, 40, 150, 0);
+  --white:   #151518;
+  --gray:    rgba(0, 0, 0, 0.65);
+  --gray2:   rgba(0, 0, 0, 0.45);
+  --red:     #dc2626;
+  --green:   #16a34a;
   --tr: .35s cubic-bezier(.4,0,.2,1);
 }
 
@@ -29,12 +29,29 @@ html {
   overflow-x: hidden;          /* ← ключевой фикс горизонтального скролла */
 }
 body {
-  background: var(--black) url('/static/bg.png') no-repeat center center fixed;
-  background-size: cover;
+  background: var(--black);
   color: var(--white);
   font-family: 'Poppins', sans-serif;
   overflow-x: hidden;
   max-width: 100vw;
+}
+
+/* ══ LIGHT FROSTED BACKGROUND ══ */
+.bg-scissors-silhouette {
+  position: fixed; inset: 0; z-index: -3;
+  display: flex; align-items: center; justify-content: center;
+  color: #000; opacity: 0.035; filter: blur(3px);
+  pointer-events: none; background: transparent;
+}
+.bg-scissors-silhouette svg {
+  width: 55vw; height: 55vw; max-width: 800px; max-height: 800px;
+}
+.bg-frosted-glass {
+  position: fixed; inset: 0; z-index: -2;
+  background: rgba(246, 246, 249, 0.94);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  pointer-events: none;
 }
 a { text-decoration: none; color: inherit; }
 img { display: block; max-width: 100%; }
@@ -258,12 +275,7 @@ em { font-style: italic; color: var(--gold); }
   padding: 9rem 5vw 4rem 5vw;
   overflow: hidden;
 }
-.hero-noise {
-  position: absolute; inset: 0;
-  background:
-    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(212,175,55,.12) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 80% at 85% 80%, rgba(212,175,55,.06) 0%, transparent 50%);
-}
+.hero-noise { display: none; }
 .hero-glow {
   position: absolute; top: 0; left: 0; right: 0;
   height: 1px;

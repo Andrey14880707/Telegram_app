@@ -1,11 +1,11 @@
 :root {
-    --gold: rgba(255, 215, 0, 0.4);
-    --cyan: rgba(0, 255, 255, 0.4);
-    --violet: rgba(138, 43, 226, 0.4);
-    --glass-bg: rgba(20, 20, 25, 0.45);
-    --glass-border: rgba(255, 255, 255, 0.15);
-    --text-main: rgba(255, 255, 255, 0.95);
-    --text-muted: rgba(255, 255, 255, 0.6);
+    --gold: rgba(166, 124, 0, 0.8);
+    --cyan: rgba(0, 200, 200, 0);
+    --violet: rgba(138, 43, 226, 0);
+    --glass-bg: rgba(255, 255, 255, 0.65);
+    --glass-border: rgba(0, 0, 0, 0.1);
+    --text-main: #151518;
+    --text-muted: rgba(0, 0, 0, 0.65);
 }
 
 * {
@@ -17,7 +17,7 @@
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     color: var(--text-main);
-    background-color: #05050A;
+    background-color: #f8f8fb;
     min-height: 100vh;
     overflow-x: hidden;
     display: flex;
@@ -25,14 +25,24 @@ body {
     justify-content: center;
 }
 
-.background-canvas {
-    position: fixed;
-    top: -5%; left: -5%; right: -5%; bottom: -5%;
-    background: url('static/bg.png') no-repeat center center;
-    background-size: cover;
-    z-index: -2;
-    filter: blur(5px) brightness(0.8);
-    transition: transform 10s ease-in-out;
+.background-canvas { display: none; }
+
+/* ══ LIGHT FROSTED BACKGROUND ══ */
+.bg-scissors-silhouette {
+  position: fixed; inset: 0; z-index: -3;
+  display: flex; align-items: center; justify-content: center;
+  color: #000; opacity: 0.035; filter: blur(3px);
+  pointer-events: none; background: transparent;
+}
+.bg-scissors-silhouette svg {
+  width: 55vw; height: 55vw; max-width: 800px; max-height: 800px;
+}
+.bg-frosted-glass {
+  position: fixed; inset: 0; z-index: -2;
+  background: rgba(246, 246, 249, 0.94);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  pointer-events: none;
 }
 
 body:hover .background-canvas {
@@ -103,17 +113,7 @@ body:hover .background-canvas {
 }
 
 /* Iridescent lighting streaks inside card */
-.glass-card::before {
-    content: '';
-    position: absolute;
-    top: -50%; left: -50%; width: 200%; height: 200%;
-    background: radial-gradient(circle at top left, var(--cyan) 0%, transparent 40%),
-                radial-gradient(circle at bottom right, var(--violet) 0%, transparent 40%),
-                radial-gradient(circle at center top, var(--gold) 0%, transparent 30%);
-    opacity: 0.2;
-    pointer-events: none;
-    mix-blend-mode: screen;
-}
+.glass-card::before { display: none; }
 
 /* Glass reflection highlight on top */
 .glass-card::after {
