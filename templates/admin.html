@@ -515,7 +515,7 @@ async function openCd(phone) {
           <span class="cd-svc">${esc(h.service)}</span>
           <span class="tprice">${h.price}€</span>
         </div>
-        <div class="cd-meta">${h.date} · ${h.time} · ${{pending:'⏳ Ausstehend',confirmed:'✅ Bestätigt',cancelled:'❌ Abgesagt'}[h.status]||h.status}</div>
+        <div class="cd-meta">${h.date} · ${h.time} · ${h.status==='confirmed'?'✅ Bestätigt':h.status==='cancelled'?'❌ Abgesagt':'⏳ Ausstehend'}</div>
         ${h.comment ? `<div class="cd-meta" style="margin-top:.3rem">💬 ${esc(h.comment)}</div>` : ''}
       </div>`).join('');
 }
