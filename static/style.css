@@ -951,6 +951,114 @@ em { font-style: italic; color: var(--gold); }
   .float-book { right: .75rem; bottom: .75rem; padding: .7rem 1.2rem; font-size: .88rem; }
 }
 
+/* ══ WORK CATEGORY PILLS ═════════════════════════════ */
+.work-cats {
+  display: flex; gap: .5rem; flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+.wcat {
+  padding: .38rem 1rem;
+  background: transparent; border: 1px solid var(--border2);
+  color: var(--gray); font-family: 'Poppins', sans-serif;
+  font-size: .75rem; letter-spacing: .5px; cursor: pointer;
+  transition: all var(--tr);
+}
+.wcat:hover { border-color: var(--gold); color: var(--gold); }
+.wcat.active { background: var(--gold); border-color: var(--gold); color: var(--black); font-weight: 600; }
+
+/* ══ CAROUSEL ════════════════════════════════════════ */
+.carousel-wrap {
+  position: relative;
+  margin-bottom: 2.5rem;
+  user-select: none;
+}
+.carousel {
+  overflow: hidden;
+  width: 100%;
+  cursor: grab;
+}
+.carousel.dragging { cursor: grabbing; }
+.carousel-track {
+  display: flex;
+  gap: 8px;
+  transition: transform .4s cubic-bezier(.16,1,.3,1);
+  will-change: transform;
+}
+.car-slide {
+  flex: 0 0 calc(33.333% - 6px);
+  aspect-ratio: 3/4;
+  position: relative;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.car-slide img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+  transition: transform .5s ease;
+  pointer-events: none;
+}
+.car-slide:hover img { transform: scale(1.05); }
+.car-slide-info {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 1rem .9rem .75rem;
+  background: linear-gradient(to top, rgba(0,0,0,.85) 0%, transparent 100%);
+}
+.car-slide-cat {
+  font-size: .6rem; letter-spacing: 2px; color: var(--gold);
+  text-transform: uppercase; margin-bottom: .2rem;
+}
+.car-slide-cap { font-size: .82rem; font-weight: 500; }
+.car-slide-book {
+  position: absolute; top: .75rem; right: .75rem;
+  background: rgba(212,175,55,.9); color: #000;
+  font-size: .65rem; font-weight: 700; letter-spacing: 1px;
+  padding: .3rem .7rem; text-decoration: none;
+  opacity: 0; transition: opacity var(--tr);
+}
+.car-slide:hover .car-slide-book { opacity: 1; }
+
+/* Nav buttons */
+.car-btn {
+  position: absolute; top: 50%; z-index: 10;
+  transform: translateY(-50%);
+  width: 44px; height: 44px;
+  background: rgba(9,9,9,.8); border: 1px solid var(--border2);
+  color: var(--white); font-size: 1.5rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background var(--tr), border-color var(--tr);
+  backdrop-filter: blur(8px);
+}
+.car-btn:hover { background: var(--gold); color: #000; border-color: var(--gold); }
+.car-prev { left: -22px; }
+.car-next { right: -22px; }
+.car-btn:disabled { opacity: .25; pointer-events: none; }
+
+/* Dots */
+.car-dots {
+  display: flex; justify-content: center; gap: .4rem;
+  margin-top: 1.25rem;
+}
+.car-dot {
+  width: 6px; height: 6px;
+  background: var(--border2); border: none; cursor: pointer;
+  border-radius: 50%; padding: 0; transition: all var(--tr);
+}
+.car-dot.active { background: var(--gold); width: 20px; border-radius: 3px; }
+
+/* Mobile: 1-2 slides visible */
+@media (max-width: 768px) {
+  .car-slide { flex: 0 0 calc(50% - 4px); }
+  .car-prev { left: -12px; }
+  .car-next { right: -12px; }
+  .car-btn { width: 36px; height: 36px; font-size: 1.2rem; }
+}
+@media (max-width: 480px) {
+  .car-slide { flex: 0 0 calc(80% - 4px); }
+  .car-prev { left: 0; }
+  .car-next { right: 0; }
+}
+
 /* ══ WORK PHOTO CARD ══════════════════════════════════ */
 .wc-photo { background: var(--card); }
 .wc-photo img {

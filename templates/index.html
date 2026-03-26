@@ -171,7 +171,27 @@
         <a href="https://www.instagram.com/munchen_barber?igsh=MW5ya2J2bzR3anE0bQ==" target="_blank" class="btn-outline">Mehr auf Instagram ↗</a>
       </div>
     </div>
-    <!-- Photos loaded from API; fallback placeholders shown if no photos uploaded -->
+    <!-- Category filter pills -->
+    <div class="work-cats" id="workCats" style="display:none">
+      <button class="wcat active" data-cat="all">Alle</button>
+      <button class="wcat" data-cat="Fade">✂ Fade</button>
+      <button class="wcat" data-cat="Classic">💈 Classic</button>
+      <button class="wcat" data-cat="Bart">🪒 Bart</button>
+      <button class="wcat" data-cat="FullLook">⚡ Full Look</button>
+      <button class="wcat" data-cat="Sonstiges">📷 Mehr</button>
+    </div>
+
+    <!-- Carousel (photos) / Fallback grid (placeholders) -->
+    <div class="carousel-wrap" id="carouselWrap" style="display:none">
+      <button class="car-btn car-prev" id="carPrev" aria-label="Zurück">‹</button>
+      <div class="carousel" id="carousel">
+        <div class="carousel-track" id="carTrack"></div>
+      </div>
+      <button class="car-btn car-next" id="carNext" aria-label="Weiter">›</button>
+      <div class="car-dots" id="carDots"></div>
+    </div>
+
+    <!-- Fallback: placeholder cards (shown when no photos) -->
     <div class="work-grid" id="workGrid">
       <div class="wc reveal" style="--g:linear-gradient(145deg,#1a1200,#2c1e00)">
         <div class="wc-stripe"></div><div class="wc-ico-bg">✂</div>
@@ -210,6 +230,7 @@
         <a href="#termin" class="wc-overlay">Buchen ↗</a>
       </div>
     </div>
+
     <div class="work-ig-cta reveal">
       <p>Echte Ergebnisse auf Instagram</p>
       <a href="https://www.instagram.com/munchen_barber?igsh=MW5ya2J2bzR3anE0bQ==" target="_blank" class="btn-primary">

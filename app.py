@@ -75,10 +75,16 @@ def init_db():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             filename TEXT NOT NULL,
             caption TEXT DEFAULT '',
+            category TEXT DEFAULT 'Sonstiges',
             sort_order INTEGER DEFAULT 0,
             created_at TEXT DEFAULT (datetime('now','localtime'))
         )
     ''')
+    # Add category column to existing photos tables (migration)
+    try:
+        conn.execute("ALTER TABLE photos ADD COLUMN category TEXT DEFAULT 'Sonstiges'")
+    except Exception:
+        pass
     conn.execute('''
         CREATE TABLE IF NOT EXISTS blocked_dates (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -621,9 +627,10 @@ def upload_photo():
         return jsonify({'success': False, 'error': 'Dateityp nicht erlaubt'}), 400
     filename = f'{uuid.uuid4().hex}.{ext}'
     f.save(os.path.join(UPLOAD_FOLDER, filename))
-    caption = request.form.get('caption', '')
+    caption  = request.form.get('caption', '')
+    category = request.form.get('category', 'Sonstiges')
     conn = get_db()
-    conn.execute('INSERT INTO photos (filename, caption) VALUES (?, ?)', (filename, caption))
+    conn.execute('INSERT INTO photos (filename, caption, category) VALUES (?, ?, ?)', (filename, caption, category))
     conn.commit()
     conn.close()
     return jsonify({'success': True, 'filename': filename})
