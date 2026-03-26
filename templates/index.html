@@ -1,301 +1,347 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="de">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BarberShop — Профессиональные стрижки</title>
+  <title>München Barber — Fades & Style</title>
+  <meta name="description" content="Professional Barber in München. Fades, Classic Cuts, Beard Care. Book online.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 
+<!-- ── PRELOADER ── -->
+<div class="preloader" id="preloader">
+  <div class="pl-logo">MB</div>
+  <div class="pl-bar"><div class="pl-fill" id="plFill"></div></div>
+</div>
+
+<!-- ── GRAIN ── -->
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ── CURSOR ── -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
 <!-- ── NAVBAR ── -->
-<nav class="navbar" id="navbar">
-  <div class="nav-inner">
-    <a href="#home" class="logo">✂ BARBER<span class="gold">SHOP</span></a>
+<nav class="nav" id="nav">
+  <div class="nav-c">
+    <a href="#top" class="nav-logo">MÜNCHEN BARBER</a>
     <ul class="nav-links">
-      <li><a href="#services">Услуги</a></li>
-      <li><a href="#prices">Цены</a></li>
-      <li><a href="#booking">Запись</a></li>
-      <li><a href="#about">О мастере</a></li>
-      <li><a href="#contacts">Контакты</a></li>
+      <li><a href="#ueber">Über mich</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#preise">Preise</a></li>
+      <li><a href="#termin">Termin</a></li>
     </ul>
-    <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Меню">
-      <span></span><span></span><span></span>
-    </button>
+    <div class="nav-right">
+      <a href="https://www.instagram.com/munchen_barber?igsh=MW5ya2J2bzR3anE0bQ==" target="_blank" rel="noopener" class="nav-soc" title="Instagram">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+      </a>
+      <a href="https://t.me/barbermunich1" target="_blank" rel="noopener" class="nav-soc" title="Telegram">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+      </a>
+      <button class="nav-burger" id="navBurger" aria-label="Menu"><span></span><span></span></button>
+    </div>
   </div>
 </nav>
 
-<div class="mobile-menu" id="mobileMenu">
-  <ul>
-    <li><a href="#services" onclick="toggleMenu()">Услуги</a></li>
-    <li><a href="#prices" onclick="toggleMenu()">Цены</a></li>
-    <li><a href="#booking" onclick="toggleMenu()">Запись</a></li>
-    <li><a href="#about" onclick="toggleMenu()">О мастере</a></li>
-    <li><a href="#contacts" onclick="toggleMenu()">Контакты</a></li>
-  </ul>
+<!-- ── MOBILE MENU ── -->
+<div class="mob-menu" id="mobMenu">
+  <div class="mob-inner">
+    <ul>
+      <li><a href="#ueber" onclick="closeMob()"><em>01</em> Über mich</a></li>
+      <li><a href="#services" onclick="closeMob()"><em>02</em> Services</a></li>
+      <li><a href="#preise" onclick="closeMob()"><em>03</em> Preise</a></li>
+      <li><a href="#termin" onclick="closeMob()"><em>04</em> Termin buchen</a></li>
+    </ul>
+    <div class="mob-soc">
+      <a href="https://www.instagram.com/munchen_barber?igsh=MW5ya2J2bzR3anE0bQ==" target="_blank">@munchen_barber</a>
+      <a href="https://t.me/barbermunich1" target="_blank">@barbermunich1</a>
+    </div>
+  </div>
 </div>
 
-<!-- ── HERO ── -->
-<section class="hero" id="home">
-  <div class="hero-bg"></div>
-  <div class="hero-content">
-    <div class="clock-widget">
-      <div class="clock-time" id="clockTime">00:00:00</div>
-      <div class="clock-date" id="clockDate">—</div>
+<!-- ══════════════════════ HERO ══════════════════════ -->
+<section class="hero" id="top">
+  <div class="hero-noise"></div>
+  <div class="hero-glow"></div>
+
+  <!-- Background text -->
+  <div class="hero-bg-text" aria-hidden="true">BARBER</div>
+
+  <div class="hero-body">
+    <div class="hero-meta">
+      <span>EST. 2019</span><span class="dot">·</span>
+      <span>MÜNCHEN, DE</span><span class="dot">·</span>
+      <span>FADES & STYLE</span>
     </div>
-    <div class="hero-badge">✦ Профессиональный барбер ✦</div>
     <h1 class="hero-title">
-      Искусство<br>
-      <span class="gold">Идеального</span><br>
-      Образа
+      <span class="ht-line" style="--d:.2s">MÜNCHEN</span>
+      <span class="ht-line gold" style="--d:.5s">BARBER</span>
     </h1>
-    <p class="hero-sub">Стрижки, бритьё и уход за бородой премиум-класса</p>
-    <div class="hero-btns">
-      <a href="#booking" class="btn btn-gold">Записаться онлайн</a>
-      <a href="#services" class="btn btn-ghost">Наши услуги</a>
+    <p class="hero-tag"><em>Ich mache deinen Look besser</em></p>
+    <div class="hero-cta">
+      <a href="#termin" class="btn-primary">Termin buchen</a>
+      <a href="https://www.instagram.com/munchen_barber?igsh=MW5ya2J2bzR3anE0bQ==" target="_blank" class="btn-link">↗ Instagram</a>
+      <a href="https://t.me/barbermunich1" target="_blank" class="btn-link">↗ Telegram</a>
     </div>
   </div>
-  <a href="#services" class="scroll-down" aria-label="Вниз">
-    <div class="scroll-arrow"></div>
-  </a>
+
+  <div class="hero-clock">
+    <div class="hc-time" id="heroTime">—:—:—</div>
+    <div class="hc-label">MÜNCHEN TIME</div>
+  </div>
+
+  <div class="hero-scroll">
+    <span>SCROLL</span>
+    <div class="hs-line"></div>
+  </div>
 </section>
 
-<!-- ── STATS ── -->
-<div class="stats-bar">
-  <div class="stat"><span class="stat-num">500+</span><span class="stat-lbl">Довольных клиентов</span></div>
-  <div class="stat"><span class="stat-num">5</span><span class="stat-lbl">Лет опыта</span></div>
-  <div class="stat"><span class="stat-num">20+</span><span class="stat-lbl">Техник стрижки</span></div>
-  <div class="stat"><span class="stat-num">4.9★</span><span class="stat-lbl">Рейтинг</span></div>
+<!-- ── TICKER ── -->
+<div class="ticker">
+  <div class="ticker-track">
+    <span>✦ FADE</span><span>✦ SKIN FADE</span><span>✦ KLASSISCHER HAARSCHNITT</span>
+    <span>✦ BARTPFLEGE</span><span>✦ HEISSRASUR</span><span>✦ MÜNCHEN BARBER</span>
+    <span>✦ STYLING</span><span>✦ GRAU-KASCHIERUNG</span><span>✦ FADES & STYLE</span>
+    <!-- duplicate for seamless loop -->
+    <span>✦ FADE</span><span>✦ SKIN FADE</span><span>✦ KLASSISCHER HAARSCHNITT</span>
+    <span>✦ BARTPFLEGE</span><span>✦ HEISSRASUR</span><span>✦ MÜNCHEN BARBER</span>
+    <span>✦ STYLING</span><span>✦ GRAU-KASCHIERUNG</span><span>✦ FADES & STYLE</span>
+  </div>
 </div>
 
-<!-- ── SERVICES ── -->
-<section class="section" id="services">
-  <div class="container">
-    <div class="sec-head reveal">
-      <span class="sec-tag">ЧТО МЫ ДЕЛАЕМ</span>
-      <h2>Наши <span class="gold">Услуги</span></h2>
-      <p>Каждая стрижка — произведение искусства, созданное с вниманием к деталям</p>
-    </div>
-    <div class="services-grid">
-      <div class="svc-card reveal">
-        <div class="svc-icon">✂</div>
-        <h3>Классическая стрижка</h3>
-        <p>Элегантная классика, адаптированная под ваш тип лица</p>
-        <span class="svc-price">от 500₽</span>
+<!-- ══════════════════════ ÜBER MICH ══════════════════════ -->
+<section class="sec" id="ueber">
+  <div class="con">
+    <div class="about-grid">
+      <div class="about-nums reveal-l">
+        <div class="bstat">
+          <div class="bnum" data-target="500" data-suffix="+">0</div>
+          <div class="blbl">KUNDEN</div>
+        </div>
+        <div class="bstat-line"></div>
+        <div class="bstat">
+          <div class="bnum" data-target="5" data-suffix="+">0</div>
+          <div class="blbl">JAHRE ERFAHRUNG</div>
+        </div>
+        <div class="bstat-line"></div>
+        <div class="bstat">
+          <div class="bnum" data-target="322" data-suffix="">0</div>
+          <div class="blbl">INSTAGRAM FOLLOWER</div>
+        </div>
       </div>
-      <div class="svc-card featured reveal">
-        <div class="svc-badge">Хит</div>
-        <div class="svc-icon">⚔</div>
-        <h3>Стрижка + Борода</h3>
-        <p>Комплексный уход — идеальный образ с головы до бороды</p>
-        <span class="svc-price">от 800₽</span>
-      </div>
-      <div class="svc-card reveal">
-        <div class="svc-icon">🪒</div>
-        <h3>Горячее бритьё</h3>
-        <p>Традиционное бритьё с горячим полотенцем и маслами</p>
-        <span class="svc-price">от 600₽</span>
-      </div>
-      <div class="svc-card reveal">
-        <div class="svc-icon">💈</div>
-        <h3>Фейд / Скин-фейд</h3>
-        <p>Градиентная стрижка с чистыми линиями и переходами</p>
-        <span class="svc-price">от 600₽</span>
-      </div>
-      <div class="svc-card reveal">
-        <div class="svc-icon">👶</div>
-        <h3>Детская стрижка</h3>
-        <p>Бережная стрижка для юных клиентов до 12 лет</p>
-        <span class="svc-price">от 400₽</span>
-      </div>
-      <div class="svc-card reveal">
-        <div class="svc-icon">✨</div>
-        <h3>Камуфляж седины</h3>
-        <p>Натуральное тонирование для свежего и молодого образа</p>
-        <span class="svc-price">от 700₽</span>
+      <div class="about-txt reveal-r">
+        <div class="eyebrow">01 — ÜBER MICH</div>
+        <h2>Professioneller<br><em>Barbier</em><br>in München</h2>
+        <p>Spezialist für Fades, klassische Haarschnitte und Bartpflege. Mit über 5 Jahren Erfahrung und einem Auge fürs Detail bringe ich jeden Look auf das nächste Level.</p>
+        <p class="mt1"><em>Based in München · Every cut is a work of art</em></p>
+        <div class="skills">
+          <div class="skill-row"><span>Fades & Skin Fades</span><div class="sbar"><div data-w="98"></div></div></div>
+          <div class="skill-row"><span>Klassische Haarschnitte</span><div class="sbar"><div data-w="95"></div></div></div>
+          <div class="skill-row"><span>Bartpflege & Rasur</span><div class="sbar"><div data-w="93"></div></div></div>
+        </div>
+        <a href="https://www.instagram.com/munchen_barber?igsh=MW5ya2J2bzR3anE0bQ==" target="_blank" class="btn-outline mt2">Instagram ansehen ↗</a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── PRICES ── -->
-<section class="section bg-alt" id="prices">
-  <div class="container">
-    <div class="sec-head reveal">
-      <span class="sec-tag">ПРОЗРАЧНОСТЬ</span>
-      <h2>Прайс<span class="gold">-лист</span></h2>
-      <p>Честные цены без скрытых доплат</p>
-    </div>
-    <div class="price-table reveal">
-      <div class="price-row price-head">
-        <span>Услуга</span><span>Время</span><span>Цена</span>
+<!-- ══════════════════════ WORK ══════════════════════ -->
+<section class="sec sec-dark" id="work">
+  <div class="con">
+    <div class="work-head reveal">
+      <div class="eyebrow">02 — UNSERE ARBEIT</div>
+      <div class="work-head-row">
+        <h2>Aktuelle<br>Arbeiten</h2>
+        <a href="https://www.instagram.com/munchen_barber?igsh=MW5ya2J2bzR3anE0bQ==" target="_blank" class="btn-outline">Mehr auf Instagram ↗</a>
       </div>
-      <div class="price-row"><span>Классическая стрижка</span><span>45 мин</span><span class="ptag">500₽</span></div>
-      <div class="price-row"><span>Стрижка машинкой</span><span>30 мин</span><span class="ptag">400₽</span></div>
-      <div class="price-row"><span>Фейд / Скин-фейд</span><span>60 мин</span><span class="ptag">600₽</span></div>
-      <div class="price-row hot"><span>✦ Стрижка + Борода</span><span>75 мин</span><span class="ptag">800₽</span></div>
-      <div class="price-row"><span>Оформление бороды</span><span>30 мин</span><span class="ptag">400₽</span></div>
-      <div class="price-row"><span>Горячее бритьё</span><span>45 мин</span><span class="ptag">600₽</span></div>
-      <div class="price-row"><span>Детская стрижка (до 12 лет)</span><span>30 мин</span><span class="ptag">400₽</span></div>
-      <div class="price-row"><span>Укладка</span><span>20 мин</span><span class="ptag">300₽</span></div>
-      <div class="price-row"><span>Камуфляж седины</span><span>60 мин</span><span class="ptag">700₽</span></div>
-      <div class="price-row"><span>Стрижка + Укладка</span><span>60 мин</span><span class="ptag">700₽</span></div>
+    </div>
+    <div class="work-grid">
+      <div class="wc reveal" style="--g:linear-gradient(135deg,#1c1600 0%,#2c2200 100%)"><span class="wc-n">01</span><span class="wc-t">Skin Fade</span><div class="wc-h"><a href="#termin">Termin buchen →</a></div></div>
+      <div class="wc reveal wc-tall" style="--g:linear-gradient(135deg,#001818 0%,#001f1f 100%)"><span class="wc-n">02</span><span class="wc-t">Classic Cut</span><div class="wc-h"><a href="#termin">Termin buchen →</a></div></div>
+      <div class="wc reveal" style="--g:linear-gradient(135deg,#1a0018 0%,#220020 100%)"><span class="wc-n">03</span><span class="wc-t">Beard Trim</span><div class="wc-h"><a href="#termin">Termin buchen →</a></div></div>
+      <div class="wc reveal wc-tall" style="--g:linear-gradient(135deg,#1a1200 0%,#221800 100%)"><span class="wc-n">04</span><span class="wc-t">Fade + Beard</span><div class="wc-h"><a href="#termin">Termin buchen →</a></div></div>
+      <div class="wc reveal" style="--g:linear-gradient(135deg,#00180a 0%,#001f10 100%)"><span class="wc-n">05</span><span class="wc-t">Hot Shave</span><div class="wc-h"><a href="#termin">Termin buchen →</a></div></div>
+      <div class="wc reveal" style="--g:linear-gradient(135deg,#120018 0%,#180020 100%)"><span class="wc-n">06</span><span class="wc-t">Styling</span><div class="wc-h"><a href="#termin">Termin buchen →</a></div></div>
+    </div>
+    <p class="work-note reveal">Echte Fotos auf <a href="https://www.instagram.com/munchen_barber?igsh=MW5ya2J2bzR3anE0bQ==" target="_blank">@munchen_barber</a></p>
+  </div>
+</section>
+
+<!-- ══════════════════════ SERVICES + PRICES ══════════════════════ -->
+<section class="sec" id="services">
+  <div class="con">
+    <div class="sp-wrap">
+      <!-- Services -->
+      <div class="svc-col reveal-l">
+        <div class="eyebrow">03 — SERVICES</div>
+        <h2>Was ich<br>anbiete</h2>
+        <div class="svc-list">
+          <div class="svc-item"><div class="svc-ico">✂</div><div><div class="svc-name">Klassischer Haarschnitt</div><div class="svc-sub">Elegant, sauber, zeitlos · 45 min</div></div></div>
+          <div class="svc-item svc-hot"><div class="svc-ico">⚡</div><div><div class="svc-name">Fade / Skin Fade</div><div class="svc-sub">Scharfe Übergänge · 60 min</div></div></div>
+          <div class="svc-item svc-best"><div class="svc-ico">⚔</div><div><div class="svc-name">Haarschnitt + Bart</div><div class="svc-sub">Komplettpaket · 75 min</div></div></div>
+          <div class="svc-item"><div class="svc-ico">🪒</div><div><div class="svc-name">Heißrasur</div><div class="svc-sub">Traditionell mit heißem Tuch · 45 min</div></div></div>
+          <div class="svc-item"><div class="svc-ico">✦</div><div><div class="svc-name">Bartpflege</div><div class="svc-sub">Konturierung & Pflege · 30 min</div></div></div>
+          <div class="svc-item"><div class="svc-ico">★</div><div><div class="svc-name">Styling</div><div class="svc-sub">Premium Produkte · 20 min</div></div></div>
+        </div>
+      </div>
+      <!-- Prices -->
+      <div class="price-col reveal-r" id="preise">
+        <div class="eyebrow">PREISLISTE</div>
+        <div class="pmenu">
+          <div class="pm"><span>Klassischer Haarschnitt</span><span class="pmdots"></span><span class="pmp">25€</span></div>
+          <div class="pm"><span>Haarschnitt (Maschine)</span><span class="pmdots"></span><span class="pmp">20€</span></div>
+          <div class="pm pm-hl"><span>✦ Fade / Skin Fade</span><span class="pmdots"></span><span class="pmp">30€</span></div>
+          <div class="pm pm-best"><span>★ Haarschnitt + Bart</span><span class="pmdots"></span><span class="pmp">40€</span></div>
+          <div class="pm"><span>Bartpflege</span><span class="pmdots"></span><span class="pmp">20€</span></div>
+          <div class="pm"><span>Heißrasur</span><span class="pmdots"></span><span class="pmp">30€</span></div>
+          <div class="pm"><span>Kinder (bis 12 J.)</span><span class="pmdots"></span><span class="pmp">20€</span></div>
+          <div class="pm"><span>Styling</span><span class="pmdots"></span><span class="pmp">15€</span></div>
+          <div class="pm"><span>Grau-Kaschierung</span><span class="pmdots"></span><span class="pmp">35€</span></div>
+          <div class="pm"><span>Haarschnitt + Styling</span><span class="pmdots"></span><span class="pmp">35€</span></div>
+        </div>
+        <p class="pnote">* Alle Preise inkl. MwSt.</p>
+        <a href="#termin" class="btn-primary mt2">Jetzt buchen</a>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ── BOOKING ── -->
-<section class="section" id="booking">
-  <div class="container">
-    <div class="sec-head reveal">
-      <span class="sec-tag">ОНЛАЙН-ЗАПИСЬ</span>
-      <h2>Записаться <span class="gold">Онлайн</span></h2>
-      <p>Выберите удобное время — подтверждение придёт сразу</p>
-    </div>
-    <div class="booking-wrap">
-      <div class="booking-info reveal">
-        <h3>Режим работы</h3>
-        <div class="hours">
-          <div class="hours-row"><span>Пн — Пт</span><span class="gold">9:00 — 20:00</span></div>
-          <div class="hours-row"><span>Суббота</span><span class="gold">10:00 — 19:00</span></div>
-          <div class="hours-row"><span>Воскресенье</span><span class="gold">10:00 — 17:00</span></div>
+<!-- ══════════════════════ BOOKING ══════════════════════ -->
+<section class="sec sec-dark" id="termin">
+  <div class="con">
+    <div class="bk-wrap">
+      <!-- Left info -->
+      <div class="bk-info reveal-l">
+        <div class="eyebrow">04 — TERMIN BUCHEN</div>
+        <h2>Wann<br>kommst du?</h2>
+        <p>Wähle deinen Wunschtermin — Bestätigung kommt sofort.</p>
+
+        <div class="oh">
+          <div class="oh-title">ÖFFNUNGSZEITEN</div>
+          <div class="oh-row oh-closed"><span>Montag</span><span>Geschlossen</span></div>
+          <div class="oh-row"><span>Di — Fr</span><span class="gold">10:00 — 20:00</span></div>
+          <div class="oh-row"><span>Samstag</span><span class="gold">9:00 — 18:00</span></div>
+          <div class="oh-row oh-closed"><span>Sonntag</span><span>Geschlossen</span></div>
         </div>
-        <div class="contact-block">
-          <h3>Контакты</h3>
-          <p>📞 +7 (999) 123-45-67</p>
-          <p>📍 ул. Примерная, д. 1</p>
-          <p>📱 @barbershop_tg</p>
+
+        <div class="bk-status" id="bkStatus"></div>
+
+        <div class="bk-contacts">
+          <a href="https://www.instagram.com/munchen_barber?igsh=MW5ya2J2bzR3anE0bQ==" target="_blank" class="bkc">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            @munchen_barber
+          </a>
+          <a href="https://t.me/barbermunich1" target="_blank" class="bkc">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+            @barbermunich1
+          </a>
+          <div class="bkc">📍 München, Deutschland</div>
         </div>
-        <div class="work-indicator" id="workIndicator"></div>
       </div>
-      <form class="booking-form reveal" id="bookingForm" novalidate>
-        <div class="form-group">
-          <label>Ваше имя *</label>
-          <input type="text" id="bookName" placeholder="Иван Иванов" required>
+
+      <!-- Form -->
+      <form class="bk-form reveal-r" id="bookForm" novalidate>
+        <div class="bf-row">
+          <div class="bf-g"><label>Name *</label><input type="text" id="bName" placeholder="Max Mustermann" required></div>
+          <div class="bf-g"><label>Telefon *</label><input type="tel" id="bPhone" placeholder="+49 ..." required></div>
         </div>
-        <div class="form-group">
-          <label>Телефон *</label>
-          <input type="tel" id="bookPhone" placeholder="+7 (999) 000-00-00" required>
+        <div class="bf-row">
+          <div class="bf-g"><label>E-Mail <small>(Erinnerung)</small></label><input type="email" id="bEmail" placeholder="email@example.com"></div>
+          <div class="bf-g"><label>Telegram <small>(Erinnerung)</small></label><input type="text" id="bTelegram" placeholder="@username"></div>
         </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Email <small>(для напоминания)</small></label>
-            <input type="email" id="bookEmail" placeholder="email@example.com">
-          </div>
-          <div class="form-group">
-            <label>Telegram <small>(для напоминания)</small></label>
-            <input type="text" id="bookTelegram" placeholder="@username">
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Услуга *</label>
-          <select id="bookService" required>
-            <option value="">Выберите услугу</option>
-            <option value="Классическая стрижка|500">Классическая стрижка — 500₽</option>
-            <option value="Стрижка машинкой|400">Стрижка машинкой — 400₽</option>
-            <option value="Фейд / Скин-фейд|600">Фейд / Скин-фейд — 600₽</option>
-            <option value="Стрижка + Борода|800">★ Стрижка + Борода — 800₽</option>
-            <option value="Оформление бороды|400">Оформление бороды — 400₽</option>
-            <option value="Горячее бритьё|600">Горячее бритьё — 600₽</option>
-            <option value="Детская стрижка|400">Детская стрижка — 400₽</option>
-            <option value="Укладка|300">Укладка — 300₽</option>
-            <option value="Камуфляж седины|700">Камуфляж седины — 700₽</option>
-            <option value="Стрижка + Укладка|700">Стрижка + Укладка — 700₽</option>
+        <div class="bf-g">
+          <label>Service *</label>
+          <select id="bService" required>
+            <option value="">Service wählen ...</option>
+            <option value="Klassischer Haarschnitt|25">Klassischer Haarschnitt — 25€</option>
+            <option value="Haarschnitt (Maschine)|20">Haarschnitt (Maschine) — 20€</option>
+            <option value="Fade / Skin Fade|30">Fade / Skin Fade — 30€</option>
+            <option value="Haarschnitt + Bart|40">★ Haarschnitt + Bart — 40€</option>
+            <option value="Bartpflege|20">Bartpflege — 20€</option>
+            <option value="Heißrasur|30">Heißrasur — 30€</option>
+            <option value="Kinder (bis 12 J.)|20">Kinder (bis 12 J.) — 20€</option>
+            <option value="Styling|15">Styling — 15€</option>
+            <option value="Grau-Kaschierung|35">Grau-Kaschierung — 35€</option>
+            <option value="Haarschnitt + Styling|35">Haarschnitt + Styling — 35€</option>
           </select>
         </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Дата *</label>
-            <input type="date" id="bookDate" required>
-          </div>
-          <div class="form-group">
-            <label>Время *</label>
-            <select id="bookTime" required>
-              <option value="">Сначала выберите дату</option>
-            </select>
-          </div>
+        <div class="bf-row">
+          <div class="bf-g"><label>Datum *</label><input type="date" id="bDate" required></div>
+          <div class="bf-g"><label>Uhrzeit *</label><select id="bTime" required><option value="">Erst Datum wählen</option></select></div>
         </div>
-        <div class="form-group">
-          <label>Комментарий</label>
-          <textarea id="bookComment" placeholder="Особые пожелания..." rows="3"></textarea>
+        <div class="bf-g">
+          <label>Anmerkungen</label>
+          <textarea id="bComment" placeholder="Besondere Wünsche..." rows="3"></textarea>
         </div>
-        <button type="submit" class="btn btn-gold btn-full" id="submitBtn">Записаться ✂</button>
+        <button type="submit" class="btn-primary btn-full" id="submitBtn">Termin buchen ✂</button>
       </form>
     </div>
   </div>
 </section>
 
-<!-- ── ABOUT ── -->
-<section class="section bg-alt" id="about">
-  <div class="container">
-    <div class="about-grid">
-      <div class="about-img reveal">
-        <div class="about-img-box">
-          <span class="scissors-big">✂</span>
-          <div class="about-years"><span>5+</span><small>лет опыта</small></div>
-        </div>
+<!-- ══════════════════════ SOCIAL ══════════════════════ -->
+<section class="sec" id="kontakt">
+  <div class="con">
+    <div class="social-sec reveal">
+      <div class="eyebrow">05 — KONTAKT</div>
+      <h2>Folge mir &<br>schreib mir</h2>
+      <div class="soc-cards">
+        <a href="https://www.instagram.com/munchen_barber?igsh=MW5ya2J2bzR3anE0bQ==" target="_blank" rel="noopener" class="soc-card soc-ig">
+          <div class="soc-card-bg"></div>
+          <svg class="soc-icon" width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          <div class="soc-name">Instagram</div>
+          <div class="soc-handle">@munchen_barber</div>
+          <div class="soc-cta">Profil ansehen ↗</div>
+        </a>
+        <a href="https://t.me/barbermunich1" target="_blank" rel="noopener" class="soc-card soc-tg">
+          <div class="soc-card-bg"></div>
+          <svg class="soc-icon" width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+          <div class="soc-name">Telegram</div>
+          <div class="soc-handle">@barbermunich1</div>
+          <div class="soc-cta">Schreib mir ↗</div>
+        </a>
       </div>
-      <div class="about-text reveal">
-        <span class="sec-tag">О МАСТЕРЕ</span>
-        <h2>Мастерство &<br><span class="gold">Страсть</span></h2>
-        <p>Более 5 лет я создаю уникальные образы для каждого клиента. Каждая стрижка — это искусство, которое учитывает ваш тип лица, стиль жизни и пожелания.</p>
-        <p style="margin-top:1rem">Использую только профессиональные инструменты и материалы премиум-класса, чтобы результат превзошёл ваши ожидания.</p>
-        <div class="skills">
-          <div class="skill"><span>Классические стрижки</span><div class="skill-bar"><div class="skill-fill" data-w="98"></div></div></div>
-          <div class="skill"><span>Работа с бородой</span><div class="skill-bar"><div class="skill-fill" data-w="95"></div></div></div>
-          <div class="skill"><span>Фейд и скин-фейд</span><div class="skill-bar"><div class="skill-fill" data-w="92"></div></div></div>
-        </div>
-        <a href="#booking" class="btn btn-gold" style="margin-top:2rem;display:inline-flex">Записаться</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ── CONTACTS ── -->
-<section class="section" id="contacts">
-  <div class="container">
-    <div class="sec-head reveal">
-      <span class="sec-tag">КАК НАС НАЙТИ</span>
-      <h2>Наши <span class="gold">Контакты</span></h2>
-    </div>
-    <div class="contacts-grid">
-      <div class="contact-card reveal"><div class="cc-icon">📞</div><h3>Телефон</h3><p>+7 (999) 123-45-67</p></div>
-      <div class="contact-card reveal"><div class="cc-icon">📍</div><h3>Адрес</h3><p>ул. Примерная, д. 1<br>г. Москва</p></div>
-      <div class="contact-card reveal">
-        <div class="cc-icon">⏰</div>
-        <h3>Часы работы</h3>
-        <p>Пн–Пт: 9:00 — 20:00<br>Сб: 10:00 — 19:00<br>Вс: 10:00 — 17:00</p>
-      </div>
-      <div class="contact-card reveal"><div class="cc-icon">📱</div><h3>Telegram</h3><p>@barbershop_tg</p></div>
     </div>
   </div>
 </section>
 
 <!-- ── FOOTER ── -->
 <footer class="footer">
-  <div class="container">
-    <div class="footer-top">
-      <div class="logo footer-logo">✂ BARBER<span class="gold">SHOP</span></div>
-      <p>Записывайтесь онлайн или по телефону</p>
-      <div class="footer-links">
-        <a href="#booking">Записаться</a>
-        <a href="#prices">Цены</a>
-        <a href="/admin">Панель управления</a>
+  <div class="con">
+    <div class="ft-top">
+      <div class="ft-brand">
+        <div class="ft-logo">MÜNCHEN BARBER</div>
+        <div class="ft-tag">Ich mache deinen Look besser</div>
+      </div>
+      <nav class="ft-nav">
+        <a href="#ueber">Über mich</a>
+        <a href="#services">Services</a>
+        <a href="#preise">Preise</a>
+        <a href="#termin">Termin</a>
+        <a href="/admin">Admin</a>
+      </nav>
+      <div class="ft-soc">
+        <a href="https://www.instagram.com/munchen_barber?igsh=MW5ya2J2bzR3anE0bQ==" target="_blank">Instagram</a>
+        <a href="https://t.me/barbermunich1" target="_blank">Telegram</a>
       </div>
     </div>
-    <div class="footer-bottom">© 2024 BarberShop. Все права защищены.</div>
+    <div class="ft-bottom">
+      <span>© 2024 München Barber · München, Deutschland</span>
+      <span>Made with ✂ & ♥</span>
+    </div>
   </div>
 </footer>
 
-<!-- ── SUCCESS MODAL ── -->
-<div class="overlay" id="overlay" onclick="closeModal()"></div>
-<div class="modal" id="modal">
-  <div class="modal-icon">✓</div>
-  <h3>Запись создана!</h3>
-  <p id="modalMsg">Ждём вас! Мы свяжемся для подтверждения.</p>
-  <button class="btn btn-gold" onclick="closeModal()">Отлично!</button>
+<!-- ── MODAL ── -->
+<div class="m-overlay" id="mOverlay" onclick="closeModal()"></div>
+<div class="m-box" id="mBox">
+  <div class="m-check">✓</div>
+  <h3>Termin bestätigt!</h3>
+  <p id="mMsg">Bis bald! Bestätigung kommt in Kürze.</p>
+  <button class="btn-primary" onclick="closeModal()">Perfekt!</button>
 </div>
 
 <script src="/static/script.js"></script>

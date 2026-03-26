@@ -16,17 +16,27 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = os.getenv('SECRET_KEY', 'barber-secret-x7k2m9p4')
+app.secret_key = os.getenv('SECRET_KEY', 'munchen-barber-x7k2m9p4')
 
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN', '')
-ADMIN_CHAT_ID = os.getenv('ADMIN_CHAT_ID', '')
+ADMIN_CHAT_ID  = os.getenv('ADMIN_CHAT_ID', '')
 ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD', 'barber123')
 SMTP_HOST = os.getenv('SMTP_HOST', 'smtp.gmail.com')
 SMTP_PORT = int(os.getenv('SMTP_PORT', '587'))
 SMTP_USER = os.getenv('SMTP_USER', '')
 SMTP_PASS = os.getenv('SMTP_PASS', '')
-DB_PATH = os.path.join(os.path.dirname(__file__), 'barber.db')
+DB_PATH   = os.path.join(os.path.dirname(__file__), 'barber.db')
 
+# Optional Google Sheets
+try:
+    import gspread
+    from google.oauth2.service_account import Credentials
+    SHEETS_ENABLED = bool(os.getenv('GOOGLE_SHEET_ID') and os.getenv('GOOGLE_CREDENTIALS_JSON'))
+except ImportError:
+    SHEETS_ENABLED = False
+
+
+# ── Database ──────────────────────────────────────────────────────────────────
 
 def get_db():
     conn = sqlite3.connect(DB_PATH)
@@ -45,12 +55,12 @@ def init_db():
             telegram TEXT DEFAULT '',
             service TEXT NOT NULL,
             price INTEGER NOT NULL DEFAULT 0,
+            currency TEXT DEFAULT 'EUR',
             date TEXT NOT NULL,
             time TEXT NOT NULL,
             comment TEXT DEFAULT '',
             status TEXT DEFAULT 'pending',
             reminder_24h INTEGER DEFAULT 0,
-            reminder_2h INTEGER DEFAULT 0,
             created_at TEXT DEFAULT (datetime('now','localtime'))
         )
     ''')
@@ -83,60 +93,92 @@ def send_email(to_email, subject, html_body):
         msg['To'] = to_email
         msg['Subject'] = subject
         msg.attach(MIMEText(html_body, 'html', 'utf-8'))
-        with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as server:
-            server.starttls()
-            server.login(SMTP_USER, SMTP_PASS)
-            server.send_message(msg)
+        with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as s:
+            s.starttls()
+            s.login(SMTP_USER, SMTP_PASS)
+            s.send_message(msg)
         return True
     except Exception as e:
         print(f'[Email] {e}')
         return False
 
 
-def notify_client(row, message_text):
+def notify_client(row, text):
     sent = False
     if row['telegram']:
-        sent = send_telegram(row['telegram'], message_text)
+        sent = send_telegram(row['telegram'], text)
     if row['email']:
-        html = '<html><body style="font-family:sans-serif;background:#111;color:#f0f0f0;padding:2rem">'
-        html += message_text.replace('<b>', '<strong>').replace('</b>', '</strong>').replace('\n', '<br>')
-        html += '</body></html>'
-        send_email(row['email'], 'BarberShop — Уведомление', html)
+        html = f'<html><body style="font-family:sans-serif;background:#0f0f0f;color:#f0f0f0;padding:2rem">{text.replace(chr(10),"<br>")}</body></html>'
+        send_email(row['email'], 'München Barber — Termininfo', html)
         sent = True
     return sent
+
+
+def sync_to_sheets(row_data):
+    if not SHEETS_ENABLED:
+        return
+    try:
+        import json as _json
+        creds_json = _json.loads(os.getenv('GOOGLE_CREDENTIALS_JSON', '{}'))
+        creds = Credentials.from_service_account_info(
+            creds_json,
+            scopes=['https://spreadsheets.google.com/feeds',
+                    'https://www.googleapis.com/auth/drive']
+        )
+        gc = gspread.authorize(creds)
+        sh = gc.open_by_key(os.getenv('GOOGLE_SHEET_ID'))
+        ws = sh.get_worksheet(0)
+        if not ws.cell(1, 1).value:
+            ws.append_row(['ID', 'Name', 'Telefon', 'E-Mail', 'Telegram',
+                           'Service', 'Preis (€)', 'Datum', 'Zeit', 'Status',
+                           'Kommentar', 'Erstellt'])
+        ws.append_row(row_data)
+    except Exception as e:
+        print(f'[Sheets] {e}')
 
 
 # ── Scheduler ─────────────────────────────────────────────────────────────────
 
 def check_reminders():
-    """Run every 30 min. Send 24h reminders for confirmed appointments."""
     conn = get_db()
     now = datetime.now()
     target_date = (now + timedelta(hours=24)).strftime('%Y-%m-%d')
-    t_start = (now + timedelta(hours=23, minutes=30)).strftime('%H:%M')
-    t_end = (now + timedelta(hours=24, minutes=30)).strftime('%H:%M')
+    t0 = (now + timedelta(hours=23, minutes=30)).strftime('%H:%M')
+    t1 = (now + timedelta(hours=24, minutes=30)).strftime('%H:%M')
 
     rows = conn.execute('''
         SELECT * FROM appointments
-        WHERE status = 'confirmed' AND reminder_24h = 0
-        AND date = ? AND time >= ? AND time <= ?
-    ''', (target_date, t_start, t_end)).fetchall()
+        WHERE status='confirmed' AND reminder_24h=0
+        AND date=? AND time>=? AND time<=?
+    ''', (target_date, t0, t1)).fetchall()
 
     for row in rows:
         msg = (
-            f"✂ <b>BarberShop — Напоминание</b>\n\n"
-            f"Привет, {row['name']}! Напоминаем о вашей записи <b>завтра</b>:\n"
-            f"📅 Дата: {row['date']}\n"
-            f"⏰ Время: {row['time']}\n"
-            f"💈 Услуга: {row['service']}\n"
-            f"💰 Стоимость: {row['price']}₽\n\n"
-            f"Ждём вас! 🙌\nЕсли планы изменились, звоните: +7 (999) 123-45-67"
+            f"✂ <b>München Barber — Terminerinnerung</b>\n\n"
+            f"Hallo {row['name']}! Dein Termin ist <b>morgen</b>:\n"
+            f"📅 {row['date']} · ⏰ {row['time']}\n"
+            f"💈 {row['service']} — {row['price']}€\n\n"
+            f"Bis morgen! Bei Fragen: @barbermunich1"
         )
         if notify_client(row, msg):
-            conn.execute('UPDATE appointments SET reminder_24h = 1 WHERE id = ?', (row['id'],))
+            conn.execute('UPDATE appointments SET reminder_24h=1 WHERE id=?', (row['id'],))
 
     conn.commit()
     conn.close()
+
+
+# ── Working hours ─────────────────────────────────────────────────────────────
+
+HOURS = {
+    # weekday() 0=Mon, 6=Sun
+    0: None,              # Mo — Geschlossen
+    1: (10, 20),          # Di
+    2: (10, 20),          # Mi
+    3: (10, 20),          # Do
+    4: (10, 20),          # Fr
+    5: (9, 18),           # Sa
+    6: None,              # So — Geschlossen
+}
 
 
 # ── Routes ────────────────────────────────────────────────────────────────────
@@ -162,7 +204,7 @@ def admin_login():
     if data.get('password') == ADMIN_PASSWORD:
         session['admin'] = True
         return jsonify({'success': True})
-    return jsonify({'success': False, 'error': 'Неверный пароль'})
+    return jsonify({'success': False, 'error': 'Falsches Passwort'})
 
 
 @app.route('/api/admin/logout', methods=['POST'])
@@ -174,95 +216,93 @@ def admin_logout():
 @app.route('/api/slots')
 def get_slots():
     date_str = request.args.get('date', '')
-    if not date_str:
-        return jsonify({'slots': []})
     try:
         d = datetime.strptime(date_str, '%Y-%m-%d')
     except ValueError:
-        return jsonify({'slots': []})
+        return jsonify({'slots': [], 'closed': True})
 
-    wd = d.weekday()
-    if wd < 5:
-        start_h, end_h = 9, 20
-    elif wd == 5:
-        start_h, end_h = 10, 19
-    else:
-        start_h, end_h = 10, 17
+    h_range = HOURS.get(d.weekday())
+    if h_range is None:
+        return jsonify({'slots': [], 'closed': True})
 
-    all_slots = []
-    h, m = start_h, 0
+    start_h, end_h = h_range
+    all_slots, h, m = [], start_h, 0
     while h < end_h:
         all_slots.append(f'{h:02d}:{m:02d}')
         m += 30
         if m >= 60:
-            m = 0
-            h += 1
+            m, h = 0, h + 1
 
     conn = get_db()
     booked = {r['time'] for r in conn.execute(
-        "SELECT time FROM appointments WHERE date = ? AND status != 'cancelled'",
-        (date_str,)
+        "SELECT time FROM appointments WHERE date=? AND status!='cancelled'", (date_str,)
     ).fetchall()}
     conn.close()
 
     now = datetime.now()
-    today = now.strftime('%Y-%m-%d')
     available = []
     for slot in all_slots:
         if slot in booked:
             continue
-        if date_str == today:
-            slot_dt = datetime.strptime(f'{date_str} {slot}', '%Y-%m-%d %H:%M')
-            if slot_dt <= now + timedelta(minutes=30):
+        if date_str == now.strftime('%Y-%m-%d'):
+            if datetime.strptime(f'{date_str} {slot}', '%Y-%m-%d %H:%M') <= now + timedelta(minutes=30):
                 continue
         available.append(slot)
 
-    return jsonify({'slots': available})
+    return jsonify({'slots': available, 'closed': False})
 
 
 @app.route('/api/book', methods=['POST'])
 def book():
     data = request.get_json() or {}
-    for field in ('name', 'phone', 'service', 'date', 'time'):
-        if not data.get(field):
-            return jsonify({'success': False, 'error': f'Поле «{field}» обязательно'})
+    for f in ('name', 'phone', 'service', 'date', 'time'):
+        if not data.get(f):
+            return jsonify({'success': False, 'error': f'Feld «{f}» ist erforderlich'})
 
     parts = data['service'].split('|')
     service_name = parts[0]
     price = int(parts[1]) if len(parts) > 1 else 0
 
     conn = get_db()
-    existing = conn.execute(
-        "SELECT id FROM appointments WHERE date = ? AND time = ? AND status != 'cancelled'",
+    if conn.execute(
+        "SELECT id FROM appointments WHERE date=? AND time=? AND status!='cancelled'",
         (data['date'], data['time'])
-    ).fetchone()
-    if existing:
+    ).fetchone():
         conn.close()
-        return jsonify({'success': False, 'error': 'Это время уже занято, выберите другое'})
+        return jsonify({'success': False, 'error': 'Dieser Termin ist bereits vergeben'})
 
-    conn.execute('''
-        INSERT INTO appointments (name, phone, email, telegram, service, price, date, time, comment)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ''', (
-        data['name'], data['phone'],
-        data.get('email', ''), data.get('telegram', ''),
-        service_name, price,
-        data['date'], data['time'],
-        data.get('comment', '')
-    ))
+    cur = conn.execute('''
+        INSERT INTO appointments (name,phone,email,telegram,service,price,date,time,comment)
+        VALUES (?,?,?,?,?,?,?,?,?)
+    ''', (data['name'], data['phone'],
+          data.get('email', ''), data.get('telegram', ''),
+          service_name, price,
+          data['date'], data['time'],
+          data.get('comment', '')))
+    apt_id = cur.lastrowid
     conn.commit()
     conn.close()
 
+    # Notify admin
     if ADMIN_CHAT_ID:
         send_telegram(ADMIN_CHAT_ID,
-            f"🔔 <b>Новая запись!</b>\n\n"
-            f"👤 {data['name']}\n📞 {data['phone']}\n"
-            f"💈 {service_name} — {price}₽\n"
-            f"📅 {data['date']} в {data['time']}\n"
+            f"🔔 <b>Neuer Termin!</b>\n\n"
+            f"👤 {data['name']} · 📞 {data['phone']}\n"
+            f"💈 {service_name} — {price}€\n"
+            f"📅 {data['date']} · ⏰ {data['time']}\n"
             f"💬 {data.get('comment') or '—'}"
         )
 
-    return jsonify({'success': True, 'message': 'Запись создана! Ждём вас 🙌'})
+    # Google Sheets sync
+    sync_to_sheets([
+        apt_id, data['name'], data['phone'],
+        data.get('email', ''), data.get('telegram', ''),
+        service_name, price,
+        data['date'], data['time'], 'pending',
+        data.get('comment', ''), datetime.now().strftime('%Y-%m-%d %H:%M')
+    ])
+
+    return jsonify({'success': True, 'message': 'Termin erstellt! Bis bald 🙌'})
 
 
 @app.route('/api/admin/appointments')
@@ -270,16 +310,13 @@ def list_appointments():
     if not session.get('admin'):
         return jsonify({'error': 'Unauthorized'}), 401
 
-    status = request.args.get('status', '')
-    date_f = request.args.get('date', '')
-    search = request.args.get('search', '')
+    status  = request.args.get('status', '')
+    date_f  = request.args.get('date', '')
+    search  = request.args.get('search', '')
 
-    q = 'SELECT * FROM appointments WHERE 1=1'
-    params = []
-    if status:
-        q += ' AND status = ?'; params.append(status)
-    if date_f:
-        q += ' AND date = ?'; params.append(date_f)
+    q, params = 'SELECT * FROM appointments WHERE 1=1', []
+    if status: q += ' AND status=?'; params.append(status)
+    if date_f: q += ' AND date=?';   params.append(date_f)
     if search:
         q += ' AND (name LIKE ? OR phone LIKE ?)'; params += [f'%{search}%', f'%{search}%']
     q += ' ORDER BY date DESC, time ASC'
@@ -290,28 +327,64 @@ def list_appointments():
     return jsonify({'appointments': [dict(r) for r in rows]})
 
 
+@app.route('/api/admin/clients')
+def list_clients():
+    if not session.get('admin'):
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    conn = get_db()
+    clients = conn.execute('''
+        SELECT
+            phone,
+            MAX(name) AS name,
+            MAX(email) AS email,
+            MAX(telegram) AS telegram,
+            COUNT(*) AS total_bookings,
+            SUM(CASE WHEN status!='cancelled' THEN 1 ELSE 0 END) AS completed,
+            SUM(CASE WHEN status='confirmed' THEN price ELSE 0 END) AS total_spent,
+            MAX(date) AS last_date,
+            MIN(created_at) AS first_seen
+        FROM appointments
+        GROUP BY phone
+        ORDER BY total_bookings DESC, last_date DESC
+    ''').fetchall()
+    conn.close()
+    return jsonify({'clients': [dict(c) for c in clients]})
+
+
+@app.route('/api/admin/client/<phone>')
+def client_history(phone):
+    if not session.get('admin'):
+        return jsonify({'error': 'Unauthorized'}), 401
+    conn = get_db()
+    rows = conn.execute(
+        'SELECT * FROM appointments WHERE phone=? ORDER BY date DESC, time ASC', (phone,)
+    ).fetchall()
+    conn.close()
+    return jsonify({'history': [dict(r) for r in rows]})
+
+
 @app.route('/api/admin/appointments/<int:apt_id>', methods=['PATCH'])
 def patch_appointment(apt_id):
     if not session.get('admin'):
         return jsonify({'error': 'Unauthorized'}), 401
-
     data = request.get_json() or {}
     new_status = data.get('status')
     if new_status not in ('pending', 'confirmed', 'cancelled'):
         return jsonify({'error': 'Invalid status'})
 
     conn = get_db()
-    conn.execute('UPDATE appointments SET status = ? WHERE id = ?', (new_status, apt_id))
+    conn.execute('UPDATE appointments SET status=? WHERE id=?', (new_status, apt_id))
     conn.commit()
 
     if new_status == 'confirmed':
-        row = conn.execute('SELECT * FROM appointments WHERE id = ?', (apt_id,)).fetchone()
+        row = conn.execute('SELECT * FROM appointments WHERE id=?', (apt_id,)).fetchone()
         if row:
             notify_client(row,
-                f"✅ <b>Запись подтверждена!</b>\n\n"
-                f"{row['name']}, ваша запись подтверждена:\n"
-                f"📅 {row['date']} в {row['time']}\n"
-                f"💈 {row['service']} — {row['price']}₽\n\nДо встречи! ✂"
+                f"✅ <b>Termin bestätigt!</b>\n\n"
+                f"{row['name']}, dein Termin ist bestätigt:\n"
+                f"📅 {row['date']} · ⏰ {row['time']}\n"
+                f"💈 {row['service']} — {row['price']}€\n\nBis dann! ✂"
             )
     conn.close()
     return jsonify({'success': True})
@@ -321,55 +394,41 @@ def patch_appointment(apt_id):
 def manual_remind(apt_id):
     if not session.get('admin'):
         return jsonify({'error': 'Unauthorized'}), 401
-
     conn = get_db()
-    row = conn.execute('SELECT * FROM appointments WHERE id = ?', (apt_id,)).fetchone()
+    row = conn.execute('SELECT * FROM appointments WHERE id=?', (apt_id,)).fetchone()
     conn.close()
     if not row:
         return jsonify({'error': 'Not found'})
 
     msg = (
-        f"✂ <b>Напоминание о записи — BarberShop</b>\n\n"
-        f"{row['name']}, напоминаем о вашей записи:\n"
-        f"📅 {row['date']} в {row['time']}\n"
-        f"💈 {row['service']} — {row['price']}₽\n\n"
-        f"Если планы изменились — звоните: +7 (999) 123-45-67"
+        f"✂ <b>München Barber — Terminerinnerung</b>\n\n"
+        f"{row['name']}, denk an deinen Termin:\n"
+        f"📅 {row['date']} · ⏰ {row['time']}\n"
+        f"💈 {row['service']} — {row['price']}€\n\n"
+        f"Bei Fragen: @barbermunich1"
     )
     sent = notify_client(row, msg)
-    if sent:
-        return jsonify({'success': True, 'message': 'Напоминание отправлено'})
-    return jsonify({'success': False, 'message': 'Нет контактов для рассылки (Telegram / Email)'})
+    return jsonify({'success': sent,
+                    'message': 'Erinnerung gesendet ✓' if sent else 'Keine Kontaktdaten hinterlegt'})
 
 
 @app.route('/api/admin/stats')
 def stats():
     if not session.get('admin'):
         return jsonify({'error': 'Unauthorized'}), 401
-
     conn = get_db()
-    today = datetime.now().strftime('%Y-%m-%d')
+    today      = datetime.now().strftime('%Y-%m-%d')
     week_start = (datetime.now() - timedelta(days=datetime.now().weekday())).strftime('%Y-%m-%d')
+    month_pref = datetime.now().strftime('%Y-%m')
 
     result = {
-        'today': conn.execute(
-            "SELECT COUNT(*) FROM appointments WHERE date=? AND status!='cancelled'", (today,)
-        ).fetchone()[0],
-        'week': conn.execute(
-            "SELECT COUNT(*) FROM appointments WHERE date>=? AND status!='cancelled'", (week_start,)
-        ).fetchone()[0],
-        'total': conn.execute(
-            "SELECT COUNT(*) FROM appointments WHERE status!='cancelled'"
-        ).fetchone()[0],
-        'pending': conn.execute(
-            "SELECT COUNT(*) FROM appointments WHERE status='pending'"
-        ).fetchone()[0],
-        'revenue_today': conn.execute(
-            "SELECT COALESCE(SUM(price),0) FROM appointments WHERE date=? AND status='confirmed'", (today,)
-        ).fetchone()[0],
-        'revenue_month': conn.execute(
-            "SELECT COALESCE(SUM(price),0) FROM appointments WHERE date LIKE ? AND status='confirmed'",
-            (datetime.now().strftime('%Y-%m') + '%',)
-        ).fetchone()[0],
+        'today':         conn.execute("SELECT COUNT(*) FROM appointments WHERE date=? AND status!='cancelled'",(today,)).fetchone()[0],
+        'week':          conn.execute("SELECT COUNT(*) FROM appointments WHERE date>=? AND status!='cancelled'",(week_start,)).fetchone()[0],
+        'total':         conn.execute("SELECT COUNT(*) FROM appointments WHERE status!='cancelled'").fetchone()[0],
+        'pending':       conn.execute("SELECT COUNT(*) FROM appointments WHERE status='pending'").fetchone()[0],
+        'clients':       conn.execute("SELECT COUNT(DISTINCT phone) FROM appointments WHERE status!='cancelled'").fetchone()[0],
+        'rev_today':     conn.execute("SELECT COALESCE(SUM(price),0) FROM appointments WHERE date=? AND status='confirmed'",(today,)).fetchone()[0],
+        'rev_month':     conn.execute("SELECT COALESCE(SUM(price),0) FROM appointments WHERE date LIKE ? AND status='confirmed'",(month_pref+'%',)).fetchone()[0],
     }
     conn.close()
     return jsonify(result)
@@ -379,36 +438,33 @@ def stats():
 def export_csv():
     if not session.get('admin'):
         return jsonify({'error': 'Unauthorized'}), 401
-
     conn = get_db()
-    rows = conn.execute('SELECT * FROM appointments ORDER BY date DESC, time ASC').fetchall()
+    rows = conn.execute('SELECT * FROM appointments ORDER BY date DESC').fetchall()
     conn.close()
-
     out = io.StringIO()
-    writer = csv.writer(out)
-    writer.writerow(['ID', 'Имя', 'Телефон', 'Email', 'Telegram',
-                     'Услуга', 'Цена', 'Дата', 'Время', 'Статус', 'Комментарий', 'Создано'])
+    w = csv.writer(out)
+    w.writerow(['ID','Name','Telefon','E-Mail','Telegram','Service','Preis (€)',
+                'Datum','Uhrzeit','Status','Kommentar','Erstellt'])
     for r in rows:
-        writer.writerow([r['id'], r['name'], r['phone'], r['email'], r['telegram'],
-                         r['service'], r['price'], r['date'], r['time'],
-                         r['status'], r['comment'], r['created_at']])
-
+        w.writerow([r['id'], r['name'], r['phone'], r['email'], r['telegram'],
+                    r['service'], r['price'], r['date'], r['time'],
+                    r['status'], r['comment'], r['created_at']])
     return Response(
         '\ufeff' + out.getvalue(),
         mimetype='text/csv; charset=utf-8',
-        headers={'Content-Disposition': 'attachment; filename=appointments.csv'}
+        headers={'Content-Disposition': 'attachment; filename=termine.csv'}
     )
 
 
-# ── Startup ───────────────────────────────────────────────────────────────────
+# ── Boot ──────────────────────────────────────────────────────────────────────
 
 init_db()
 
 if not os.environ.get('WERKZEUG_RUN_MAIN'):
-    scheduler = BackgroundScheduler(daemon=True)
-    scheduler.add_job(check_reminders, IntervalTrigger(minutes=30), id='reminders', replace_existing=True)
-    scheduler.start()
-    atexit.register(scheduler.shutdown)
+    _sched = BackgroundScheduler(daemon=True)
+    _sched.add_job(check_reminders, IntervalTrigger(minutes=30), id='reminders', replace_existing=True)
+    _sched.start()
+    atexit.register(_sched.shutdown)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
