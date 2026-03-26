@@ -130,44 +130,103 @@ const numObs = new IntersectionObserver((entries) => {
 }, { threshold: .3 });
 document.querySelectorAll('.about-nums').forEach(el => numObs.observe(el));
 
-// ── Booking: date init ────────────────────────────────
-const dateInput = document.getElementById('bDate');
-if (dateInput) {
+// ── Flatpickr date picker ─────────────────────────────
+let _disabledDates = [];
+async function initDatePicker() {
+  const dateInput = document.getElementById('bDate');
+  if (!dateInput || typeof flatpickr === 'undefined') return;
+
+  try {
+    const res  = await fetch('/api/availability');
+    const data = await res.json();
+    _disabledDates = data.disabled || [];
+  } catch { _disabledDates = []; }
+
   const today  = new Date();
   const maxDay = new Date(today); maxDay.setDate(today.getDate() + 60);
-  const fmt = d => d.toISOString().split('T')[0];
-  dateInput.min = fmt(today);
-  dateInput.max = fmt(maxDay);
-  dateInput.addEventListener('change', loadSlots);
-}
 
-// ── Time slots ────────────────────────────────────────
+  flatpickr(dateInput, {
+    locale: 'de',
+    minDate: today,
+    maxDate: maxDay,
+    disable: _disabledDates,
+    disableMobile: true,
+    onChange: ([selectedDate]) => {
+      if (selectedDate) loadSlots();
+    },
+  });
+}
+initDatePicker();
+
+// ── Time slots (grid) ──────────────────────────────────
 async function loadSlots() {
   const date = document.getElementById('bDate').value;
-  const sel  = document.getElementById('bTime');
-  if (!date || !sel) return;
+  const grid = document.getElementById('timeGrid');
+  const hidden = document.getElementById('bTime');
+  if (!date || !grid) return;
 
-  sel.innerHTML = '<option value="">Lädt...</option>';
-  sel.disabled = true;
+  grid.innerHTML = '<div class="tg-loading">Lädt...</div>';
+  if (hidden) hidden.value = '';
 
   try {
     const res  = await fetch(`/api/slots?date=${date}`);
     const data = await res.json();
 
-    sel.innerHTML = '';
+    grid.innerHTML = '';
     if (data.closed) {
-      sel.innerHTML = '<option value="">Geschlossen (kein Termin)</option>';
-    } else if (!data.slots?.length) {
-      sel.innerHTML = '<option value="">Keine freien Zeiten</option>';
-    } else {
-      sel.appendChild(new Option('Uhrzeit wählen', ''));
-      data.slots.forEach(s => sel.appendChild(new Option(s, s)));
+      grid.innerHTML = '<div class="tg-hint">Geschlossen</div>';
+      return;
     }
+    const available = data.slots || [];
+    const booked    = data.booked || [];
+    if (!available.length && !booked.length) {
+      grid.innerHTML = '<div class="tg-hint">Keine freien Zeiten</div>';
+      return;
+    }
+    // Merge + sort all slots
+    const all = [...new Set([...available, ...booked])].sort();
+    all.forEach(slot => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'tg-slot' + (booked.includes(slot) ? ' booked' : '');
+      btn.textContent = slot;
+      if (!booked.includes(slot)) {
+        btn.addEventListener('click', () => {
+          grid.querySelectorAll('.tg-slot').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          if (hidden) hidden.value = slot;
+        });
+      }
+      grid.appendChild(btn);
+    });
   } catch {
-    sel.innerHTML = '<option value="">Fehler beim Laden</option>';
-  } finally {
-    sel.disabled = false;
+    grid.innerHTML = '<div class="tg-hint">Fehler beim Laden</div>';
   }
+}
+
+// ── Floating book button ───────────────────────────────
+const floatBook = document.getElementById('floatBook');
+const heroSection = document.querySelector('.hero');
+const bookingSection = document.getElementById('termin');
+if (floatBook && heroSection && bookingSection) {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.target === heroSection && !e.isIntersecting) {
+        floatBook.classList.add('visible');
+      } else if (e.target === heroSection && e.isIntersecting) {
+        floatBook.classList.remove('visible');
+      }
+      if (e.target === bookingSection && e.isIntersecting) {
+        floatBook.classList.remove('visible');
+      } else if (e.target === bookingSection && !e.isIntersecting && !heroSection.getBoundingClientRect().top > 0) {
+        // re-show only if hero is already past
+        const heroRect = heroSection.getBoundingClientRect();
+        if (heroRect.bottom < 0) floatBook.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+  obs.observe(heroSection);
+  obs.observe(bookingSection);
 }
 
 // ── Booking form ──────────────────────────────────────
@@ -203,7 +262,8 @@ if (bookForm) {
         document.getElementById('mMsg').textContent = data.message;
         openModal();
         bookForm.reset();
-        document.getElementById('bTime').innerHTML = '<option value="">Erst Datum wählen</option>';
+        const grid = document.getElementById('timeGrid');
+        if (grid) grid.innerHTML = '<div class="tg-hint">Erst Datum wählen</div>';
       } else {
         showErr(data.error || 'Unbekannter Fehler');
       }

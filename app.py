@@ -260,7 +260,32 @@ def get_slots():
                 continue
         available.append(slot)
 
-    return jsonify({'slots': available, 'closed': False})
+    return jsonify({'slots': available, 'booked': sorted(booked), 'closed': False})
+
+
+@app.route('/api/availability')
+def availability():
+    today = datetime.now().date()
+    disabled = []
+    conn = get_db()
+    for i in range(61):
+        d = today + timedelta(days=i)
+        date_str = d.strftime('%Y-%m-%d')
+        wd = d.weekday()
+        h_range = HOURS.get(wd)
+        if h_range is None:
+            disabled.append(date_str)
+            continue
+        start_h, end_h = h_range
+        total_slots = (end_h - start_h) * 2
+        booked_count = conn.execute(
+            "SELECT COUNT(*) as cnt FROM appointments WHERE date=? AND status!='cancelled'",
+            (date_str,)
+        ).fetchone()['cnt']
+        if booked_count >= total_slots:
+            disabled.append(date_str)
+    conn.close()
+    return jsonify({'disabled': disabled})
 
 
 @app.route('/api/book', methods=['POST'])

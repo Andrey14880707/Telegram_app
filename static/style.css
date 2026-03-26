@@ -890,3 +890,93 @@ em { font-style: italic; color: var(--gold); }
   .soc-card { padding: 2.5rem 1.5rem; }
   .eyebrow { font-size: .62rem; letter-spacing: 2px; }
 }
+
+/* ══ TIME GRID ════════════════════════════════════════ */
+.time-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: .6rem;
+  min-height: 44px;
+  align-content: flex-start;
+}
+.tg-hint {
+  font-size: .8rem; color: var(--gray2);
+  padding: .2rem .3rem;
+  width: 100%;
+}
+.tg-slot {
+  padding: .35rem .65rem;
+  font-size: .78rem; font-family: 'Poppins', sans-serif;
+  background: var(--surface); border: 1px solid var(--border2);
+  color: var(--white); cursor: pointer;
+  transition: background var(--tr), border-color var(--tr), color var(--tr);
+  user-select: none;
+}
+.tg-slot:hover { background: var(--border2); border-color: var(--gold); }
+.tg-slot.active {
+  background: var(--gold); border-color: var(--gold);
+  color: var(--black); font-weight: 600;
+}
+.tg-slot.booked {
+  background: transparent; border-color: var(--border);
+  color: var(--gray2); cursor: not-allowed;
+  text-decoration: line-through; opacity: .5;
+}
+.tg-loading {
+  font-size: .8rem; color: var(--gray2);
+  padding: .2rem .3rem; width: 100%;
+}
+
+/* ══ FLOATING BOOK BUTTON ══════════════════════════════ */
+.float-book {
+  position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 900;
+  background: var(--gold);
+  color: var(--black);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1rem; letter-spacing: 2px;
+  padding: .85rem 1.6rem;
+  display: flex; align-items: center; gap: .4rem;
+  box-shadow: 0 6px 24px rgba(212,175,55,.35);
+  transition: opacity .3s, transform .3s, background var(--tr), box-shadow var(--tr);
+  opacity: 0; pointer-events: none; transform: translateY(12px);
+}
+.float-book.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
+.float-book:hover { background: var(--gold2); box-shadow: 0 8px 32px rgba(212,175,55,.5); }
+
+/* ══ FLATPICKR DARK THEME OVERRIDES ═══════════════════ */
+.flatpickr-calendar {
+  background: var(--surface) !important;
+  border: 1px solid var(--border2) !important;
+  box-shadow: 0 12px 40px rgba(0,0,0,.6) !important;
+  border-radius: 0 !important;
+  font-family: 'Poppins', sans-serif !important;
+}
+.flatpickr-months { background: var(--card) !important; }
+.flatpickr-month { color: var(--white) !important; fill: var(--white) !important; }
+.flatpickr-current-month { color: var(--white) !important; }
+.flatpickr-current-month .numInputWrapper span { border-color: var(--border2) !important; }
+.flatpickr-current-month input.cur-year { color: var(--white) !important; }
+.flatpickr-prev-month, .flatpickr-next-month { fill: var(--gold) !important; }
+.flatpickr-prev-month:hover svg, .flatpickr-next-month:hover svg { fill: var(--gold2) !important; }
+span.flatpickr-weekday { color: var(--gray) !important; background: var(--card) !important; font-size: .7rem; }
+.flatpickr-days { border-color: var(--border) !important; }
+.flatpickr-day {
+  color: var(--white) !important;
+  border-radius: 0 !important;
+  border: none !important;
+}
+.flatpickr-day:hover { background: var(--border2) !important; color: var(--gold) !important; }
+.flatpickr-day.selected, .flatpickr-day.selected:hover {
+  background: var(--gold) !important;
+  color: var(--black) !important;
+}
+.flatpickr-day.flatpickr-disabled,
+.flatpickr-day.flatpickr-disabled:hover {
+  background: transparent !important;
+  color: var(--gray2) !important;
+  text-decoration: line-through; opacity: .4;
+}
+.flatpickr-day.today { border-bottom: 2px solid var(--gold) !important; }

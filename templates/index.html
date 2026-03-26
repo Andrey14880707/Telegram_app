@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 <body>
 
@@ -350,8 +351,11 @@
           </select>
         </div>
         <div class="bf-row">
-          <div class="bf-g"><label>Datum *</label><input type="date" id="bDate" required></div>
-          <div class="bf-g"><label>Uhrzeit *</label><select id="bTime" required><option value="">Erst Datum wählen</option></select></div>
+          <div class="bf-g"><label>Datum *</label><input type="text" id="bDate" placeholder="Datum wählen" autocomplete="off" readonly required></div>
+          <div class="bf-g"><label>Uhrzeit *</label>
+            <input type="hidden" id="bTime" required>
+            <div class="time-grid" id="timeGrid"><div class="tg-hint">Erst Datum wählen</div></div>
+          </div>
         </div>
         <div class="bf-g">
           <label>Anmerkungen</label>
@@ -425,6 +429,11 @@
   <button class="btn-primary" onclick="closeModal()">Perfekt!</button>
 </div>
 
+<!-- ── FLOATING BOOK BUTTON ── -->
+<a href="#termin" class="float-book" id="floatBook">✂ Termin buchen</a>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/de.js"></script>
 <script src="/static/script.js"></script>
 </body>
 </html>
