@@ -28,10 +28,18 @@ SMTP_PORT = int(os.getenv('SMTP_PORT', '587'))
 SMTP_USER = os.getenv('SMTP_USER', '')
 SMTP_PASS = os.getenv('SMTP_PASS', '')
 N8N_WEBHOOK = os.getenv('N8N_WEBHOOK', 'https://usteem.app.n8n.cloud/webhook-test/barber-booking')
-DB_PATH      = os.path.join(os.path.dirname(__file__), 'barber.db')
-UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'static', 'uploads')
-ALLOWED_EXT  = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+
+# On Render (and similar) use /data (persistent disk); locally use project dir
+_BASE = '/data' if os.path.isdir('/data') else os.path.dirname(__file__)
+DB_PATH       = os.path.join(_BASE, 'barber.db')
+UPLOAD_FOLDER = os.path.join(_BASE, 'uploads')
+ALLOWED_EXT   = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+# Serve uploaded photos (needed when not in static/)
+@app.route('/uploads/<path:filename>')
+def uploaded_file(filename):
+    return send_from_directory(UPLOAD_FOLDER, filename)
 
 # Optional Google Sheets
 try:
