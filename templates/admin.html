@@ -16,7 +16,7 @@
       --green: #22c55e; --red: #ef4444; --yellow: #f59e0b; --blue: #3b82f6;
       --tr: .25s ease;
     }
-    html, body { height: 100%; }
+    html, body { height: 100%; overflow-x: hidden; max-width: 100vw; }
     body { background: var(--bg); color: var(--text); font-family: 'Poppins', sans-serif; font-size: 14px; }
 
     /* ── Login ── */
@@ -110,9 +110,9 @@
     .f-ts { font-size: .72rem; color: var(--gray2); }
 
     /* Table */
-    .tbl-wrap { flex: 1; overflow: auto; padding: 1.5rem; }
+    .tbl-wrap { flex: 1; overflow-x: auto; -webkit-overflow-scrolling: touch; padding: 1.5rem; }
     .rec-cnt { font-size: .75rem; color: var(--gray2); margin-bottom: .75rem; }
-    table { width: 100%; border-collapse: collapse; min-width: 880px; }
+    table { width: 100%; border-collapse: collapse; min-width: 700px; }
     thead th {
       padding: .7rem 1rem; text-align: left;
       font-size: .65rem; text-transform: uppercase; letter-spacing: 2px;
