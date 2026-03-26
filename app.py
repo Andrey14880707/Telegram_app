@@ -75,6 +75,8 @@ def init_db():
             comment TEXT DEFAULT '',
             status TEXT DEFAULT 'pending',
             reminder_24h INTEGER DEFAULT 0,
+            reminder_2h_sent INTEGER DEFAULT 0,
+            followup_sent INTEGER DEFAULT 0,
             created_at TEXT DEFAULT (datetime('now','localtime'))
         )
     ''')
@@ -93,6 +95,15 @@ def init_db():
         conn.execute("ALTER TABLE photos ADD COLUMN category TEXT DEFAULT 'Sonstiges'")
     except Exception:
         pass
+    # Add reminder columns (migration for existing DBs)
+    for col_def in [
+        "ALTER TABLE appointments ADD COLUMN reminder_2h_sent INTEGER DEFAULT 0",
+        "ALTER TABLE appointments ADD COLUMN followup_sent INTEGER DEFAULT 0",
+    ]:
+        try:
+            conn.execute(col_def)
+        except Exception:
+            pass
     conn.execute('''
         CREATE TABLE IF NOT EXISTS blocked_dates (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -220,17 +231,24 @@ def sync_to_sheets(row_data):
 def check_reminders():
     conn = get_db()
     now = datetime.now()
-    target_date = (now + timedelta(hours=24)).strftime('%Y-%m-%d')
-    t0 = (now + timedelta(hours=23, minutes=30)).strftime('%H:%M')
-    t1 = (now + timedelta(hours=24, minutes=30)).strftime('%H:%M')
 
-    rows = conn.execute('''
+    # ── 24h reminder ──────────────────────────────────────────────────────────
+    d24 = (now + timedelta(hours=24)).strftime('%Y-%m-%d')
+    t24_lo = (now + timedelta(hours=23, minutes=30)).strftime('%H:%M')
+    t24_hi = (now + timedelta(hours=24, minutes=30)).strftime('%H:%M')
+    rows_24 = conn.execute('''
         SELECT * FROM appointments
         WHERE status='confirmed' AND reminder_24h=0
         AND date=? AND time>=? AND time<=?
-    ''', (target_date, t0, t1)).fetchall()
-
-    for row in rows:
+    ''', (d24, t24_lo, t24_hi)).fetchall()
+    for row in rows_24:
+        send_to_n8n({
+            'event_type': 'reminder_24h',
+            'id': row['id'], 'name': row['name'], 'phone': row['phone'],
+            'email': row['email'], 'telegram': row['telegram'],
+            'service': row['service'], 'price': row['price'], 'currency': 'EUR',
+            'date': row['date'], 'time': row['time'],
+        })
         msg = (
             f"✂ <b>München Barber — Terminerinnerung</b>\n\n"
             f"Hallo {row['name']}! Dein Termin ist <b>morgen</b>:\n"
@@ -240,6 +258,58 @@ def check_reminders():
         )
         if notify_client(row, msg):
             conn.execute('UPDATE appointments SET reminder_24h=1 WHERE id=?', (row['id'],))
+
+    # ── 2h reminder ───────────────────────────────────────────────────────────
+    d2 = now.strftime('%Y-%m-%d')
+    t2_lo = (now + timedelta(hours=1, minutes=45)).strftime('%H:%M')
+    t2_hi = (now + timedelta(hours=2, minutes=15)).strftime('%H:%M')
+    rows_2h = conn.execute('''
+        SELECT * FROM appointments
+        WHERE status='confirmed' AND reminder_2h_sent=0
+        AND date=? AND time>=? AND time<=?
+    ''', (d2, t2_lo, t2_hi)).fetchall()
+    for row in rows_2h:
+        send_to_n8n({
+            'event_type': 'reminder_2h',
+            'id': row['id'], 'name': row['name'], 'phone': row['phone'],
+            'email': row['email'], 'telegram': row['telegram'],
+            'service': row['service'], 'price': row['price'], 'currency': 'EUR',
+            'date': row['date'], 'time': row['time'],
+        })
+        msg = (
+            f"⏰ <b>München Barber — In 2 Stunden!</b>\n\n"
+            f"Hallo {row['name']}! Dein Termin ist <b>in 2 Stunden</b>:\n"
+            f"📅 {row['date']} · ⏰ {row['time']}\n"
+            f"💈 {row['service']} — {row['price']}€\n\n"
+            f"Bis gleich! Bei Fragen: @barbermunich1"
+        )
+        if notify_client(row, msg):
+            conn.execute('UPDATE appointments SET reminder_2h_sent=1 WHERE id=?', (row['id'],))
+
+    # ── 21-day follow-up ──────────────────────────────────────────────────────
+    cutoff = (now - timedelta(days=21)).strftime('%Y-%m-%d')
+    rows_fu = conn.execute('''
+        SELECT * FROM appointments
+        WHERE status IN ('confirmed', 'completed') AND followup_sent=0
+        AND date=?
+    ''', (cutoff,)).fetchall()
+    for row in rows_fu:
+        send_to_n8n({
+            'event_type': 'followup_21d',
+            'id': row['id'], 'name': row['name'], 'phone': row['phone'],
+            'email': row['email'], 'telegram': row['telegram'],
+            'service': row['service'], 'price': row['price'], 'currency': 'EUR',
+            'date': row['date'], 'time': row['time'],
+        })
+        msg = (
+            f"💈 <b>München Barber — Zeit für einen neuen Schnitt!</b>\n\n"
+            f"Hey {row['name']}! Es ist schon 3 Wochen her — \n"
+            f"Zeit für deinen nächsten Termin?\n\n"
+            f"Jetzt buchen: https://munchen-barber.onrender.com/#termin\n"
+            f"Bei Fragen: @barbermunich1"
+        )
+        if notify_client(row, msg):
+            conn.execute('UPDATE appointments SET followup_sent=1 WHERE id=?', (row['id'],))
 
     conn.commit()
     conn.close()
@@ -445,6 +515,7 @@ def book():
 
     # n8n webhook
     send_to_n8n({
+        'event_type': 'booking_confirmation',
         'id':       apt_id,
         'name':     data['name'],
         'phone':    data['phone'],
@@ -548,7 +619,7 @@ def patch_appointment(apt_id):
     row = conn.execute('SELECT * FROM appointments WHERE id=?', (apt_id,)).fetchone()
     if row:
         send_to_n8n({
-            'event':    'status_changed',
+            'event_type': 'status_changed',
             'id':       apt_id,
             'name':     row['name'],
             'phone':    row['phone'],

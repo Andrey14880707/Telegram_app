@@ -560,11 +560,11 @@
         <input type="file" id="photoFile" accept="image/*" onchange="previewPhoto(this)">
       </div>
       <select id="photoCat" style="background:var(--card);border:1px solid var(--border);color:var(--text);padding:.55rem .9rem;font-family:inherit;font-size:.82rem;outline:none;cursor:pointer">
-        <option value="Fade">✂ Fade / Skin Fade</option>
-        <option value="Classic">💈 Classic Cut</option>
-        <option value="Bart">🪒 Bart & Rasur</option>
-        <option value="FullLook">⚡ Full Look</option>
-        <option value="Sonstiges">📷 Sonstiges</option>
+        <option value="Fade">Fade / Skin Fade</option>
+        <option value="Classic">Classic Cut</option>
+        <option value="Bart">Bart & Rasur</option>
+        <option value="FullLook">Full Look</option>
+        <option value="Sonstiges">Sonstiges</option>
       </select>
       <input type="text" id="photoCap" placeholder="Beschriftung (optional)" style="background:var(--card);border:1px solid var(--border);color:var(--text);padding:.55rem .9rem;font-family:inherit;font-size:.82rem;outline:none;width:180px">
       <button class="btn btn-ghost" id="photoUploadBtn" onclick="uploadPhoto()" style="display:none">Hochladen ↑</button>
@@ -573,11 +573,11 @@
     <!-- Category filter tabs -->
     <div class="ph-cats" id="phCats">
       <button class="ph-cat-btn active" onclick="filterPhotos('all',this)">Alle</button>
-      <button class="ph-cat-btn" onclick="filterPhotos('Fade',this)">✂ Fade</button>
-      <button class="ph-cat-btn" onclick="filterPhotos('Classic',this)">💈 Classic</button>
-      <button class="ph-cat-btn" onclick="filterPhotos('Bart',this)">🪒 Bart</button>
-      <button class="ph-cat-btn" onclick="filterPhotos('FullLook',this)">⚡ Full Look</button>
-      <button class="ph-cat-btn" onclick="filterPhotos('Sonstiges',this)">📷 Sonstiges</button>
+      <button class="ph-cat-btn" onclick="filterPhotos('Fade',this)">Fade</button>
+      <button class="ph-cat-btn" onclick="filterPhotos('Classic',this)">Classic</button>
+      <button class="ph-cat-btn" onclick="filterPhotos('Bart',this)">Bart</button>
+      <button class="ph-cat-btn" onclick="filterPhotos('FullLook',this)">Full Look</button>
+      <button class="ph-cat-btn" onclick="filterPhotos('Sonstiges',this)">Sonstiges</button>
     </div>
     <div id="photoGrid" class="ph-grid"><div class="ph-empty">Noch keine Fotos hochgeladen</div></div>
   </div>
@@ -929,8 +929,8 @@ function renderTermine(list) {
 // ── Kunden ─────────────────────────────────────────────
 let allClients = [];
 async function loadKunden() {
-  const body = document.getElementById('cBody');
-  body.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:2rem"><div class="spinner"></div></td></tr>`;
+  const grid = document.getElementById('kGrid');
+  grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:2rem"><div class="spinner"></div></div>`;
   const r = await fetch('/api/admin/clients');
   if (!r.ok) return;
   const d = await r.json();
@@ -1190,7 +1190,7 @@ function renderPhotos() {
     grid.innerHTML = `<div class="ph-empty">${_activeCat === 'all' ? 'Noch keine Fotos hochgeladen' : 'Keine Fotos in dieser Kategorie'}</div>`;
     return;
   }
-  const catLabels = {Fade:'✂ Fade',Classic:'💈 Classic',Bart:'🪒 Bart',FullLook:'⚡ Full Look',Sonstiges:'📷 Sonstiges'};
+  const catLabels = {Fade:'Fade',Classic:'Classic',Bart:'Bart',FullLook:'Full Look',Sonstiges:'Sonstiges'};
   grid.innerHTML = list.map(p => `
     <div class="ph-card">
       <img src="/uploads/${esc(p.filename)}" alt="${esc(p.caption)}" loading="lazy">
