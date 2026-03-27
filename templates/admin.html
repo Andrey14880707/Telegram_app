@@ -664,6 +664,10 @@
           <label class="m-label">Kommentar</label>
           <input type="text" id="bmComment" class="m-input" placeholder="Optional...">
         </div>
+        <div class="m-group">
+          <label class="m-label">E-Mail <small style="color:var(--gray2)">(optional)</small></label>
+          <input type="email" id="bmEmail" class="m-input" placeholder="email@example.com">
+        </div>
         <button class="btn btn-gold btn-full" onclick="saveManualBooking()">Buchung erstellen</button>
       </div>
     </div>
@@ -1082,7 +1086,8 @@ async function saveManualBooking() {
     date: $('bmDate').value,
     time: $('bmTime').value,
     service: $('bmService').value,
-    comment: $('bmComment').value
+    comment: $('bmComment').value,
+    email: $('bmEmail').value
   };
   if(!data.name || !data.phone) return toast('Name/Telefon fehlt', 'err');
   const r = await fetch('/api/book', {
