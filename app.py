@@ -605,7 +605,7 @@ def list_clients():
     return jsonify({'clients': [dict(c) for c in clients]})
 
 
-@app.route('/api/admin/client/<phone>')
+@app.route('/api/admin/client/<phone>', methods=['GET'])
 def client_history(phone):
     if not session.get('admin'):
         return jsonify({'error': 'Unauthorized'}), 401
@@ -615,6 +615,37 @@ def client_history(phone):
     ).fetchall()
     conn.close()
     return jsonify({'history': [dict(r) for r in rows]})
+
+
+@app.route('/api/admin/client/<phone>', methods=['DELETE'])
+def delete_client(phone):
+    if not session.get('admin'):
+        return jsonify({'error': 'Unauthorized'}), 401
+    conn = get_db()
+    conn.execute("DELETE FROM appointments WHERE phone=?", (phone,))
+    conn.commit()
+    conn.close()
+    return jsonify({'success': True})
+
+
+@app.route('/api/admin/send-email', methods=['POST'])
+def send_email_to_client():
+    if not session.get('admin'):
+        return jsonify({'error': 'Unauthorized'}), 401
+    data = request.get_json() or {}
+    email = data.get('email', '')
+    name  = data.get('name', '')
+    msg   = data.get('message', '')
+    if not email or not msg:
+        return jsonify({'ok': False, 'error': 'email/message fehlt'})
+    html = f'''<html><body style="font-family:sans-serif;background:#0f0f0f;color:#f0f0f0;padding:2rem;max-width:500px;margin:0 auto">
+        <h2 style="color:#d4af37">München Barber</h2>
+        <p>Hallo <b>{name}</b>,</p>
+        <p style="white-space:pre-wrap">{msg}</p>
+        <p style="margin-top:2rem;color:#888">Bei Fragen: <a href="https://t.me/barbermunich1" style="color:#d4af37">@barbermunich1</a></p>
+        </body></html>'''
+    ok = send_email(email, 'München Barber', html)
+    return jsonify({'ok': ok, 'error': '' if ok else 'SMTP nicht konfiguriert'})
 
 
 @app.route('/api/admin/appointments/<int:apt_id>', methods=['PATCH'])

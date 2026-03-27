@@ -585,7 +585,8 @@
     <div id="cdName" class="cd-name">—</div>
     <button class="btn btn-ghost" onclick="closeCd()">✕</button>
   </div>
-  <div id="cdInfo" style="font-size:.82rem;color:var(--gray);line-height:1.8"></div>
+  <div id="cdInfo" style="font-size:.82rem;color:var(--gray);line-height:1.9;margin-bottom:1rem"></div>
+  <div id="cdActions" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.5rem"></div>
   <div class="cd-hist" id="cdHist"></div>
 </div>
 <div class="m-overlay" id="cdOverlay" onclick="closeCd()" style="position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:199;display:none"></div>
@@ -969,40 +970,119 @@ function renderKunden(list) {
 }
 
 // ── Client detail ──────────────────────────────────────
+let _cdPhone = null;
 async function openCd(phone) {
-  const panel   = document.getElementById('cdPanel');
-  const overlay = document.getElementById('cdOverlay');
+  _cdPhone = phone;
+  const panel = document.getElementById('cdPanel');
   panel.classList.add('open');
-  overlay.style.display = 'block';
+  document.getElementById('cdOverlay').style.display = 'block';
   document.getElementById('cdName').textContent = '…';
-  document.getElementById('cdInfo').textContent = '';
+  document.getElementById('cdInfo').innerHTML = '';
+  document.getElementById('cdActions').innerHTML = '';
   document.getElementById('cdHist').innerHTML = '<div class="spinner"></div>';
 
-  const r = await fetch(`/api/admin/client/${encodeURIComponent(phone)}`);
-  const d = await r.json();
+  let d;
+  try {
+    const r = await fetch(`/api/admin/client/${encodeURIComponent(phone)}`);
+    if (!r.ok) throw new Error(r.status);
+    d = await r.json();
+  } catch(e) {
+    document.getElementById('cdHist').innerHTML = `<div class="empty">Fehler beim Laden</div>`;
+    return;
+  }
+
   const hist = d.history || [];
-  if (!hist.length) { closeCd(); return; }
+  if (!hist.length) {
+    document.getElementById('cdHist').innerHTML = `<div class="empty">Keine Termine gefunden</div>`;
+    return;
+  }
 
-  const c = hist[0];
-  document.getElementById('cdName').textContent = c.name;
+  // Find best name/email/telegram across all records
+  const name     = hist.find(h=>h.name)?.name || phone;
+  const email    = hist.find(h=>h.email)?.email || '';
+  const telegram = hist.find(h=>h.telegram)?.telegram || '';
+
+  document.getElementById('cdName').textContent = name;
+
+  // Stats
+  const done    = hist.filter(h => h.status === 'confirmed' || h.status === 'completed');
+  const spent   = done.reduce((s,h) => s + h.price, 0);
+  const upcoming = hist.find(h => h.date >= new Date().toISOString().split('T')[0] && h.status !== 'cancelled' && h.status !== 'deleted');
+  const svcCount = {};
+  done.forEach(h => svcCount[h.service] = (svcCount[h.service]||0)+1);
+  const topSvc = Object.entries(svcCount).sort((a,b)=>b[1]-a[1])[0]?.[0] || '—';
+
   document.getElementById('cdInfo').innerHTML =
-    `📞 ${c.phone}` +
-    (c.email    ? `<br>📧 ${c.email}` : '') +
-    (c.telegram ? `<br>📱 ${c.telegram}` : '') +
-    `<br><br>Buchungen gesamt: <strong>${hist.length}</strong>` +
-    `<br>Ausgegeben: <strong style="color:var(--green)">${hist.filter(h=>h.status==='confirmed').reduce((s,h)=>s+h.price,0)}€</strong>`;
+    `<strong style="color:#fff">${esc(name)}</strong><br>` +
+    `📞 ${esc(phone)}` +
+    (email    ? `<br>📧 ${esc(email)}` : '') +
+    (telegram ? `<br>📱 ${esc(telegram)}` : '') +
+    `<br><br>` +
+    `Besuche: <strong>${done.length}</strong> &nbsp;·&nbsp; Ausgegeben: <strong style="color:var(--green)">${spent}€</strong><br>` +
+    `Lieblings-Service: <strong>${esc(topSvc)}</strong><br>` +
+    (upcoming ? `Nächster Termin: <strong style="color:var(--gold)">${upcoming.date} · ${upcoming.time}</strong>` : `Letzter Besuch: <strong>${hist[0].date}</strong>`);
 
-  document.getElementById('cdHist').innerHTML = '<div style="font-size:.7rem;letter-spacing:2px;color:var(--gray2);text-transform:uppercase;margin-bottom:1rem">Terminhistorie</div>' +
+  // Action buttons
+  document.getElementById('cdActions').innerHTML = `
+    <button class="btn btn-gold btn-sm" onclick="cdBookNew()">+ Neuer Termin</button>
+    ${email ? `<button class="btn btn-blue btn-sm" onclick="cdSendEmail('${esc(email)}','${esc(name)}')">Email senden</button>` : ''}
+    <button class="btn btn-red btn-sm" onclick="cdDelete('${esc(phone)}')">Klient löschen</button>
+  `;
+
+  // History
+  const statusLabel = s => ({
+    confirmed:'Bestätigt', completed:'Abgeschlossen', cancelled:'Abgesagt',
+    pending:'Ausstehend', deleted:'Gelöscht'
+  }[s] || s);
+  const statusColor = s => ({
+    confirmed:'var(--green)', completed:'var(--green)', cancelled:'var(--red)',
+    pending:'var(--yellow)', deleted:'var(--gray2)'
+  }[s] || 'var(--gray)');
+
+  document.getElementById('cdHist').innerHTML =
+    '<div style="font-size:.7rem;letter-spacing:2px;color:var(--gray2);text-transform:uppercase;margin-bottom:1rem">Terminhistorie</div>' +
     hist.map(h => `
       <div class="cd-apt">
         <div class="cd-apt-top">
           <span class="cd-svc">${esc(h.service)}</span>
           <span class="tprice">${h.price}€</span>
         </div>
-        <div class="cd-meta">${h.date} · ${h.time} · ${h.status==='confirmed'?'✅ Bestätigt':h.status==='cancelled'?'❌ Abgesagt':'⏳ Ausstehend'}</div>
+        <div class="cd-meta">${h.date} · ${h.time} · <span style="color:${statusColor(h.status)}">${statusLabel(h.status)}</span></div>
         ${h.comment ? `<div class="cd-meta" style="margin-top:.3rem">💬 ${esc(h.comment)}</div>` : ''}
       </div>`).join('');
 }
+
+function cdBookNew() {
+  // Pre-fill booking modal with client data
+  const hist = document.getElementById('cdHist');
+  const name = document.getElementById('cdName').textContent;
+  $('bmName').value = name;
+  $('bmPhone').value = _cdPhone;
+  const email = document.getElementById('cdInfo').innerHTML.match(/📧 ([^\s<]+)/)?.[1] || '';
+  $('bmEmail').value = email;
+  closeCd();
+  openModal('bookModal');
+}
+
+async function cdSendEmail(email, name) {
+  const msg = prompt(`Email an ${name} (${email}):\n\nNachricht eingeben:`);
+  if (!msg) return;
+  const r = await fetch('/api/admin/send-email', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({email, name, message: msg})
+  });
+  const d = await r.json();
+  toast(d.ok ? '✓ Email gesendet' : 'Fehler: ' + d.error, d.ok ? 'ok' : 'err');
+}
+
+async function cdDelete(phone) {
+  if (!confirm(`Klient ${phone} und alle seine Termine löschen?`)) return;
+  const r = await fetch(`/api/admin/client/${encodeURIComponent(phone)}`, {method:'DELETE'});
+  const d = await r.json();
+  if (d.success) { toast('Klient gelöscht', 'ok'); closeCd(); loadKunden(); loadTermine(); loadStats(); }
+  else toast('Fehler', 'err');
+}
+
 function closeCd() {
   document.getElementById('cdPanel').classList.remove('open');
   document.getElementById('cdOverlay').style.display = 'none';
