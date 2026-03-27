@@ -764,23 +764,40 @@ em { font-style: italic; color: var(--gold); }
   align-items: start;
 }
 .bk-info h2 { margin: .5rem 0 1.25rem; }
-.oh { margin: 2.5rem 0 2rem; }
-.oh-title { font-size: .65rem; letter-spacing: 3px; color: var(--gold3); text-transform: uppercase; margin-bottom: 1rem; }
-.oh-row {
-  display: flex; justify-content: space-between;
-  padding: .7rem 0;
-  border-bottom: 1px solid var(--border);
+.bk-status {
+  display: inline-flex; align-items: center; gap: .4rem;
+  padding: .3rem .8rem; border-radius: 999px;
+  font-size: .72rem; font-weight: 600; letter-spacing: .5px;
+}
+.bk-status.open { background: rgba(34,197,94,.12); color: var(--green); border: 1px solid rgba(34,197,94,.3); }
+.bk-status.closed { background: rgba(239,68,68,.08); color: var(--red); border: 1px solid rgba(239,68,68,.25); }
+
+/* Hours card */
+.hours-card {
+  max-width: 480px; margin: 0 auto;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; padding: 2rem;
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+}
+.hours-top {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1.5rem; flex-wrap: wrap; gap: .75rem;
+}
+.hours-top .eyebrow { margin: 0; }
+.hours-grid { display: flex; flex-direction: column; gap: 0; }
+.hrow {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: .65rem 0; border-bottom: 1px solid var(--border);
   font-size: .88rem; color: var(--gray);
 }
-.oh-row:first-of-type { border-top: 1px solid var(--border); }
-.oh-closed span { opacity: .4; }
-.bk-status {
-  padding: .7rem 1rem;
-  font-size: .82rem; font-weight: 500;
-  margin-bottom: 1.5rem;
+.hrow:first-child { border-top: 1px solid var(--border); }
+.hrow-closed span { opacity: .4; }
+.hours-maps {
+  display: block; margin-top: 1.5rem;
+  font-size: .82rem; color: var(--gray2);
+  transition: color var(--tr); text-align: center;
 }
-.bk-status.open { background: rgba(34,197,94,.1); color: var(--green); border-left: 2px solid var(--green); }
-.bk-status.closed { background: rgba(239,68,68,.08); color: var(--red); border-left: 2px solid var(--red); }
+.hours-maps:hover { color: var(--gold); }
 .bk-footer {
   display: flex; align-items: flex-start; justify-content: space-between;
   gap: 2rem; flex-wrap: wrap;
@@ -795,8 +812,6 @@ em { font-style: italic; color: var(--gold); }
 .bk-maps-link:hover { color: var(--gold); }
 .bk-wrap-solo { justify-content: center; }
 .bk-wrap-solo .bk-form { max-width: 700px; width: 100%; }
-.hours-wrap { display: flex; align-items: flex-start; gap: 3rem; flex-wrap: wrap; }
-.hours-wrap .bk-status { align-self: center; }
 /* Form */
 .bk-form {
   background: var(--surface);
@@ -1052,7 +1067,7 @@ em { font-style: italic; color: var(--gold); }
   .price-col .btn-primary { width: 100%; justify-content: center; }
 
   /* Booking Form Tighter */
-  .oh { margin: 1.5rem 0 1.25rem; }
+  .hours-card { padding: 1.5rem; }
   .bf-row { grid-template-columns: 1fr; gap: 0.5rem; margin-bottom: 0.5rem; }
   .bf-g { margin-bottom: 0.5rem; }
   .bf-g label { margin-bottom: 0.2rem; font-size: 0.65rem; }
