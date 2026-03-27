@@ -324,6 +324,18 @@ em { font-style: italic; color: var(--gold); }
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(212,175,55,.4), transparent);
 }
+.hero-scissors-img {
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  height: 100%; width: auto;
+  max-width: 55%;
+  object-fit: contain; object-position: center right;
+  opacity: 0.18;
+  mask-image: linear-gradient(to left, rgba(0,0,0,0.9) 30%, rgba(0,0,0,0) 100%);
+  -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,0.9) 30%, rgba(0,0,0,0) 100%);
+  pointer-events: none; user-select: none;
+}
+
 .hero-bg-text {
   position: absolute;
   right: -2vw; bottom: -5vh;
