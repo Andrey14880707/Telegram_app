@@ -246,7 +246,7 @@ em { font-style: italic; color: var(--gold); }
 .mob-menu::before {
   content: '';
   position: absolute; inset: 0;
-  background: rgba(5, 5, 10, 0.92);
+  background: rgba(5, 5, 10, 0.45);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   z-index: -1;
