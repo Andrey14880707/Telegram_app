@@ -487,20 +487,23 @@ def book():
         conn.close()
         return jsonify({'success': False, 'error': 'Dieser Termin ist bereits vergeben'})
 
+    is_admin = data.get('source') == 'admin'
+    initial_status = 'confirmed' if is_admin else 'pending'
+
     cur = conn.execute('''
-        INSERT INTO appointments (name,phone,email,telegram,service,price,date,time,comment)
-        VALUES (?,?,?,?,?,?,?,?,?)
+        INSERT INTO appointments (name,phone,email,telegram,service,price,date,time,comment,status)
+        VALUES (?,?,?,?,?,?,?,?,?,?)
     ''', (data['name'], data['phone'],
           data.get('email', ''), data.get('telegram', ''),
           service_name, price,
           data['date'], data['time'],
-          data.get('comment', '')))
+          data.get('comment', ''), initial_status))
     apt_id = cur.lastrowid
     conn.commit()
     conn.close()
 
-    # Notify admin
-    if ADMIN_CHAT_ID:
+    # Notify admin (only for client self-bookings)
+    if ADMIN_CHAT_ID and not is_admin:
         send_telegram(ADMIN_CHAT_ID,
             f"🔔 <b>Neuer Termin!</b>\n\n"
             f"👤 {data['name']} · 📞 {data['phone']}\n"
@@ -509,8 +512,8 @@ def book():
             f"💬 {data.get('comment') or '—'}"
         )
 
-    # Confirmation email to client
-    if data.get('email'):
+    # Confirmation email to client (only for client self-bookings)
+    if data.get('email') and not is_admin:
         send_email(
             data['email'],
             'München Barber — Termin bestätigt',

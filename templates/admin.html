@@ -1135,7 +1135,8 @@ async function saveManualBooking() {
     time: $('bmTime').value,
     service: $('bmService').value,
     comment: $('bmComment').value,
-    email: $('bmEmail').value
+    email: $('bmEmail').value,
+    source: 'admin'
   };
   if(!data.name || !data.phone) return toast('Name/Telefon fehlt', 'err');
   const r = await fetch('/api/book', {
