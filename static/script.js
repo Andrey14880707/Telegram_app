@@ -288,25 +288,21 @@ async function loadSlots() {
 const floatBook = document.getElementById('floatBook');
 const heroSection = document.querySelector('.hero');
 const bookingSection = document.getElementById('termin');
-if (floatBook && heroSection && bookingSection) {
-  const obs = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.target === heroSection && !e.isIntersecting) {
-        floatBook.classList.add('visible');
-      } else if (e.target === heroSection && e.isIntersecting) {
-        floatBook.classList.remove('visible');
-      }
-      if (e.target === bookingSection && e.isIntersecting) {
-        floatBook.classList.remove('visible');
-      } else if (e.target === bookingSection && !e.isIntersecting && !heroSection.getBoundingClientRect().top > 0) {
-        // re-show only if hero is already past
-        const heroRect = heroSection.getBoundingClientRect();
-        if (heroRect.bottom < 0) floatBook.classList.add('visible');
-      }
-    });
-  }, { threshold: 0.1 });
-  obs.observe(heroSection);
-  obs.observe(bookingSection);
+if (floatBook && heroSection) {
+  const updateFloat = () => {
+    const heroBottom    = heroSection.getBoundingClientRect().bottom;
+    const bookingTop    = bookingSection ? bookingSection.getBoundingClientRect().top : Infinity;
+    const wh            = window.innerHeight;
+    const pastHero      = heroBottom < 0;
+    const atBooking     = bookingTop < wh * 0.8;
+    if (pastHero && !atBooking) {
+      floatBook.classList.add('visible');
+    } else {
+      floatBook.classList.remove('visible');
+    }
+  };
+  window.addEventListener('scroll', updateFloat, { passive: true });
+  updateFloat();
 }
 
 // ── Booking form ──────────────────────────────────────
