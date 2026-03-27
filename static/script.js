@@ -369,3 +369,129 @@ function closeModal() {
   document.getElementById('mOverlay').classList.remove('on');
   document.getElementById('mBox').classList.remove('on');
 }
+
+// ── Language Switcher ─────────────────────────────────
+const LANGS = {
+  de: {
+    nav_ueber:'Über mich', nav_services:'Services', nav_preise:'Preise', nav_termin:'Termin',
+    hero_tag:'Ich mache deinen Look besser', hero_btn:'Termin buchen',
+    stat_kunden:'KUNDEN', stat_exp:'JAHRE ERFAHRUNG',
+    about_eyebrow:'01 — ÜBER MICH',
+    about_h2:'Professioneller<br><em>Barbier</em><br>in München',
+    about_p1:'Spezialist für Fades, klassische Haarschnitte und Bartpflege. Mit über 5 Jahren Erfahrung und einem Auge fürs Detail bringe ich jeden Look auf das nächste Level.',
+    about_ig:'Instagram ansehen ↗',
+    skill1:'Fades & Skin Fades', skill2:'Klassische Haarschnitte', skill3:'Bartpflege & Rasur',
+    work_eyebrow:'02 — UNSERE ARBEIT', work_h2:'Aktuelle<br>Arbeiten',
+    work_more:'Mehr auf Instagram ↗', cat_all:'Alle', work_ig_p:'Echte Ergebnisse auf Instagram',
+    prices_eyebrow:'03 — PREISLISTE', prices_h2:'Was ich<br>anbiete',
+    svc1:'Klassischer Haarschnitt', svc2:'Haarschnitt (Maschine)', svc3:'✦ Fade / Skin Fade',
+    svc4:'★ Haarschnitt + Bart', svc5:'Bartpflege', svc6:'Heißrasur',
+    svc7:'Kinder (bis 12 J.)', svc8:'Styling', svc9:'Grau-Kaschierung', svc10:'Haarschnitt + Styling',
+    prices_note:'* Alle Preise inkl. MwSt.', prices_btn:'Jetzt buchen',
+    bk_eyebrow:'04 — TERMIN BUCHEN', bk_h2:'Wann<br>kommst du?',
+    bk_desc:'Wähle deinen Wunschtermin — Bestätigung kommt sofort.',
+    oh_title:'ÖFFNUNGSZEITEN', oh_mon:'Montag', oh_closed:'Geschlossen',
+    oh_di:'Di — Fr', oh_sat:'Samstag', oh_sun:'Sonntag',
+    f_name:'Name *', f_phone:'Telefon *', f_reminder:'(Erinnerung)',
+    f_service:'Service *', f_service_ph:'Service wählen ...',
+    f_svc1:'Klassischer Haarschnitt — 25€', f_svc2:'Haarschnitt (Maschine) — 20€',
+    f_svc3:'Fade / Skin Fade — 30€', f_svc4:'★ Haarschnitt + Bart — 40€',
+    f_svc5:'Bartpflege — 20€', f_svc6:'Heißrasur — 30€',
+    f_svc7:'Kinder (bis 12 J.) — 20€', f_svc8:'Styling — 15€',
+    f_svc9:'Grau-Kaschierung — 35€', f_svc10:'Haarschnitt + Styling — 35€',
+    f_date:'Datum *', f_time:'Uhrzeit *', f_time_hint:'Erst Datum wählen',
+    f_date_ph:'Datum wählen', f_comment_ph:'Besondere Wünsche...',
+    f_comment:'Anmerkungen', f_submit:'Termin buchen ✂',
+    modal_h3:'Termin bestätigt!', modal_msg:'Bis bald! Bestätigung kommt in Kürze.', modal_btn:'Perfekt!',
+    float_btn:'✂ Termin buchen', wc_book:'Buchen ↗',
+  },
+  ru: {
+    nav_ueber:'Обо мне', nav_services:'Услуги', nav_preise:'Цены', nav_termin:'Запись',
+    hero_tag:'Я делаю твой образ лучше', hero_btn:'Записаться',
+    stat_kunden:'КЛИЕНТОВ', stat_exp:'ЛЕТ ОПЫТА',
+    about_eyebrow:'01 — ОБО МНЕ',
+    about_h2:'Профессиональный<br><em>Барбер</em><br>в Мюнхене',
+    about_p1:'Специалист по фейдам, классическим стрижкам и уходу за бородой. Более 5 лет опыта и внимание к деталям — каждый образ на новый уровень.',
+    about_ig:'Смотреть Instagram ↗',
+    skill1:'Фейды & Скин Фейды', skill2:'Классические стрижки', skill3:'Уход за бородой & бритьё',
+    work_eyebrow:'02 — НАШИ РАБОТЫ', work_h2:'Актуальные<br>Работы',
+    work_more:'Больше в Instagram ↗', cat_all:'Все', work_ig_p:'Реальные результаты в Instagram',
+    prices_eyebrow:'03 — ПРАЙСЛИСТ', prices_h2:'Что я<br>предлагаю',
+    svc1:'Классическая стрижка', svc2:'Стрижка машинкой', svc3:'✦ Fade / Skin Fade',
+    svc4:'★ Стрижка + Борода', svc5:'Уход за бородой', svc6:'Горячее бритьё',
+    svc7:'Дети (до 12 лет)', svc8:'Стайлинг', svc9:'Камуфляж седины', svc10:'Стрижка + Стайлинг',
+    prices_note:'* Все цены вкл. НДС.', prices_btn:'Записаться сейчас',
+    bk_eyebrow:'04 — ОНЛАЙН ЗАПИСЬ', bk_h2:'Когда<br>придёшь?',
+    bk_desc:'Выберите удобное время — подтверждение придёт сразу.',
+    oh_title:'ЧАСЫ РАБОТЫ', oh_mon:'Понедельник', oh_closed:'Закрыто',
+    oh_di:'Вт — Пт', oh_sat:'Суббота', oh_sun:'Воскресенье',
+    f_name:'Имя *', f_phone:'Телефон *', f_reminder:'(напоминание)',
+    f_service:'Услуга *', f_service_ph:'Выберите услугу ...',
+    f_svc1:'Классическая стрижка — 25€', f_svc2:'Стрижка машинкой — 20€',
+    f_svc3:'Fade / Skin Fade — 30€', f_svc4:'★ Стрижка + Борода — 40€',
+    f_svc5:'Уход за бородой — 20€', f_svc6:'Горячее бритьё — 30€',
+    f_svc7:'Дети (до 12 лет) — 20€', f_svc8:'Стайлинг — 15€',
+    f_svc9:'Камуфляж седины — 35€', f_svc10:'Стрижка + Стайлинг — 35€',
+    f_date:'Дата *', f_time:'Время *', f_time_hint:'Сначала дату',
+    f_date_ph:'Выбрать дату', f_comment_ph:'Особые пожелания...',
+    f_comment:'Примечания', f_submit:'Записаться ✂',
+    modal_h3:'Запись подтверждена!', modal_msg:'До скорого! Подтверждение придёт в ближайшее время.', modal_btn:'Отлично!',
+    float_btn:'✂ Записаться', wc_book:'Записаться ↗',
+  },
+  uk: {
+    nav_ueber:'Про мене', nav_services:'Послуги', nav_preise:'Ціни', nav_termin:'Запис',
+    hero_tag:'Я роблю твій образ кращим', hero_btn:'Записатися',
+    stat_kunden:'КЛІЄНТІВ', stat_exp:'РОКІВ ДОСВІДУ',
+    about_eyebrow:'01 — ПРО МЕНЕ',
+    about_h2:'Професійний<br><em>Барбер</em><br>у Мюнхені',
+    about_p1:'Спеціаліст з фейдів, класичних стрижок та догляду за бородою. Понад 5 років досвіду та увага до деталей — кожен образ на новий рівень.',
+    about_ig:'Дивитися Instagram ↗',
+    skill1:'Фейди & Скін Фейди', skill2:'Класичні стрижки', skill3:'Догляд за бородою & гоління',
+    work_eyebrow:'02 — НАШІ РОБОТИ', work_h2:'Актуальні<br>Роботи',
+    work_more:'Більше в Instagram ↗', cat_all:'Всі', work_ig_p:'Реальні результати в Instagram',
+    prices_eyebrow:'03 — ПРАЙСЛІСТ', prices_h2:'Що я<br>пропоную',
+    svc1:'Класична стрижка', svc2:'Стрижка машинкою', svc3:'✦ Fade / Skin Fade',
+    svc4:'★ Стрижка + Борода', svc5:'Догляд за бородою', svc6:'Гаряче гоління',
+    svc7:'Діти (до 12 р.)', svc8:'Стайлінг', svc9:'Камуфляж сивини', svc10:'Стрижка + Стайлінг',
+    prices_note:'* Всі ціни вкл. ПДВ.', prices_btn:'Записатися зараз',
+    bk_eyebrow:'04 — ОНЛАЙН ЗАПИС', bk_h2:'Коли<br>прийдеш?',
+    bk_desc:'Оберіть зручний час — підтвердження надійде одразу.',
+    oh_title:'ГОДИНИ РОБОТИ', oh_mon:'Понеділок', oh_closed:'Зачинено',
+    oh_di:'Вт — Пт', oh_sat:'Субота', oh_sun:'Неділя',
+    f_name:"Ім'я *", f_phone:'Телефон *', f_reminder:'(нагадування)',
+    f_service:'Послуга *', f_service_ph:'Оберіть послугу ...',
+    f_svc1:'Класична стрижка — 25€', f_svc2:'Стрижка машинкою — 20€',
+    f_svc3:'Fade / Skin Fade — 30€', f_svc4:'★ Стрижка + Борода — 40€',
+    f_svc5:'Догляд за бородою — 20€', f_svc6:'Гаряче гоління — 30€',
+    f_svc7:'Діти (до 12 р.) — 20€', f_svc8:'Стайлінг — 15€',
+    f_svc9:'Камуфляж сивини — 35€', f_svc10:'Стрижка + Стайлінг — 35€',
+    f_date:'Дата *', f_time:'Час *', f_time_hint:'Спочатку дату',
+    f_date_ph:'Обрати дату', f_comment_ph:'Особливі побажання...',
+    f_comment:'Примітки', f_submit:'Записатися ✂',
+    modal_h3:'Запис підтверджено!', modal_msg:'До зустрічі! Підтвердження надійде незабаром.', modal_btn:'Чудово!',
+    float_btn:'✂ Записатися', wc_book:'Записатися ↗',
+  }
+};
+
+function setLang(lang) {
+  if (!LANGS[lang]) return;
+  const L = LANGS[lang];
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (L[key] !== undefined) el.innerHTML = L[key];
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const key = el.dataset.i18nPh;
+    if (L[key] !== undefined) el.placeholder = L[key];
+  });
+  document.querySelectorAll('.lang-sw button').forEach(b =>
+    b.classList.toggle('active', b.dataset.lang === lang)
+  );
+  document.documentElement.lang = lang;
+  localStorage.setItem('lang', lang);
+}
+
+document.querySelectorAll('.lang-sw button').forEach(b =>
+  b.addEventListener('click', () => setLang(b.dataset.lang))
+);
+setLang(localStorage.getItem('lang') || 'de');
