@@ -149,33 +149,15 @@
   </div>
 </div>
 
-<!-- ── STATS STRIP ── -->
-<div class="stats-strip">
-  <div class="ss-item"><span class="bnum" data-target="500" data-suffix="+">0</span><span class="ss-lbl" data-i18n="stat_kunden">KUNDEN</span></div>
-  <div class="ss-dot">·</div>
-  <div class="ss-item"><span class="bnum" data-target="5" data-suffix="+">0</span><span class="ss-lbl" data-i18n="stat_exp">JAHRE</span></div>
-  <div class="ss-dot">·</div>
-  <div class="ss-item"><span class="bnum" data-target="322" data-suffix="">0</span><span class="ss-lbl">FOLLOWER</span></div>
-</div>
-
 <!-- ══════════════════════ BOOKING ══════════════════════ -->
 <section class="sec sec-dark" id="termin">
   <div class="con">
     <div class="bk-wrap">
       <!-- Left info -->
       <div class="bk-info reveal-l">
-        <div class="eyebrow" data-i18n="bk_eyebrow">04 — TERMIN BUCHEN</div>
+        <div class="eyebrow" data-i18n="bk_eyebrow">TERMIN BUCHEN</div>
         <h2 data-i18n="bk_h2">Wann<br>kommst du?</h2>
         <p data-i18n="bk_desc">Wähle deinen Wunschtermin — Bestätigung kommt sofort.</p>
-
-        <div class="oh">
-          <div class="oh-title" data-i18n="oh_title">ÖFFNUNGSZEITEN</div>
-          <div class="oh-row oh-closed"><span data-i18n="oh_mon">Montag</span><span data-i18n="oh_closed">Geschlossen</span></div>
-          <div class="oh-row"><span data-i18n="oh_di">Di — Fr</span><span class="gold">10:00 — 20:00</span></div>
-          <div class="oh-row"><span data-i18n="oh_sat">Samstag</span><span class="gold">9:00 — 18:00</span></div>
-          <div class="oh-row oh-closed"><span data-i18n="oh_sun">Sonntag</span><span data-i18n="oh_closed">Geschlossen</span></div>
-        </div>
-
         <div class="bk-status" id="bkStatus"></div>
       </div>
 
@@ -218,6 +200,20 @@
         </div>
         <button type="submit" class="btn-primary btn-full" id="submitBtn" data-i18n="f_submit">Termin buchen ✂</button>
       </form>
+    </div>
+
+    <!-- Hours + location below form -->
+    <div class="bk-footer reveal">
+      <div class="oh">
+        <div class="oh-title" data-i18n="oh_title">ÖFFNUNGSZEITEN</div>
+        <div class="oh-row oh-closed"><span data-i18n="oh_mon">Montag</span><span data-i18n="oh_closed">Geschlossen</span></div>
+        <div class="oh-row"><span data-i18n="oh_di">Di — Fr</span><span class="gold">10:00 — 20:00</span></div>
+        <div class="oh-row"><span data-i18n="oh_sat">Samstag</span><span class="gold">9:00 — 18:00</span></div>
+        <div class="oh-row oh-closed"><span data-i18n="oh_sun">Sonntag</span><span data-i18n="oh_closed">Geschlossen</span></div>
+      </div>
+      <a href="https://www.google.com/maps/search/?api=1&query=Seidlstra%C3%9Fe+2A%2C+M%C3%BCnchen%2C+80335" target="_blank" rel="noopener" class="bk-maps-link">
+        📍 Seidlstraße 2A, München 80335 ↗
+      </a>
     </div>
   </div>
 </section>
