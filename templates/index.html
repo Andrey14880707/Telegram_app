@@ -131,58 +131,11 @@
   </div>
 </div>
 
-<!-- ══════════════════════ BOOKING ══════════════════════ -->
-<section class="sec sec-dark" id="termin">
-  <div class="con">
-    <div class="eyebrow" style="margin-bottom:1.5rem" data-i18n="bk_eyebrow">TERMIN BUCHEN</div>
-    <div class="bk-wrap bk-wrap-solo">
-      <form class="bk-form" id="bookForm" novalidate>
-        <div class="bf-row">
-          <div class="bf-g"><label data-i18n="f_name">Name *</label><input type="text" id="bName" placeholder="Max Mustermann" required></div>
-          <div class="bf-g"><label data-i18n="f_phone">Telefon *</label><input type="tel" id="bPhone" placeholder="+49 ..." required></div>
-        </div>
-        <div class="bf-row">
-          <div class="bf-g"><label>E-Mail <small data-i18n="f_reminder">(Erinnerung)</small></label><input type="email" id="bEmail" placeholder="email@example.com"></div>
-          <div class="bf-g"><label>Telegram <small data-i18n="f_reminder">(Erinnerung)</small></label><input type="text" id="bTelegram" placeholder="@username"></div>
-        </div>
-        <div class="bf-g">
-          <label data-i18n="f_service">Service *</label>
-          <select id="bService" required>
-            <option value="" data-i18n="f_service_ph">Service wählen ...</option>
-            <option value="Klassischer Haarschnitt|25" data-i18n="f_svc1">Klassischer Haarschnitt — 25€</option>
-            <option value="Haarschnitt (Maschine)|20" data-i18n="f_svc2">Haarschnitt (Maschine) — 20€</option>
-            <option value="Fade / Skin Fade|30" data-i18n="f_svc3">Fade / Skin Fade — 30€</option>
-            <option value="Haarschnitt + Bart|40" data-i18n="f_svc4">★ Haarschnitt + Bart — 40€</option>
-            <option value="Bartpflege|20" data-i18n="f_svc5">Bartpflege — 20€</option>
-            <option value="Heißrasur|30" data-i18n="f_svc6">Heißrasur — 30€</option>
-            <option value="Kinder (bis 12 J.)|20" data-i18n="f_svc7">Kinder (bis 12 J.) — 20€</option>
-            <option value="Styling|15" data-i18n="f_svc8">Styling — 15€</option>
-            <option value="Grau-Kaschierung|35" data-i18n="f_svc9">Grau-Kaschierung — 35€</option>
-            <option value="Haarschnitt + Styling|35" data-i18n="f_svc10">Haarschnitt + Styling — 35€</option>
-          </select>
-        </div>
-        <div class="bf-row">
-          <div class="bf-g"><label data-i18n="f_date">Datum *</label><input type="text" id="bDate" data-i18n-ph="f_date_ph" placeholder="Datum wählen" autocomplete="off" readonly required></div>
-          <div class="bf-g"><label data-i18n="f_time">Uhrzeit *</label>
-            <input type="hidden" id="bTime" required>
-            <div class="time-grid" id="timeGrid"><div class="tg-hint" data-i18n="f_time_hint">Erst Datum wählen</div></div>
-          </div>
-        </div>
-        <div class="bf-g">
-          <label data-i18n="f_comment">Anmerkungen</label>
-          <textarea id="bComment" data-i18n-ph="f_comment_ph" placeholder="Besondere Wünsche..." rows="3"></textarea>
-        </div>
-        <button type="submit" class="btn-primary btn-full" id="submitBtn" data-i18n="f_submit">Termin buchen ✂</button>
-      </form>
-    </div>
-  </div>
-</section>
-
 <!-- ══════════════════════ WORK ══════════════════════ -->
 <section class="sec sec-dark" id="work">
   <div class="con">
     <div class="work-head reveal">
-      <div class="eyebrow" data-i18n="work_eyebrow">02 — UNSERE ARBEIT</div>
+      <div class="eyebrow" data-i18n="work_eyebrow">UNSERE ARBEIT</div>
       <h2 data-i18n="work_h2">Aktuelle<br>Arbeiten</h2>
     </div>
     <div class="work-cats" id="workCats" style="display:none">
@@ -236,6 +189,53 @@
       <button class="w-arrow w-next" id="workNext" aria-label="Weiter">›</button>
     </div>
     <div class="work-dots" id="workDots"></div>
+  </div>
+</section>
+
+<!-- ══════════════════════ BOOKING ══════════════════════ -->
+<section class="sec sec-dark" id="termin">
+  <div class="con">
+    <div class="eyebrow" style="margin-bottom:1.5rem" data-i18n="bk_eyebrow">TERMIN BUCHEN</div>
+    <div class="bk-wrap bk-wrap-solo">
+      <form class="bk-form" id="bookForm" novalidate>
+        <div class="bf-row">
+          <div class="bf-g"><label data-i18n="f_name">Name *</label><input type="text" id="bName" placeholder="Max Mustermann" required></div>
+          <div class="bf-g"><label data-i18n="f_phone">Telefon *</label><input type="tel" id="bPhone" placeholder="+49 ..." required></div>
+        </div>
+        <div class="bf-row">
+          <div class="bf-g"><label>E-Mail <small data-i18n="f_reminder">(Erinnerung)</small></label><input type="email" id="bEmail" placeholder="email@example.com"></div>
+          <div class="bf-g"><label>Telegram <small data-i18n="f_reminder">(Erinnerung)</small></label><input type="text" id="bTelegram" placeholder="@username"></div>
+        </div>
+        <div class="bf-g">
+          <label data-i18n="f_service">Service *</label>
+          <select id="bService" required>
+            <option value="" data-i18n="f_service_ph">Service wählen ...</option>
+            <option value="Klassischer Haarschnitt|25" data-i18n="f_svc1">Klassischer Haarschnitt — 25€</option>
+            <option value="Haarschnitt (Maschine)|20" data-i18n="f_svc2">Haarschnitt (Maschine) — 20€</option>
+            <option value="Fade / Skin Fade|30" data-i18n="f_svc3">Fade / Skin Fade — 30€</option>
+            <option value="Haarschnitt + Bart|40" data-i18n="f_svc4">★ Haarschnitt + Bart — 40€</option>
+            <option value="Bartpflege|20" data-i18n="f_svc5">Bartpflege — 20€</option>
+            <option value="Heißrasur|30" data-i18n="f_svc6">Heißrasur — 30€</option>
+            <option value="Kinder (bis 12 J.)|20" data-i18n="f_svc7">Kinder (bis 12 J.) — 20€</option>
+            <option value="Styling|15" data-i18n="f_svc8">Styling — 15€</option>
+            <option value="Grau-Kaschierung|35" data-i18n="f_svc9">Grau-Kaschierung — 35€</option>
+            <option value="Haarschnitt + Styling|35" data-i18n="f_svc10">Haarschnitt + Styling — 35€</option>
+          </select>
+        </div>
+        <div class="bf-row">
+          <div class="bf-g"><label data-i18n="f_date">Datum *</label><input type="text" id="bDate" data-i18n-ph="f_date_ph" placeholder="Datum wählen" autocomplete="off" readonly required></div>
+          <div class="bf-g"><label data-i18n="f_time">Uhrzeit *</label>
+            <input type="hidden" id="bTime" required>
+            <div class="time-grid" id="timeGrid"><div class="tg-hint" data-i18n="f_time_hint">Erst Datum wählen</div></div>
+          </div>
+        </div>
+        <div class="bf-g">
+          <label data-i18n="f_comment">Anmerkungen</label>
+          <textarea id="bComment" data-i18n-ph="f_comment_ph" placeholder="Besondere Wünsche..." rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn-primary btn-full" id="submitBtn" data-i18n="f_submit">Termin buchen ✂</button>
+      </form>
+    </div>
   </div>
 </section>
 
