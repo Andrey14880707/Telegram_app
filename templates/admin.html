@@ -763,7 +763,7 @@ async function loadSchedule() {
   const allSlots = Array.from(new Set([...d.slots, ...d.booked, ...d.blocked])).sort();
 
   list.innerHTML = allSlots.map(time => {
-    const app = dayApps.find(a => a.time === time);
+    const app = dayApps.find(a => a.time === time && !['cancelled','deleted'].includes(a.status));
     const isBlocked = d.blocked.includes(time);
     let html = '';
     if (app) {
