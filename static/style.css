@@ -105,19 +105,19 @@ em { font-style: italic; color: var(--gold); }
 }
 .blade-top {
   transform-origin: 12px 12px;
-  animation: snip-top 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) infinite;
+  animation: snip-top 1s ease-in-out infinite;
 }
 .blade-bottom {
   transform-origin: 12px 12px;
-  animation: snip-bottom 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) infinite;
+  animation: snip-bottom 1s ease-in-out infinite;
 }
 @keyframes snip-top {
-  0%, 100% { transform: rotate(30deg); }
-  45%, 55% { transform: rotate(44deg); }
+  0%, 100% { transform: rotate(-18deg); }
+  45%, 55% { transform: rotate(12deg); }
 }
 @keyframes snip-bottom {
-  0%, 100% { transform: rotate(-30deg); }
-  45%, 55% { transform: rotate(-44deg); }
+  0%, 100% { transform: rotate(18deg); }
+  45%, 55% { transform: rotate(-12deg); }
 }
 @keyframes scissor-float {
   0%, 100% { transform: translateY(0); }
