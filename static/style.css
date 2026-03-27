@@ -40,17 +40,16 @@ body {
 .bg-scissors-silhouette {
   position: fixed; inset: 0; z-index: -2;
   display: flex; align-items: center; justify-content: center;
-  color: #fff; opacity: 0.12; filter: none;
-  pointer-events: none; background: transparent;
+  opacity: 0.13; pointer-events: none;
 }
-.bg-scissors-silhouette svg {
-  width: 55vw; height: 55vw; max-width: 800px; max-height: 800px;
+.bg-scissors-silhouette img {
+  width: auto; height: 90vh; max-width: 60vw;
+  object-fit: contain;
 }
 
-/* Mobile Visibility Boost */
 @media (max-width: 768px) {
-  .bg-scissors-silhouette { opacity: 0.2; }
-  .bg-scissors-silhouette svg { width: 85vw; height: 85vw; }
+  .bg-scissors-silhouette { opacity: 0.08; }
+  .bg-scissors-silhouette img { height: 70vh; max-width: 85vw; }
 }
 .bg-frosted-glass {
   position: fixed; inset: 0; z-index: -3;
@@ -323,17 +322,6 @@ em { font-style: italic; color: var(--gold); }
   position: absolute; top: 0; left: 0; right: 0;
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(212,175,55,.4), transparent);
-}
-.hero-scissors-img {
-  position: absolute;
-  right: 0; top: 0; bottom: 0;
-  height: 100%; width: auto;
-  max-width: 55%;
-  object-fit: contain; object-position: center right;
-  opacity: 0.18;
-  mask-image: linear-gradient(to left, rgba(0,0,0,0.9) 30%, rgba(0,0,0,0) 100%);
-  -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,0.9) 30%, rgba(0,0,0,0) 100%);
-  pointer-events: none; user-select: none;
 }
 
 .hero-bg-text {
