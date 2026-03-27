@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -407,10 +407,10 @@
   <div class="login-box">
     <div class="login-logo">MB</div>
     <div class="login-sub">Admin Panel</div>
-    <input type="password" id="pwdIn" placeholder="Passwort eingeben"
+    <input type="password" id="pwdIn" placeholder="Введите пароль"
            onkeydown="if(event.key==='Enter') doLogin()">
-    <div class="login-err" id="loginErr">Falsches Passwort</div>
-    <button class="btn btn-gold btn-full" onclick="doLogin()">Einloggen</button>
+    <div class="login-err" id="loginErr">Неверный пароль</div>
+    <button class="btn btn-gold btn-full" onclick="doLogin()">Войти</button>
   </div>
 </div>
 
@@ -427,30 +427,30 @@
     </div>
     <div class="dh-right">
       <div class="dh-badge">Admin</div>
-      <a href="/" target="_blank" class="btn btn-ghost">Website ↗</a>
-      <button class="btn btn-ghost" onclick="doLogout()">Ausloggen</button>
+      <a href="/" target="_blank" class="btn btn-ghost">Сайт ↗</a>
+      <button class="btn btn-ghost" onclick="doLogout()">Выйти</button>
     </div>
   </div>
 
   <!-- Stats -->
   <div class="stats">
-    <div class="stat-c"><div class="sl">Heute</div><div class="sv sv-gold" id="s-today">—</div></div>
-    <div class="stat-c"><div class="sl">Diese Woche</div><div class="sv" id="s-week">—</div></div>
-    <div class="stat-c"><div class="sl">Gesamt</div><div class="sv" id="s-total">—</div></div>
-    <div class="stat-c"><div class="sl">Ausstehend</div><div class="sv sv-yellow" id="s-pend">—</div></div>
-    <div class="stat-c"><div class="sl">Kunden</div><div class="sv" id="s-clients">—</div></div>
-    <div class="stat-c"><div class="sl">Einnahmen heute</div><div class="sv sv-green" id="s-rev-d">—</div></div>
-    <div class="stat-c"><div class="sl">Einnahmen Monat</div><div class="sv sv-green" id="s-rev-m">—</div></div>
+    <div class="stat-c"><div class="sl">Сегодня</div><div class="sv sv-gold" id="s-today">—</div></div>
+    <div class="stat-c"><div class="sl">На неделе</div><div class="sv" id="s-week">—</div></div>
+    <div class="stat-c"><div class="sl">Всего</div><div class="sv" id="s-total">—</div></div>
+    <div class="stat-c"><div class="sl">Ожидает</div><div class="sv sv-yellow" id="s-pend">—</div></div>
+    <div class="stat-c"><div class="sl">Клиентов</div><div class="sv" id="s-clients">—</div></div>
+    <div class="stat-c"><div class="sl">Доход сегодня</div><div class="sv sv-green" id="s-rev-d">—</div></div>
+    <div class="stat-c"><div class="sl">Доход за месяц</div><div class="sv sv-green" id="s-rev-m">—</div></div>
   </div>
 
   <!-- Tabs -->
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('zeitplan', this)">Zeitplan</button>
-    <button class="tab-btn" onclick="switchTab('termine', this)">Buchungen</button>
-    <button class="tab-btn" onclick="switchTab('kunden', this)">Kunden</button>
-    <button class="tab-btn" onclick="switchTab('fotos', this)">Portfolio</button>
-    <button class="tab-btn" onclick="switchTab('zeiten', this)">Öffnungszeiten</button>
-    <button class="tab-btn" onclick="switchTab('sperren', this)">Datum sperren</button>
+    <button class="tab-btn active" onclick="switchTab('zeitplan', this)">Расписание</button>
+    <button class="tab-btn" onclick="switchTab('termine', this)">Записи</button>
+    <button class="tab-btn" onclick="switchTab('kunden', this)">Клиенты</button>
+    <button class="tab-btn" onclick="switchTab('fotos', this)">Портфолио</button>
+    <button class="tab-btn" onclick="switchTab('zeiten', this)">Часы работы</button>
+    <button class="tab-btn" onclick="switchTab('sperren', this)">Блокировка</button>
   </div>
 
   <!-- ── ZEITPLAN TAB ── -->
@@ -458,13 +458,13 @@
     <div class="sch-wrap">
       <div class="sch-day-nav">
         <input type="date" id="schDate" class="m-input" style="width:165px">
-        <button class="btn btn-gold" onclick="loadSchedule()">Anzeigen</button>
+        <button class="btn btn-gold" onclick="loadSchedule()">Показать</button>
         <div style="flex:1"></div>
-        <button class="btn btn-blue" onclick="openModal('bookModal')">+ Neue Buchung</button>
+        <button class="btn btn-blue" onclick="openModal('bookModal')">+ Новая запись</button>
       </div>
       <div id="schList" class="sch-grid">
          <!-- Slots injected here -->
-         <div style="text-align:center;padding:5rem;color:var(--gray2)">Datum wählen, um Zeitplan zu sehen</div>
+         <div style="text-align:center;padding:5rem;color:var(--gray2)">Выберите дату для просмотра расписания</div>
       </div>
     </div>
   </div>
@@ -472,17 +472,17 @@
   <!-- ── TERMINE TAB ── -->
   <div id="tab-termine" class="tab-panel">
     <div class="filters">
-      <input type="text" id="fSearch" placeholder="🔍 Name oder Telefon" oninput="debounce(loadTermine)" style="width:180px">
+      <input type="text" id="fSearch" placeholder="🔍 Имя или телефон" oninput="debounce(loadTermine)" style="width:180px">
       <input type="date" id="fDate" onchange="loadTermine()">
       <select id="fStatus" onchange="loadTermine()">
-        <option value="">Alle Status</option>
-        <option value="pending">Ausstehend</option>
-        <option value="confirmed">Bestätigt</option>
-        <option value="cancelled">Abgesagt</option>
-        <option value="completed">Abgeschlossen</option>
-        <option value="deleted">Gelöscht</option>
+        <option value="">Все статусы</option>
+        <option value="pending">Ожидает</option>
+        <option value="confirmed">Подтверждено</option>
+        <option value="cancelled">Отменено</option>
+        <option value="completed">Выполнено</option>
+        <option value="deleted">Удалено</option>
       </select>
-      <button class="btn btn-ghost" onclick="clearFilters()">Zurücksetzen</button>
+      <button class="btn btn-ghost" onclick="clearFilters()">Сбросить</button>
       <span class="f-ts" id="fTs">—</span>
       <div class="f-right">
         <button class="btn btn-ghost" onclick="loadTermine()">↻</button>
@@ -494,8 +494,8 @@
       <table>
         <thead>
           <tr>
-            <th>#</th><th>Kunde</th><th>Service</th><th>Preis</th>
-            <th>Datum</th><th>Zeit</th><th>Kontakt</th><th>Status</th><th>Aktionen</th>
+            <th>#</th><th>Клиент</th><th>Услуга</th><th>Цена</th>
+            <th>Дата</th><th>Время</th><th>Контакт</th><th>Статус</th><th>Действия</th>
           </tr>
         </thead>
         <tbody id="tBody"><tr><td colspan="9" style="text-align:center;padding:3rem"><div class="spinner"></div></td></tr></tbody>
@@ -506,7 +506,7 @@
   <!-- ── KUNDEN TAB ── -->
   <div id="tab-kunden" class="tab-panel">
     <div class="filters">
-      <input type="text" id="cSearch" placeholder="🔍 Name oder Telefon" oninput="debounce(()=>renderKunden(allClients))" style="width:220px">
+      <input type="text" id="cSearch" placeholder="🔍 Имя или телефон" oninput="debounce(()=>renderKunden(allClients))" style="width:220px">
       <span class="f-ts" id="cTs">—</span>
       <div class="f-right">
         <span class="rec-cnt" id="cCnt" style="margin:0"></span>
@@ -520,42 +520,42 @@
   <div id="tab-fotos" class="tab-panel">
     <div class="ph-upload">
       <div>
-        <label class="btn btn-gold" for="photoFile">+ Foto wählen</label>
+        <label class="btn btn-gold" for="photoFile">+ Выбрать фото</label>
         <input type="file" id="photoFile" accept="image/*" onchange="previewPhoto(this)">
       </div>
       <select id="photoCat" style="background:var(--card);border:1px solid var(--border);color:var(--text);padding:.55rem .9rem;font-family:inherit;font-size:.82rem;outline:none;cursor:pointer">
         <option value="Fade">Fade / Skin Fade</option>
         <option value="Classic">Classic Cut</option>
-        <option value="Bart">Bart & Rasur</option>
+        <option value="Bart">Борода & Бритьё</option>
         <option value="FullLook">Full Look</option>
-        <option value="Sonstiges">Sonstiges</option>
+        <option value="Sonstiges">Разное</option>
       </select>
-      <input type="text" id="photoCap" placeholder="Beschriftung (optional)" style="background:var(--card);border:1px solid var(--border);color:var(--text);padding:.55rem .9rem;font-family:inherit;font-size:.82rem;outline:none;width:180px">
-      <button class="btn btn-ghost" id="photoUploadBtn" onclick="uploadPhoto()" style="display:none">Hochladen ↑</button>
+      <input type="text" id="photoCap" placeholder="Подпись (необязательно)" style="background:var(--card);border:1px solid var(--border);color:var(--text);padding:.55rem .9rem;font-family:inherit;font-size:.82rem;outline:none;width:180px">
+      <button class="btn btn-ghost" id="photoUploadBtn" onclick="uploadPhoto()" style="display:none">Загрузить ↑</button>
       <span id="photoPreviewName" style="font-size:.78rem;color:var(--gray);align-self:center"></span>
     </div>
     <!-- Category filter tabs -->
     <div class="ph-cats" id="phCats">
-      <button class="ph-cat-btn active" onclick="filterPhotos('all',this)">Alle</button>
+      <button class="ph-cat-btn active" onclick="filterPhotos('all',this)">Все</button>
       <button class="ph-cat-btn" onclick="filterPhotos('Fade',this)">Fade</button>
       <button class="ph-cat-btn" onclick="filterPhotos('Classic',this)">Classic</button>
-      <button class="ph-cat-btn" onclick="filterPhotos('Bart',this)">Bart</button>
+      <button class="ph-cat-btn" onclick="filterPhotos('Bart',this)">Борода</button>
       <button class="ph-cat-btn" onclick="filterPhotos('FullLook',this)">Full Look</button>
-      <button class="ph-cat-btn" onclick="filterPhotos('Sonstiges',this)">Sonstiges</button>
+      <button class="ph-cat-btn" onclick="filterPhotos('Sonstiges',this)">Разное</button>
     </div>
-    <div id="photoGrid" class="ph-grid"><div class="ph-empty">Noch keine Fotos hochgeladen</div></div>
+    <div id="photoGrid" class="ph-grid"><div class="ph-empty">Фото ещё не загружены</div></div>
   </div>
 
   <!-- ── ÖFFNUNGSZEITEN TAB ── -->
   <div id="tab-zeiten" class="tab-panel">
     <div class="hours-table">
-      <div style="font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--gray2);margin-bottom:1.25rem">Wochentag-Zeiten bearbeiten</div>
+      <div style="font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--gray2);margin-bottom:1.25rem">Редактировать рабочие часы</div>
       <div style="display:grid;grid-template-columns:80px 1fr 80px 80px;gap:.75rem;margin-bottom:.5rem">
-        <div class="hr-label">Tag</div><div class="hr-label">Offen</div>
-        <div class="hr-label">Von</div><div class="hr-label">Bis</div>
+        <div class="hr-label">День</div><div class="hr-label">Открыто</div>
+        <div class="hr-label">От</div><div class="hr-label">До</div>
       </div>
       <div id="hoursRows"></div>
-      <button class="btn btn-gold" style="margin-top:1.25rem" onclick="saveHours()">Speichern</button>
+      <button class="btn btn-gold" style="margin-top:1.25rem" onclick="saveHours()">Сохранить</button>
     </div>
   </div>
 
@@ -564,14 +564,14 @@
     <div class="bl-wrap">
       <div class="bl-add">
         <div>
-          <div class="hr-label" style="margin-bottom:.4rem">Datum</div>
+          <div class="hr-label" style="margin-bottom:.4rem">Дата</div>
           <input type="date" id="blDate">
         </div>
         <div>
-          <div class="hr-label" style="margin-bottom:.4rem">Grund (optional)</div>
-          <input type="text" id="blReason" placeholder="z.B. Urlaub" style="width:180px">
+          <div class="hr-label" style="margin-bottom:.4rem">Причина (необязательно)</div>
+          <input type="text" id="blReason" placeholder="напр. Отпуск" style="width:180px">
         </div>
-        <button class="btn btn-gold" onclick="addBlocked()">Datum sperren</button>
+        <button class="btn btn-gold" onclick="addBlocked()">Заблокировать дату</button>
       </div>
       <div id="blockedList" class="bl-list"></div>
     </div>
@@ -595,45 +595,45 @@
   <div id="bookModal" class="modal-overlay">
     <div class="modal">
       <div class="modal-head">
-        <span>Neue Buchung</span>
+        <span>Новая запись</span>
         <button class="m-close" onclick="closeModal('bookModal')">✕</button>
       </div>
       <div class="m-form">
         <div class="m-group">
-          <label class="m-label">Name</label>
-          <input type="text" id="bmName" class="m-input" placeholder="Z.B. Max Mustermann">
+          <label class="m-label">Имя</label>
+          <input type="text" id="bmName" class="m-input" placeholder="Напр. Иван Иванов">
         </div>
         <div class="m-group">
-          <label class="m-label">Telefon</label>
+          <label class="m-label">Телефон</label>
           <input type="text" id="bmPhone" class="m-input" placeholder="+49...">
         </div>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
           <div class="m-group">
-            <label class="m-label">Datum</label>
+            <label class="m-label">Дата</label>
             <input type="date" id="bmDate" class="m-input">
           </div>
           <div class="m-group">
-            <label class="m-label">Zeit</label>
+            <label class="m-label">Время</label>
              <input type="time" id="bmTime" class="m-input">
           </div>
         </div>
         <div class="m-group">
-          <label class="m-label">Service</label>
+          <label class="m-label">Услуга</label>
           <select id="bmService" class="m-input">
-            <option value="Haarschnitt|35">Haarschnitt (35€)</option>
-            <option value="Bartpflege|20">Bartpflege (20€)</option>
-            <option value="Haarschnitt & Bart|50">Full Service (50€)</option>
+            <option value="Haarschnitt|35">Стрижка (35€)</option>
+            <option value="Bartpflege|20">Борода (20€)</option>
+            <option value="Haarschnitt & Bart|50">Полный сервис (50€)</option>
           </select>
         </div>
         <div class="m-group">
-          <label class="m-label">Kommentar</label>
-          <input type="text" id="bmComment" class="m-input" placeholder="Optional...">
+          <label class="m-label">Комментарий</label>
+          <input type="text" id="bmComment" class="m-input" placeholder="Необязательно...">
         </div>
         <div class="m-group">
-          <label class="m-label">E-Mail <small style="color:var(--gray2)">(optional)</small></label>
+          <label class="m-label">E-Mail <small style="color:var(--gray2)">(необязательно)</small></label>
           <input type="email" id="bmEmail" class="m-input" placeholder="email@example.com">
         </div>
-        <button class="btn btn-gold btn-full" onclick="saveManualBooking()">Buchung erstellen</button>
+        <button class="btn btn-gold btn-full" onclick="saveManualBooking()">Создать запись</button>
       </div>
     </div>
   </div>
@@ -641,7 +641,7 @@
   <div id="rescheduleModal" class="modal-overlay">
     <div class="modal">
       <div class="modal-head">
-        <span>Termin verschieben</span>
+        <span>Перенести запись</span>
         <button class="m-close" onclick="closeModal('rescheduleModal')">✕</button>
       </div>
       <div class="m-form">
@@ -649,14 +649,14 @@
         <input type="hidden" id="rsOldDate">
         <input type="hidden" id="rsOldTime">
         <div class="m-group">
-          <label class="m-label">Neues Datum</label>
+          <label class="m-label">Новая дата</label>
           <input type="date" id="rsDate" class="m-input">
         </div>
         <div class="m-group">
-          <label class="m-label">Neue Zeit</label>
+          <label class="m-label">Новое время</label>
           <input type="time" id="rsTime" class="m-input">
         </div>
-        <button class="btn btn-gold btn-full" onclick="saveReschedule()">Verschieben</button>
+        <button class="btn btn-gold btn-full" onclick="saveReschedule()">Перенести</button>
       </div>
     </div>
   </div>
@@ -709,13 +709,13 @@ function switchTab(name, btn) {
 
 // ── Clock ──────────────────────────────────────────────
 function startClock() {
-  const DAYS   = ['So','Mo','Di','Mi','Do','Fr','Sa'];
-  const MONTHS = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+  const DAYS   = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
+  const MONTHS = ['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
   function tick() {
     const n = new Date();
-    document.getElementById('admTime').textContent = n.toLocaleTimeString('de-DE');
+    document.getElementById('admTime').textContent = n.toLocaleTimeString('ru-RU');
     document.getElementById('admDate').textContent =
-      `${DAYS[n.getDay()]}, ${n.getDate()}. ${MONTHS[n.getMonth()]} ${n.getFullYear()}`;
+      `${DAYS[n.getDay()]}, ${n.getDate()} ${MONTHS[n.getMonth()]} ${n.getFullYear()}`;
   }
   tick(); setInterval(tick, 1000);
 }
@@ -749,7 +749,7 @@ async function loadSchedule() {
   const r = await fetch(`/api/slots?date=${dateStr}`);
   const d = await r.json();
   if (d.closed) {
-    list.innerHTML = '<div style="text-align:center;padding:5rem;color:var(--gray2)">Geschlossen / Blockiert</div>';
+    list.innerHTML = '<div style="text-align:center;padding:5rem;color:var(--gray2)">Закрыто / Заблокировано</div>';
     return;
   }
   
@@ -786,8 +786,8 @@ async function loadSchedule() {
         <div class="sch-slot sch-blocked-slot">
           <div class="sch-time">${time}</div>
           <div class="sch-info">
-            <div class="sch-free">Blockiert / Pause</div>
-            <button class="btn btn-sm btn-ghost" onclick="unblockSlot('${dateStr}','${time}')">Freigeben</button>
+            <div class="sch-free">Заблокировано / Перерыв</div>
+            <button class="btn btn-sm btn-ghost" onclick="unblockSlot('${dateStr}','${time}')">Освободить</button>
           </div>
         </div>`;
     } else {
@@ -795,10 +795,10 @@ async function loadSchedule() {
         <div class="sch-slot">
           <div class="sch-time">${time}</div>
           <div class="sch-info">
-            <div class="sch-free">Frei</div>
+            <div class="sch-free">Свободно</div>
             <div class="act-row">
-              <button class="btn btn-sm btn-ghost" onclick="blockSlot('${dateStr}','${time}')">Sperren</button>
-              <button class="btn btn-sm btn-gold" onclick="openQuickBook('${dateStr}','${time}')">+ Buchen</button>
+              <button class="btn btn-sm btn-ghost" onclick="blockSlot('${dateStr}','${time}')">Заблокировать</button>
+              <button class="btn btn-sm btn-gold" onclick="openQuickBook('${dateStr}','${time}')">+ Запись</button>
             </div>
           </div>
         </div>`;
@@ -811,14 +811,14 @@ async function blockSlot(date, time) {
     method: 'POST', headers: {'Content-Type':'application/json'},
     body: JSON.stringify({date, times:[time]})
   });
-  if ((await r.json()).success) { toast('Slot blockiert'); loadSchedule(); }
+  if ((await r.json()).success) { toast('Слот заблокирован'); loadSchedule(); }
 }
 async function unblockSlot(date, time) {
   const r = await fetch('/api/admin/block-slots', {
     method: 'DELETE', headers: {'Content-Type':'application/json'},
     body: JSON.stringify({date, times:[time]})
   });
-  if ((await r.json()).success) { toast('Slot freigegeben'); loadSchedule(); }
+  if ((await r.json()).success) { toast('Слот освобождён'); loadSchedule(); }
 }
 
 // ── Tabs ───────────────────────────────────────────────
@@ -844,37 +844,37 @@ async function loadTermine() {
   const d = await r.json();
   renderTermine(d.appointments);
   document.getElementById('fTs').textContent =
-    `${new Date().toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})} · ${d.appointments.length} Termine`;
+    `${new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})} · ${d.appointments.length} записей`;
 }
 
 function renderTermine(list) {
   const body = document.getElementById('tBody');
-  document.getElementById('rCnt').textContent = list.length ? `${list.length} Ergebnisse` : '';
+  document.getElementById('rCnt').textContent = list.length ? `${list.length} записей` : '';
   if (!list.length) {
-    body.innerHTML = `<tr><td colspan="9"><div class="empty"><div class="empty-icon">📋</div><div>Keine Termine gefunden</div></div></td></tr>`;
+    body.innerHTML = `<tr><td colspan="9"><div class="empty"><div class="empty-icon">📋</div><div>Записи не найдены</div></div></td></tr>`;
     return;
   }
   const badge = s => ({
-    pending:   '<span class="badge badge-p">Ausstehend</span>',
-    confirmed: '<span class="badge badge-c">Bestätigt</span>',
-    completed: '<span class="badge badge-c" style="background:rgba(34,197,94,.1);color:var(--green)">Abgeschlossen</span>',
-    cancelled: '<span class="badge badge-x">Abgesagt</span>',
-    deleted:   '<span class="badge badge-x" style="opacity:0.5">Gelöscht</span>',
+    pending:   '<span class="badge badge-p">Ожидает</span>',
+    confirmed: '<span class="badge badge-c">Подтверждено</span>',
+    completed: '<span class="badge badge-c" style="background:rgba(34,197,94,.1);color:var(--green)">Выполнено</span>',
+    cancelled: '<span class="badge badge-x">Отменено</span>',
+    deleted:   '<span class="badge badge-x" style="opacity:0.5">Удалено</span>',
   }[s] || s);
 
   body.innerHTML = list.map(a => {
     const acts = [];
     if (a.status==='pending') {
-      acts.push(`<button class="btn btn-sm btn-green" onclick="setStatus(${a.id},'confirmed')" title="Termin bestätigen — Client bekommt Email">✓ Bestätigen</button>`);
+      acts.push(`<button class="btn btn-sm btn-green" onclick="setStatus(${a.id},'confirmed')" title="Подтвердить — клиент получит email">✓ Подтвердить</button>`);
       acts.push(`<button class="btn btn-sm btn-red" onclick="setStatus(${a.id},'cancelled')">✕</button>`);
     }
     if (a.status==='confirmed') {
-      acts.push(`<button class="btn btn-sm" style="background:rgba(212,175,55,.15);color:var(--gold);border:1px solid rgba(212,175,55,.3)" onclick="setStatus(${a.id},'completed')" title="Kunde war da, Auftrag erledigt">✓ Erledigt</button>`);
-      acts.push(`<button class="btn btn-sm btn-ghost" title="Verschieben" onclick="openReschedule(${a.id},'${a.date}','${a.time}')">🕒</button>`);
+      acts.push(`<button class="btn btn-sm" style="background:rgba(212,175,55,.15);color:var(--gold);border:1px solid rgba(212,175,55,.3)" onclick="setStatus(${a.id},'completed')" title="Клиент был, заказ выполнен">✓ Выполнено</button>`);
+      acts.push(`<button class="btn btn-sm btn-ghost" title="Перенести" onclick="openReschedule(${a.id},'${a.date}','${a.time}')">🕒</button>`);
       acts.push(`<button class="btn btn-sm btn-red" onclick="setStatus(${a.id},'cancelled')">✕</button>`);
     }
     if (a.status==='cancelled' || a.status==='completed') {
-      acts.push(`<button class="btn btn-sm btn-red" title="Löschen" onclick="deleteApt(${a.id})">🗑</button>`);
+      acts.push(`<button class="btn btn-sm btn-red" title="Удалить" onclick="deleteApt(${a.id})">🗑</button>`);
     }
     const contact = [
       a.email ? `<div class="tsub">${esc(a.email)}</div>` : '',
@@ -882,14 +882,14 @@ function renderTermine(list) {
     ].join('');
     return `<tr>
       <td data-label="#" style="color:var(--gray2)">${a.id}</td>
-      <td data-label="Kunde"><div class="tname">${esc(a.name)}</div>${a.comment?`<div class="tsub">${esc(a.comment)}</div>`:''}</td>
-      <td data-label="Service">${esc(a.service)}</td>
-      <td data-label="Preis" class="tprice">${a.price}€</td>
-      <td data-label="Datum" class="tdt"><div>${a.date}</div></td>
-      <td data-label="Zeit" class="tdt"><div class="tname">${a.time}</div></td>
-      <td data-label="Kontakt"><div class="stack-right"><div>${esc(a.phone)}</div>${contact}</div></td>
-      <td data-label="Status">${badge(a.status)}</td>
-      <td data-label="Aktionen"><div class="act-row">${acts.join('')}</div></td>
+      <td data-label="Клиент"><div class="tname">${esc(a.name)}</div>${a.comment?`<div class="tsub">${esc(a.comment)}</div>`:''}</td>
+      <td data-label="Услуга">${esc(a.service)}</td>
+      <td data-label="Цена" class="tprice">${a.price}€</td>
+      <td data-label="Дата" class="tdt"><div>${a.date}</div></td>
+      <td data-label="Время" class="tdt"><div class="tname">${a.time}</div></td>
+      <td data-label="Контакт"><div class="stack-right"><div>${esc(a.phone)}</div>${contact}</div></td>
+      <td data-label="Статус">${badge(a.status)}</td>
+      <td data-label="Действия"><div class="act-row">${acts.join('')}</div></td>
     </tr>`;
   }).join('');
 }
@@ -905,7 +905,7 @@ async function loadKunden() {
   allClients = d.clients;
   renderKunden(allClients);
   document.getElementById('cTs').textContent =
-    `${new Date().toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})} · ${d.clients.length} Kunden`;
+    `${new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})} · ${d.clients.length} клиентов`;
 }
 
 const AV_COLORS = [
@@ -929,9 +929,9 @@ function renderKunden(list) {
   const grid = document.getElementById('kGrid');
   const q = (document.getElementById('cSearch')?.value || '').toLowerCase();
   const filtered = q ? list.filter(c => (c.name+c.phone).toLowerCase().includes(q)) : list;
-  document.getElementById('cCnt').textContent = filtered.length ? `${filtered.length} Kunden` : '';
+  document.getElementById('cCnt').textContent = filtered.length ? `${filtered.length} клиентов` : '';
   if (!filtered.length) {
-    grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><div class="empty-icon">👤</div><div>Keine Kunden gefunden</div></div>`;
+    grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><div class="empty-icon">👤</div><div>Клиенты не найдены</div></div>`;
     return;
   }
   const maxSpent = Math.max(...filtered.map(c => c.total_spent), 1);
@@ -955,17 +955,17 @@ function renderKunden(list) {
       <div class="kc-stats">
         <div class="kc-stat">
           <div class="kc-stat-v" style="color:var(--gold)">${c.total_bookings}</div>
-          <div class="kc-stat-l">Besuche</div>
+          <div class="kc-stat-l">Визитов</div>
         </div>
         <div class="kc-stat">
           <div class="kc-stat-v" style="color:var(--green)">${c.total_spent}€</div>
-          <div class="kc-stat-l">Ausgegeben</div>
+          <div class="kc-stat-l">Потрачено</div>
         </div>
       </div>
       <div class="kc-bar"><div class="kc-bar-fill" style="width:${barW}%"></div></div>
       <div class="kc-foot">
         <div class="kc-tags">${tags}</div>
-        <span>${c.last_date ? 'Zuletzt: ' + c.last_date : '—'}</span>
+        <span>${c.last_date ? 'Последний: ' + c.last_date : '—'}</span>
       </div>
     </div>`;
   }).join('');
@@ -989,13 +989,13 @@ async function openCd(phone) {
     if (!r.ok) throw new Error(r.status);
     d = await r.json();
   } catch(e) {
-    document.getElementById('cdHist').innerHTML = `<div class="empty">Fehler beim Laden</div>`;
+    document.getElementById('cdHist').innerHTML = `<div class="empty">Ошибка загрузки</div>`;
     return;
   }
 
   const hist = d.history || [];
   if (!hist.length) {
-    document.getElementById('cdHist').innerHTML = `<div class="empty">Keine Termine gefunden</div>`;
+    document.getElementById('cdHist').innerHTML = `<div class="empty">Записи не найдены</div>`;
     return;
   }
 
@@ -1020,21 +1020,21 @@ async function openCd(phone) {
     (email    ? `<br>📧 ${esc(email)}` : '') +
     (telegram ? `<br>📱 ${esc(telegram)}` : '') +
     `<br><br>` +
-    `Besuche: <strong>${done.length}</strong> &nbsp;·&nbsp; Ausgegeben: <strong style="color:var(--green)">${spent}€</strong><br>` +
-    `Lieblings-Service: <strong>${esc(topSvc)}</strong><br>` +
-    (upcoming ? `Nächster Termin: <strong style="color:var(--gold)">${upcoming.date} · ${upcoming.time}</strong>` : `Letzter Besuch: <strong>${hist[0].date}</strong>`);
+    `Визитов: <strong>${done.length}</strong> &nbsp;·&nbsp; Потрачено: <strong style="color:var(--green)">${spent}€</strong><br>` +
+    `Любимая услуга: <strong>${esc(topSvc)}</strong><br>` +
+    (upcoming ? `Следующая запись: <strong style="color:var(--gold)">${upcoming.date} · ${upcoming.time}</strong>` : `Последний визит: <strong>${hist[0].date}</strong>`);
 
   // Action buttons
   document.getElementById('cdActions').innerHTML = `
-    <button class="btn btn-gold btn-sm" onclick="cdBookNew()">+ Neuer Termin</button>
-    ${email ? `<button class="btn btn-blue btn-sm" onclick="cdSendEmail('${esc(email)}','${esc(name)}')">Email senden</button>` : ''}
-    <button class="btn btn-red btn-sm" onclick="cdDelete('${esc(phone)}')">Klient löschen</button>
+    <button class="btn btn-gold btn-sm" onclick="cdBookNew()">+ Новая запись</button>
+    ${email ? `<button class="btn btn-blue btn-sm" onclick="cdSendEmail('${esc(email)}','${esc(name)}')">Отправить Email</button>` : ''}
+    <button class="btn btn-red btn-sm" onclick="cdDelete('${esc(phone)}')">Удалить клиента</button>
   `;
 
   // History
   const statusLabel = s => ({
-    confirmed:'Bestätigt', completed:'Abgeschlossen', cancelled:'Abgesagt',
-    pending:'Ausstehend', deleted:'Gelöscht'
+    confirmed:'Подтверждено', completed:'Выполнено', cancelled:'Отменено',
+    pending:'Ожидает', deleted:'Удалено'
   }[s] || s);
   const statusColor = s => ({
     confirmed:'var(--green)', completed:'var(--green)', cancelled:'var(--red)',
@@ -1042,7 +1042,7 @@ async function openCd(phone) {
   }[s] || 'var(--gray)');
 
   document.getElementById('cdHist').innerHTML =
-    '<div style="font-size:.7rem;letter-spacing:2px;color:var(--gray2);text-transform:uppercase;margin-bottom:1rem">Terminhistorie</div>' +
+    '<div style="font-size:.7rem;letter-spacing:2px;color:var(--gray2);text-transform:uppercase;margin-bottom:1rem">История записей</div>' +
     hist.map(h => `
       <div class="cd-apt">
         <div class="cd-apt-top">
@@ -1067,22 +1067,22 @@ function cdBookNew() {
 }
 
 async function cdSendEmail(email, name) {
-  const msg = prompt(`Email an ${name} (${email}):\n\nNachricht eingeben:`);
+  const msg = prompt(`Email для ${name} (${email}):\n\nВведите сообщение:`);
   if (!msg) return;
   const r = await fetch('/api/admin/send-email', {
     method:'POST', headers:{'Content-Type':'application/json'},
     body: JSON.stringify({email, name, message: msg})
   });
   const d = await r.json();
-  toast(d.ok ? '✓ Email gesendet' : 'Fehler: ' + d.error, d.ok ? 'ok' : 'err');
+  toast(d.ok ? '✓ Email отправлен' : 'Ошибка: ' + d.error, d.ok ? 'ok' : 'err');
 }
 
 async function cdDelete(phone) {
-  if (!confirm(`Klient ${phone} und alle seine Termine löschen?`)) return;
+  if (!confirm(`Удалить клиента ${phone} и все его записи?`)) return;
   const r = await fetch(`/api/admin/client/${encodeURIComponent(phone)}`, {method:'DELETE'});
   const d = await r.json();
-  if (d.success) { toast('Klient gelöscht', 'ok'); closeCd(); loadKunden(); loadTermine(); loadStats(); }
-  else toast('Fehler', 'err');
+  if (d.success) { toast('Клиент удалён', 'ok'); closeCd(); loadKunden(); loadTermine(); loadStats(); }
+  else toast('Ошибка', 'err');
 }
 
 function closeCd() {
@@ -1097,18 +1097,18 @@ async function setStatus(id, status) {
     body: JSON.stringify({status})
   });
   const d = await r.json();
-  if (d.success) { toast('✓ Status aktualisiert', 'ok'); loadTermine(); loadStats(); loadSchedule(); }
-  else toast('Fehler', 'err');
+  if (d.success) { toast('✓ Статус обновлён', 'ok'); loadTermine(); loadStats(); loadSchedule(); }
+  else toast('Ошибка', 'err');
 }
 async function deleteApt(id) {
-  if (!confirm('Termin wirklich löschen?')) return;
+  if (!confirm('Удалить запись?')) return;
   const r = await fetch(`/api/admin/appointments/${id}`, {
     method:'PATCH', headers:{'Content-Type':'application/json'},
     body: JSON.stringify({status:'deleted'})
   });
   const d = await r.json();
-  if (d.success) { toast('Gelöscht', 'ok'); loadTermine(); loadStats(); }
-  else toast('Fehler', 'err');
+  if (d.success) { toast('Удалено', 'ok'); loadTermine(); loadStats(); }
+  else toast('Ошибка', 'err');
 }
 function clearFilters() {
   ['fSearch','fDate','fStatus'].forEach(id => {
@@ -1138,14 +1138,14 @@ async function saveManualBooking() {
     email: $('bmEmail').value,
     source: 'admin'
   };
-  if(!data.name || !data.phone) return toast('Name/Telefon fehlt', 'err');
+  if(!data.name || !data.phone) return toast('Имя/Телефон не заполнены', 'err');
   const r = await fetch('/api/book', {
     method:'POST', headers:{'Content-Type':'application/json'},
     body: JSON.stringify(data)
   });
   const d = await r.json();
   if(d.success) {
-    toast('✓ Buchung erstellt'); closeModal('bookModal');
+    toast('✓ Запись создана'); closeModal('bookModal');
     loadSchedule(); loadTermine(); loadStats();
   } else toast(d.error, 'err');
 }
@@ -1172,7 +1172,7 @@ async function saveReschedule() {
   });
   const d = await r.json();
   if(d.success) {
-    toast('✓ Termin verschoben'); closeModal('rescheduleModal');
+    toast('✓ Запись перенесена'); closeModal('rescheduleModal');
     loadSchedule(); loadTermine();
   } else toast(d.error, 'err');
 }
@@ -1216,9 +1216,9 @@ async function uploadPhoto() {
   fd.append('category', document.getElementById('photoCat').value);
   const r = await fetch('/api/admin/photos', {method:'POST', body: fd});
   const d = await r.json();
-  btn.disabled = false; btn.textContent = 'Hochladen ↑';
+  btn.disabled = false; btn.textContent = 'Загрузить ↑';
   if (d.success) {
-    toast('✓ Foto hochgeladen', 'ok');
+    toast('✓ Фото загружено', 'ok');
     document.getElementById('photoFile').value = '';
     document.getElementById('photoCap').value  = '';
     _photoFile = null;
@@ -1226,7 +1226,7 @@ async function uploadPhoto() {
     document.getElementById('photoPreviewName').textContent = '';
     loadPhotos();
   } else {
-    toast(d.error || 'Fehler', 'err');
+    toast(d.error || 'Ошибка', 'err');
   }
 }
 async function loadPhotos() {
@@ -1245,28 +1245,28 @@ function renderPhotos() {
   const grid = document.getElementById('photoGrid');
   const list = _activeCat === 'all' ? _allPhotos : _allPhotos.filter(p => p.category === _activeCat);
   if (!list.length) {
-    grid.innerHTML = `<div class="ph-empty">${_activeCat === 'all' ? 'Noch keine Fotos hochgeladen' : 'Keine Fotos in dieser Kategorie'}</div>`;
+    grid.innerHTML = `<div class="ph-empty">${_activeCat === 'all' ? 'Фото ещё не загружены' : 'Нет фото в этой категории'}</div>`;
     return;
   }
-  const catLabels = {Fade:'Fade',Classic:'Classic',Bart:'Bart',FullLook:'Full Look',Sonstiges:'Sonstiges'};
+  const catLabels = {Fade:'Fade',Classic:'Classic',Bart:'Борода',FullLook:'Full Look',Sonstiges:'Прочее'};
   grid.innerHTML = list.map(p => `
     <div class="ph-card">
       <img src="/uploads/${esc(p.filename)}" alt="${esc(p.caption)}" loading="lazy">
       <div class="ph-card-cat">${catLabels[p.category] || p.category}</div>
       ${p.caption ? `<div class="ph-card-cap">${esc(p.caption)}</div>` : ''}
-      <button class="ph-del" onclick="deletePhoto(${p.id})" title="Löschen">✕</button>
+      <button class="ph-del" onclick="deletePhoto(${p.id})" title="Удалить">✕</button>
     </div>`).join('');
 }
 async function deletePhoto(id) {
-  if (!confirm('Foto löschen?')) return;
+  if (!confirm('Удалить фото?')) return;
   const r = await fetch(`/api/admin/photos/${id}`, {method:'DELETE'});
   const d = await r.json();
-  if (d.success) { toast('Foto gelöscht', 'ok'); loadPhotos(); }
-  else toast('Fehler', 'err');
+  if (d.success) { toast('Фото удалено', 'ok'); loadPhotos(); }
+  else toast('Ошибка', 'err');
 }
 
 // ── Working hours ─────────────────────────────────────
-const DAYS_DE = ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'];
+const DAYS_DE = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
 let _hoursData = [];
 async function loadHours() {
   const r = await fetch('/api/admin/hours');
@@ -1275,12 +1275,12 @@ async function loadHours() {
   const cont = document.getElementById('hoursRows');
   cont.innerHTML = _hoursData.map(h => `
     <div class="hr-row">
-      <div class="hr-day">${DAYS_DE[h.weekday].slice(0,2)}</div>
+      <div class="hr-day">${DAYS_DE[h.weekday]}</div>
       <div class="hr-toggle">
         <input type="checkbox" id="hr-open-${h.weekday}" ${h.is_open ? 'checked' : ''}
           onchange="toggleHrRow(${h.weekday})">
         <label for="hr-open-${h.weekday}" style="font-size:.78rem;color:var(--gray);cursor:pointer">
-          ${h.is_open ? 'Offen' : 'Zu'}
+          ${h.is_open ? 'Открыто' : 'Закрыто'}
         </label>
       </div>
       <input type="number" class="hr-inp" id="hr-oh-${h.weekday}" value="${h.open_hour}"
@@ -1296,7 +1296,7 @@ function toggleHrRow(wd) {
   const lbl = cb.nextElementSibling;
   oh.disabled = !cb.checked;
   ch.disabled = !cb.checked;
-  lbl.textContent = cb.checked ? 'Offen' : 'Zu';
+  lbl.textContent = cb.checked ? 'Открыто' : 'Закрыто';
 }
 async function saveHours() {
   const hours = _hoursData.map(h => ({
@@ -1310,7 +1310,7 @@ async function saveHours() {
     body: JSON.stringify({hours})
   });
   const d = await r.json();
-  toast(d.success ? '✓ Zeiten gespeichert' : 'Fehler', d.success ? 'ok' : 'err');
+  toast(d.success ? '✓ Часы сохранены' : 'Ошибка', d.success ? 'ok' : 'err');
 }
 
 // ── Blocked dates ─────────────────────────────────────
@@ -1319,7 +1319,7 @@ async function loadBlocked() {
   const d = await r.json();
   const list = document.getElementById('blockedList');
   if (!d.blocked.length) {
-    list.innerHTML = '<div style="color:var(--gray2);font-size:.82rem">Keine gesperrten Daten</div>';
+    list.innerHTML = '<div style="color:var(--gray2);font-size:.82rem">Нет заблокированных дат</div>';
     return;
   }
   list.innerHTML = d.blocked.map(b => `
@@ -1328,30 +1328,30 @@ async function loadBlocked() {
         <div class="bl-date">${b.date}</div>
         ${b.reason ? `<div class="bl-reason">${esc(b.reason)}</div>` : ''}
       </div>
-      <button class="btn btn-sm btn-red" onclick="removeBlocked('${b.date}')">✕ Freigeben</button>
+      <button class="btn btn-sm btn-red" onclick="removeBlocked('${b.date}')">✕ Освободить</button>
     </div>`).join('');
 }
 async function addBlocked() {
   const date   = document.getElementById('blDate').value;
   const reason = document.getElementById('blReason').value.trim();
-  if (!date) { toast('Bitte Datum wählen', 'err'); return; }
+  if (!date) { toast('Выберите дату', 'err'); return; }
   const r = await fetch('/api/admin/blocked', {
     method: 'POST', headers: {'Content-Type':'application/json'},
     body: JSON.stringify({date, reason})
   });
   const d = await r.json();
   if (d.success) {
-    toast('✓ Datum gesperrt', 'ok');
+    toast('✓ Дата заблокирована', 'ok');
     document.getElementById('blDate').value   = '';
     document.getElementById('blReason').value = '';
     loadBlocked();
-  } else toast(d.error || 'Fehler', 'err');
+  } else toast(d.error || 'Ошибка', 'err');
 }
 async function removeBlocked(date) {
   const r = await fetch(`/api/admin/blocked/${date}`, {method:'DELETE'});
   const d = await r.json();
-  if (d.success) { toast('✓ Datum freigegeben', 'ok'); loadBlocked(); }
-  else toast('Fehler', 'err');
+  if (d.success) { toast('✓ Дата освобождена', 'ok'); loadBlocked(); }
+  else toast('Ошибка', 'err');
 }
 
 // ── Init ─────────────────────────────────────────────────
