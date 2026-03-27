@@ -1121,7 +1121,7 @@ em { font-style: italic; color: var(--gold); }
   .bk-form { padding: .75rem; }
   .pm { padding: .5rem .6rem; font-size: .74rem; }
   .soc-card { padding: 2rem 1rem; }
-  .float-book { right: .75rem; bottom: .75rem; padding: .7rem 1.2rem; font-size: .88rem; }
+  .floating-controls { right: .75rem; bottom: .75rem; }
 }
 
 /* ══ WORK CATEGORY PILLS ═════════════════════════════ */
@@ -1285,36 +1285,64 @@ em { font-style: italic; color: var(--gold); }
 }
 
 /* ══ FLOATING SOCIAL & BOOK BUTTONS ══════════════════════ */
+/* ── Stats strip ────────────────────────────────────── */
+.stats-strip {
+  display: flex; align-items: center; justify-content: center;
+  gap: 2rem; padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  background: rgba(10,10,12,0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+}
+.ss-item { display: flex; align-items: baseline; gap: .5rem; }
+.ss-item .bnum { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--gold); letter-spacing: 2px; line-height: 1; }
+.ss-lbl { font-size: .58rem; letter-spacing: 2px; color: var(--gray2); text-transform: uppercase; }
+.ss-dot { color: var(--border); font-size: 1.4rem; line-height: 1; }
+
+/* ── Services chip strip ────────────────────────────── */
+.svc-strip-sec {
+  border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  background: rgba(10,10,12,0.5);
+}
+.svc-scroll {
+  display: flex; gap: .5rem; padding: .9rem 1.5rem;
+  overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+}
+.svc-scroll::-webkit-scrollbar { display: none; }
+.svc-chip {
+  display: inline-flex; align-items: center; gap: .5rem; flex-shrink: 0;
+  padding: .38rem .9rem; border-radius: 999px; white-space: nowrap;
+  background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+  font-size: .72rem; color: var(--gray); cursor: pointer; transition: all var(--tr);
+}
+.svc-chip:hover { border-color: rgba(212,175,55,.5); color: var(--white); background: rgba(212,175,55,.05); }
+.svc-hl { border-color: rgba(212,175,55,.35); color: var(--gold); }
+.svc-best { background: rgba(212,175,55,.07); border-color: rgba(212,175,55,.5); color: var(--gold); font-weight: 600; }
+.scp { font-weight: 700; color: var(--gold); font-size: .75rem; }
+
+/* ── Floating controls ──────────────────────────────── */
 .floating-controls {
   position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 900;
   display: flex; flex-direction: column; align-items: flex-end; gap: .8rem;
-  opacity: 0; pointer-events: none; transform: translateY(12px);
-  transition: opacity .3s, transform .3s;
-}
-.floating-controls:has(.float-book.visible),
-.float-book.visible {
-  opacity: 1; pointer-events: auto; transform: translateY(0);
+  opacity: 1; pointer-events: auto;
 }
 .floating-soc {
-  display: flex; flex-direction: column; gap: 0.6rem; margin-right: 0.5rem;
+  display: flex; flex-direction: column; gap: 0.7rem;
 }
 .glass-bubble {
-  width: 44px; height: 44px; border-radius: 50%;
-  background: var(--surface); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--border); display: flex; justify-content: center; align-items: center;
-  color: var(--white); box-shadow: 0 4px 15px rgba(0,0,0,0.5); transition: all var(--tr);
+  width: 52px; height: 52px; border-radius: 50%;
+  display: flex; justify-content: center; align-items: center;
+  color: #fff; transition: all var(--tr); border: none;
 }
-.glass-bubble:hover {
-  transform: scale(1.1) translateY(-3px); background: rgba(255,255,255,0.1);
-  border-color: rgba(255,255,255,0.3); box-shadow: 0 10px 25px rgba(0,0,0,0.6), 0 0 15px rgba(212,175,55,0.2);
-  color: var(--gold);
+.gb-ig {
+  background: linear-gradient(135deg, #405DE6 0%, #833AB4 35%, #C13584 60%, #FD1D1D 85%, #F77737 100%);
+  box-shadow: 0 4px 20px rgba(193,53,132,0.45);
 }
-.float-book {
-  background: var(--gold); color: var(--black); font-family: 'Bebas Neue', sans-serif;
-  font-size: 1rem; letter-spacing: 2px; padding: .85rem 1.6rem; display: flex; align-items: center; gap: .4rem;
-  box-shadow: 0 6px 24px rgba(212,175,55,.35); transition: all var(--tr); border-radius: 30px;
+.gb-tg {
+  background: #229ED9;
+  box-shadow: 0 4px 20px rgba(34,158,217,0.45);
 }
-.float-book:hover { background: var(--gold2); transform: translateY(-3px) scale(1.05); }
+.glass-bubble:hover { transform: scale(1.12) translateY(-4px); }
+.gb-ig:hover { box-shadow: 0 8px 32px rgba(193,53,132,0.65); }
+.gb-tg:hover { box-shadow: 0 8px 32px rgba(34,158,217,0.65); }
 
 /* ══ FLATPICKR DARK THEME OVERRIDES ═══════════════════ */
 .flatpickr-calendar {
