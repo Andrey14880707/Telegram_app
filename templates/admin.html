@@ -92,16 +92,29 @@
     .dh-badge { font-size: .7rem; letter-spacing: 2px; color: var(--gold); border: 1px solid rgba(212,175,55,.3); padding: .25rem .8rem; text-transform: uppercase; }
 
     /* Stats */
-    .stats {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 1px; border-bottom: 1px solid var(--border);
+    .stats-ticker {
+      overflow: hidden; border-bottom: 1px solid var(--border);
+      background: rgba(10,10,15,0.5); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+      height: 38px; display: flex; align-items: center;
     }
-    .stat-c { background: var(--surface); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 1.4rem 1.5rem; border-right: 1px solid rgba(255,255,255,0.05); }
-    .stat-c .sl { font-size: .65rem; letter-spacing: 2px; color: var(--gray); text-transform: uppercase; margin-bottom: .4rem; }
-    .stat-c .sv { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; letter-spacing: 2px; line-height: 1; }
-    .sv-gold { color: var(--gold); }
-    .sv-green { color: var(--green); }
-    .sv-yellow { color: var(--yellow); }
+    .stats-ticker-track {
+      display: flex; align-items: center; gap: 0;
+      animation: ticker-scroll 28s linear infinite;
+      white-space: nowrap; will-change: transform;
+    }
+    .stats-ticker:hover .stats-ticker-track { animation-play-state: paused; }
+    @keyframes ticker-scroll {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .st-item {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: 0 1.8rem; border-right: 1px solid var(--border);
+      height: 38px;
+    }
+    .st-lbl { font-size: .58rem; letter-spacing: 1.5px; color: var(--gray2); text-transform: uppercase; }
+    .st-val { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 1px; }
+    .st-sep { color: var(--border); padding: 0 .5rem; font-size: 1rem; }
 
     /* Tabs */
     .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); background: var(--surface); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
@@ -413,14 +426,25 @@
   </div>
 
   <!-- Stats -->
-  <div class="stats">
-    <div class="stat-c"><div class="sl">Сегодня</div><div class="sv sv-gold" id="s-today">—</div></div>
-    <div class="stat-c"><div class="sl">На неделе</div><div class="sv" id="s-week">—</div></div>
-    <div class="stat-c"><div class="sl">Всего</div><div class="sv" id="s-total">—</div></div>
-    <div class="stat-c"><div class="sl">Ожидает</div><div class="sv sv-yellow" id="s-pend">—</div></div>
-    <div class="stat-c"><div class="sl">Клиентов</div><div class="sv" id="s-clients">—</div></div>
-    <div class="stat-c"><div class="sl">Доход сегодня</div><div class="sv sv-green" id="s-rev-d">—</div></div>
-    <div class="stat-c"><div class="sl">Доход за месяц</div><div class="sv sv-green" id="s-rev-m">—</div></div>
+  <div class="stats-ticker">
+    <div class="stats-ticker-track" id="statsTrack">
+      <!-- first copy -->
+      <div class="st-item"><span class="st-lbl">Сегодня</span><span class="st-val" style="color:var(--gold)" id="s-today">—</span></div>
+      <div class="st-item"><span class="st-lbl">На неделе</span><span class="st-val" id="s-week">—</span></div>
+      <div class="st-item"><span class="st-lbl">Всего</span><span class="st-val" id="s-total">—</span></div>
+      <div class="st-item"><span class="st-lbl">Ожидает</span><span class="st-val" style="color:var(--yellow)" id="s-pend">—</span></div>
+      <div class="st-item"><span class="st-lbl">Клиентов</span><span class="st-val" id="s-clients">—</span></div>
+      <div class="st-item"><span class="st-lbl">Доход сегодня</span><span class="st-val" style="color:var(--green)" id="s-rev-d">—</span></div>
+      <div class="st-item"><span class="st-lbl">Доход за месяц</span><span class="st-val" style="color:var(--green)" id="s-rev-m">—</span></div>
+      <!-- duplicate for seamless loop -->
+      <div class="st-item"><span class="st-lbl">Сегодня</span><span class="st-val" style="color:var(--gold)" id="s-today2">—</span></div>
+      <div class="st-item"><span class="st-lbl">На неделе</span><span class="st-val" id="s-week2">—</span></div>
+      <div class="st-item"><span class="st-lbl">Всего</span><span class="st-val" id="s-total2">—</span></div>
+      <div class="st-item"><span class="st-lbl">Ожидает</span><span class="st-val" style="color:var(--yellow)" id="s-pend2">—</span></div>
+      <div class="st-item"><span class="st-lbl">Клиентов</span><span class="st-val" id="s-clients2">—</span></div>
+      <div class="st-item"><span class="st-lbl">Доход сегодня</span><span class="st-val" style="color:var(--green)" id="s-rev-d2">—</span></div>
+      <div class="st-item"><span class="st-lbl">Доход за месяц</span><span class="st-val" style="color:var(--green)" id="s-rev-m2">—</span></div>
+    </div>
   </div>
 
   <!-- Tabs -->
@@ -705,13 +729,13 @@ async function loadStats() {
   const r = await fetch('/api/admin/stats');
   if (!r.ok) return;
   const d = await r.json();
-  $('s-today').textContent   = d.today;
-  $('s-week').textContent    = d.week;
-  $('s-total').textContent   = d.total;
-  $('s-pend').textContent    = d.pending;
-  $('s-clients').textContent = d.clients;
-  $('s-rev-d').textContent   = d.rev_today + '€';
-  $('s-rev-m').textContent   = d.rev_month + '€';
+  $('s-today').textContent = $('s-today2').textContent = d.today;
+  $('s-week').textContent  = $('s-week2').textContent  = d.week;
+  $('s-total').textContent = $('s-total2').textContent = d.total;
+  $('s-pend').textContent  = $('s-pend2').textContent  = d.pending;
+  $('s-clients').textContent = $('s-clients2').textContent = d.clients;
+  $('s-rev-d').textContent = $('s-rev-d2').textContent = d.rev_today + '€';
+  $('s-rev-m').textContent = $('s-rev-m2').textContent = d.rev_month + '€';
   
   // Set default date for schedule
   if (!document.getElementById('schDate').value) {
