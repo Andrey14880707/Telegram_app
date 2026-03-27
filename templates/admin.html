@@ -367,8 +367,14 @@
       .tab-btn { padding: .9rem 1.2rem; font-size: .7rem; white-space: nowrap; flex-shrink: 0; }
       .dash-head { padding: .75rem 1rem; gap: .75rem; }
       .dh-logo { font-size: 1rem; letter-spacing: 2px; }
-      .dh-right { gap: .5rem; }
-      .dh-right .btn { padding: .4rem .75rem; font-size: .72rem; }
+      .dh-right { gap: .4rem; }
+      .dh-right .btn { padding: .4rem .6rem; font-size: .7rem; }
+      .dh-badge { display: none; }
+      .dh-right .btn-ghost span.btn-lbl { display: none; }
+      .sch-day-nav { flex-wrap: wrap; gap: .6rem; }
+      .sch-day-nav input[type=date] { width: 100% !important; flex: 1 1 120px; }
+      .sch-day-nav .btn-gold { flex: 1; }
+      .sch-day-nav .btn-blue { width: 100%; justify-content: center; }
       /* Card view for appointment table on mobile */
       .tbl-wrap { padding: .75rem; }
       table { min-width: unset; width: 100%; }
@@ -420,8 +426,8 @@
     </div>
     <div class="dh-right">
       <div class="dh-badge">Admin</div>
-      <a href="/" target="_blank" class="btn btn-ghost">Сайт ↗</a>
-      <button class="btn btn-ghost" onclick="doLogout()">Выйти</button>
+      <a href="/" target="_blank" class="btn btn-ghost">↗ <span class="btn-lbl">Сайт</span></a>
+      <button class="btn btn-ghost" onclick="doLogout()">⏏ <span class="btn-lbl">Выйти</span></button>
     </div>
   </div>
 
