@@ -865,13 +865,13 @@ function renderTermine(list) {
   body.innerHTML = list.map(a => {
     const acts = [];
     if (a.status==='pending') {
-      acts.push(`<button class="btn btn-sm btn-green" onclick="setStatus(${a.id},'confirmed')">✓</button>`);
+      acts.push(`<button class="btn btn-sm btn-green" onclick="setStatus(${a.id},'confirmed')" title="Termin bestätigen — Client bekommt Email">✓ Bestätigen</button>`);
       acts.push(`<button class="btn btn-sm btn-red" onclick="setStatus(${a.id},'cancelled')">✕</button>`);
     }
     if (a.status==='confirmed') {
-      acts.push(`<button class="btn btn-sm btn-green" title="Abschließen" onclick="setStatus(${a.id},'completed')">✓</button>`);
-      acts.push(`<button class="btn btn-sm btn-ghost" title="Reschedule" onclick="openReschedule(${a.id},'${a.date}','${a.time}')">🕒</button>`);
-      acts.push(`<button class="btn btn-sm btn-red" title="Cancel" onclick="setStatus(${a.id},'cancelled')">✕</button>`);
+      acts.push(`<button class="btn btn-sm" style="background:rgba(212,175,55,.15);color:var(--gold);border:1px solid rgba(212,175,55,.3)" onclick="setStatus(${a.id},'completed')" title="Kunde war da, Auftrag erledigt">✓ Erledigt</button>`);
+      acts.push(`<button class="btn btn-sm btn-ghost" title="Verschieben" onclick="openReschedule(${a.id},'${a.date}','${a.time}')">🕒</button>`);
+      acts.push(`<button class="btn btn-sm btn-red" onclick="setStatus(${a.id},'cancelled')">✕</button>`);
     }
     if (a.status==='cancelled' || a.status==='completed') {
       acts.push(`<button class="btn btn-sm btn-red" title="Löschen" onclick="deleteApt(${a.id})">🗑</button>`);
