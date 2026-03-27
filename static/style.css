@@ -187,6 +187,31 @@ em { font-style: italic; color: var(--gold); }
 .nav-burger.open span:first-child { transform: rotate(45deg) translate(5.5px, 5.5px); }
 .nav-burger.open span:last-child  { transform: rotate(-45deg) translate(5.5px,-5.5px); }
 
+/* Language Switcher */
+.lang-sw {
+  display: flex; align-items: center; gap: 0;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 999px;
+  padding: 3px;
+}
+.lang-sw button {
+  background: none; border: none;
+  color: var(--gray2);
+  font-size: .6rem; font-weight: 600;
+  letter-spacing: 1px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all var(--tr);
+  font-family: 'Poppins', sans-serif;
+}
+.lang-sw button.active {
+  background: var(--gold);
+  color: var(--black);
+}
+.lang-sw button:hover:not(.active) { color: var(--white); }
+
 /* Mobile Menu */
 .mob-menu {
   position: fixed; inset: 0;
