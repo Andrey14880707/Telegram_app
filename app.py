@@ -575,7 +575,13 @@ def list_appointments():
     if date_f: q += ' AND date=?';   params.append(date_f)
     if search:
         q += ' AND (name LIKE ? OR phone LIKE ?)'; params += [f'%{search}%', f'%{search}%']
-    q += ' ORDER BY date DESC, time ASC'
+    q += ''' ORDER BY
+        CASE status
+            WHEN 'pending'   THEN 0
+            WHEN 'confirmed' THEN 1
+            ELSE                  2
+        END,
+        date ASC, time ASC'''
 
     conn = get_db()
     rows = conn.execute(q, params).fetchall()
