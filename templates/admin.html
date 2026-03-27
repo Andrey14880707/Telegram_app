@@ -646,6 +646,8 @@
       </div>
       <div class="m-form">
         <input type="hidden" id="rsId">
+        <input type="hidden" id="rsOldDate">
+        <input type="hidden" id="rsOldTime">
         <div class="m-group">
           <label class="m-label">Neues Datum</label>
           <input type="date" id="rsDate" class="m-input">
@@ -1095,7 +1097,7 @@ async function setStatus(id, status) {
     body: JSON.stringify({status})
   });
   const d = await r.json();
-  if (d.success) { toast('✓ Status aktualisiert', 'ok'); loadTermine(); loadStats(); }
+  if (d.success) { toast('✓ Status aktualisiert', 'ok'); loadTermine(); loadStats(); loadSchedule(); }
   else toast('Fehler', 'err');
 }
 async function deleteApt(id) {
@@ -1149,15 +1151,19 @@ async function saveManualBooking() {
 
 function openReschedule(id, date, time) {
   document.getElementById('rsId').value = id;
+  document.getElementById('rsOldDate').value = date;
+  document.getElementById('rsOldTime').value = time;
   document.getElementById('rsDate').value = date;
   document.getElementById('rsTime').value = time;
   openModal('rescheduleModal');
 }
 async function saveReschedule() {
   const data = {
-    id: $('rsId').value,
-    date: $('rsDate').value,
-    time: $('rsTime').value
+    id:       $('rsId').value,
+    date:     $('rsDate').value,
+    time:     $('rsTime').value,
+    old_date: $('rsOldDate').value,
+    old_time: $('rsOldTime').value,
   };
   const r = await fetch('/api/admin/appointments/reschedule', {
     method:'POST', headers:{'Content-Type':'application/json'},

@@ -712,7 +712,29 @@ def reschedule():
 
     conn.execute('UPDATE appointments SET date=?, time=? WHERE id=?', (new_date, new_time, apt_id))
     conn.commit()
+
+    row = conn.execute('SELECT * FROM appointments WHERE id=?', (apt_id,)).fetchone()
     conn.close()
+
+    old_date = data.get('old_date', '')
+    old_time = data.get('old_time', '')
+
+    if row and row['email']:
+        send_email(
+            row['email'],
+            'München Barber — Termin verschoben',
+            f'''<html><body style="font-family:sans-serif;background:#0f0f0f;color:#f0f0f0;padding:2rem;max-width:500px;margin:0 auto">
+            <h2 style="color:#d4af37">München Barber</h2>
+            <p>Hallo <b>{row['name']}</b>, dein Termin wurde verschoben.</p>
+            <table style="margin:1.5rem 0;border-collapse:collapse;width:100%">
+              <tr><td style="padding:.5rem;color:#999">War</td><td style="padding:.5rem;text-decoration:line-through;color:#888">{old_date} · {old_time}</td></tr>
+              <tr><td style="padding:.5rem;color:#999">Neu</td><td style="padding:.5rem"><b style="color:#d4af37">{new_date} · {new_time}</b></td></tr>
+              <tr><td style="padding:.5rem;color:#999">Service</td><td style="padding:.5rem">{row['service']} — {row['price']}€</td></tr>
+            </table>
+            <p>Bei Fragen: <a href="https://t.me/barbermunich1" style="color:#d4af37">@barbermunich1</a></p>
+            </body></html>'''
+        )
+
     return jsonify({'success': True})
 
 
