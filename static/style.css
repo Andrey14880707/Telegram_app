@@ -420,21 +420,21 @@ em { font-style: italic; color: var(--gold); }
   text-transform: uppercase;
   margin-top: .3rem;
 }
-/* Clock — mobile (inline, hidden on desktop) */
+/* Clock — compact, always visible */
 .hero-clock-inline {
-  display: none;
-  align-items: center; gap: .75rem;
-  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center; gap: .6rem;
+  margin-top: 1rem;
 }
 .hci-time {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.6rem;
-  letter-spacing: 3px;
+  font-size: 1rem;
+  letter-spacing: 2px;
   color: var(--gold);
   line-height: 1;
 }
 .hci-label {
-  font-size: .6rem;
+  font-size: .55rem;
   letter-spacing: 2px;
   color: var(--gray2);
   text-transform: uppercase;
@@ -1022,10 +1022,7 @@ em { font-style: italic; color: var(--gold); }
   .hero { padding: 0 1.25rem; min-height: auto; justify-content: flex-start; }
   .hero-body { padding-top: 6rem; padding-bottom: 2rem; }
   .hero-clock { display: none; }
-  .hero-clock-inline { display: flex; margin-bottom: 0.75rem; }
-  .hero-bg-text { display: none; }
   .hero-scroll { display: none; }
-  .hero-meta { font-size: .6rem; gap: .4rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
   .hero-title { font-size: clamp(3rem, 16vw, 5rem); margin-bottom: 0.5rem; line-height: 0.9; }
   .hero-tag { font-size: .9rem; margin-bottom: 1.5rem; }
   .hero-cta { flex-wrap: wrap; gap: .5rem; }

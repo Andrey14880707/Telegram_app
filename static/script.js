@@ -60,12 +60,8 @@ function updateClock() {
     hour: '2-digit', minute: '2-digit', second: '2-digit',
     timeZone: 'Europe/Berlin'
   });
-  // inline (mobile)
   const mob = document.getElementById('heroTime');
   if (mob) mob.textContent = t;
-  // desktop (absolute)
-  const desk = document.getElementById('heroTimeDesk');
-  if (desk) desk.textContent = t;
 }
 updateClock();
 setInterval(updateClock, 1000);
