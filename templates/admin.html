@@ -906,11 +906,8 @@ function renderTermine(list) {
       acts.push(`<button class="btn btn-sm btn-ghost" title="Reschedule" onclick="openReschedule(${a.id},'${a.date}','${a.time}')">🕒</button>`);
       acts.push(`<button class="btn btn-sm btn-red" title="Cancel" onclick="setStatus(${a.id},'cancelled')">✕</button>`);
     }
-    if (a.status!=='cancelled' && a.status!=='deleted') {
-      acts.push(`<button class="btn btn-sm btn-blue" onclick="remind(${a.id})">📱</button>`);
-    }
     if (a.status==='cancelled' || a.status==='completed') {
-      acts.push(`<button class="btn btn-sm btn-red" style="opacity:0.4" title="Delete" onclick="setStatus(${a.id},'deleted')">🗑</button>`);
+      acts.push(`<button class="btn btn-sm btn-red" title="Löschen" onclick="deleteApt(${a.id})">🗑</button>`);
     }
     const contact = [
       a.email ? `<div class="tsub">${esc(a.email)}</div>` : '',
@@ -1055,6 +1052,16 @@ async function setStatus(id, status) {
   });
   const d = await r.json();
   if (d.success) { toast('✓ Status aktualisiert', 'ok'); loadTermine(); loadStats(); }
+  else toast('Fehler', 'err');
+}
+async function deleteApt(id) {
+  if (!confirm('Termin wirklich löschen?')) return;
+  const r = await fetch(`/api/admin/appointments/${id}`, {
+    method:'PATCH', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({status:'deleted'})
+  });
+  const d = await r.json();
+  if (d.success) { toast('Gelöscht', 'ok'); loadTermine(); loadStats(); }
   else toast('Fehler', 'err');
 }
 async function remind(id) {
