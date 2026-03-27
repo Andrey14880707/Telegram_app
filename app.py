@@ -25,8 +25,8 @@ ADMIN_CHAT_ID  = os.getenv('ADMIN_CHAT_ID', '')
 ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD', 'barber123')
 SMTP_HOST = os.getenv('SMTP_HOST', 'smtp.gmail.com')
 SMTP_PORT = int(os.getenv('SMTP_PORT', '587'))
-SMTP_USER = os.getenv('SMTP_USER', '')
-SMTP_PASS = os.getenv('SMTP_PASS', '')
+SMTP_USER = os.getenv('SMTP_USER', 'rasmudak@gmail.com')
+SMTP_PASS = os.getenv('SMTP_PASS', 'eqwtpazdhlbejmfv')
 N8N_WEBHOOK = os.getenv('N8N_WEBHOOK', 'https://usteem.app.n8n.cloud/webhook-test/barber-booking')
 
 # On Render (and similar) use /data (persistent disk); locally use project dir
