@@ -842,9 +842,10 @@ async function loadTermine() {
   const r = await fetch('/api/admin/appointments?' + p);
   if (!r.ok) return;
   const d = await r.json();
-  renderTermine(d.appointments);
+  const visible = d.appointments.filter(a => a.status !== 'deleted');
+  renderTermine(visible);
   document.getElementById('fTs').textContent =
-    `${new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})} · ${d.appointments.length} записей`;
+    `${new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})} · ${visible.length} записей`;
 }
 
 function renderTermine(list) {
