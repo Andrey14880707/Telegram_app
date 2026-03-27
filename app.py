@@ -513,6 +513,24 @@ def book():
             f"💬 {data.get('comment') or '—'}"
         )
 
+    # Confirmation email to client
+    if data.get('email'):
+        send_email(
+            data['email'],
+            'München Barber — Termin bestätigt',
+            f'''<html><body style="font-family:sans-serif;background:#0f0f0f;color:#f0f0f0;padding:2rem;max-width:500px;margin:0 auto">
+            <h2 style="color:#d4af37">München Barber</h2>
+            <p>Hallo <b>{data['name']}</b>, dein Termin wurde erfolgreich gebucht!</p>
+            <table style="margin:1.5rem 0;border-collapse:collapse;width:100%">
+              <tr><td style="padding:.5rem;color:#999">Service</td><td style="padding:.5rem"><b>{service_name}</b></td></tr>
+              <tr><td style="padding:.5rem;color:#999">Datum</td><td style="padding:.5rem"><b>{data['date']}</b></td></tr>
+              <tr><td style="padding:.5rem;color:#999">Zeit</td><td style="padding:.5rem"><b>{data['time']}</b></td></tr>
+              <tr><td style="padding:.5rem;color:#999">Preis</td><td style="padding:.5rem"><b>{price}€</b></td></tr>
+            </table>
+            <p>Bei Fragen: <a href="https://t.me/barbermunich1" style="color:#d4af37">@barbermunich1</a></p>
+            </body></html>'''
+        )
+
     # n8n webhook
     send_to_n8n({
         'event_type': 'booking_confirmation',
