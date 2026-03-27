@@ -217,19 +217,6 @@
     }
     .kc:hover { border-color: rgba(212,175,55,.4); transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.5), 0 0 15px rgba(212,175,55,0.1); }
     .kc:hover::before { opacity: 1; }
-    .bg-scissors-silhouette {
-      position: fixed; inset: 0; z-index: -2;
-      display: flex; align-items: center; justify-content: center;
-      color: #fff; opacity: 0.12; filter: none;
-      pointer-events: none; background: transparent;
-    }
-    .bg-scissors-silhouette svg {
-      width: 55vw; height: 55vw; max-width: 800px; max-height: 800px;
-    }
-    @media (max-width: 768px) {
-      .bg-scissors-silhouette { opacity: 0.2; }
-      .bg-scissors-silhouette svg { width: 85vw; height: 85vw; }
-    }
     .bg-frosted-glass {
       position: fixed; inset: 0; z-index: -3;
       background: #05050a;
@@ -394,19 +381,6 @@
   </style>
 </head>
 <body>
-<!-- ── LIGHT FROSTED BACKGROUND ── -->
-<div class="bg-scissors-silhouette">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-    <g transform="rotate(-15 12 12)">
-      <circle cx="6" cy="18" r="3" stroke-width="0.5" />
-      <line x1="8.12" y1="15.88" x2="22" y2="2" stroke-width="1" />
-      <circle cx="6" cy="6" r="3" stroke-width="0.5" />
-      <line x1="8.12" y1="8.12" x2="22" y2="22" stroke-width="1" />
-      <circle cx="12" cy="12" r="0.5" fill="currentColor" stroke="none" />
-    </g>
-  </svg>
-</div>
-<div class="bg-frosted-glass"></div>
 
 <!-- ── LOGIN ── -->
 <div class="login" id="loginScreen">
