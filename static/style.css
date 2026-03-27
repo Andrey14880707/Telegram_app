@@ -240,8 +240,7 @@ em { font-style: italic; color: var(--gold); }
   position: fixed; inset: 0;
   z-index: 990;
   display: flex; align-items: center; justify-content: center;
-  opacity: 0; visibility: hidden; pointer-events: none;
-  transition: opacity .2s ease, visibility .2s ease;
+  visibility: hidden; pointer-events: none;
 }
 .mob-menu::before {
   content: '';
@@ -250,9 +249,17 @@ em { font-style: italic; color: var(--gold); }
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   z-index: -1;
+  opacity: 0;
+  transition: opacity .2s ease;
 }
-.mob-menu.open { opacity: 1; visibility: visible; pointer-events: all; }
-.mob-inner { text-align: center; position: relative; z-index: 1; width: 100%; padding: 0 2rem; }
+.mob-menu.open { visibility: visible; pointer-events: all; }
+.mob-menu.open::before { opacity: 1; }
+.mob-inner {
+  text-align: center; position: relative; z-index: 1; width: 100%; padding: 0 2rem;
+  opacity: 0; transform: translateY(8px);
+  transition: opacity .2s ease, transform .2s ease;
+}
+.mob-menu.open .mob-inner { opacity: 1; transform: translateY(0); }
 .mob-inner ul { list-style: none; }
 .mob-inner li { margin: 0.8rem 0; overflow: hidden; }
 .mob-inner a {
