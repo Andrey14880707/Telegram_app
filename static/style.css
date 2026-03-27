@@ -793,6 +793,10 @@ em { font-style: italic; color: var(--gold); }
   transition: color var(--tr); white-space: nowrap;
 }
 .bk-maps-link:hover { color: var(--gold); }
+.bk-wrap-solo { justify-content: center; }
+.bk-wrap-solo .bk-form { max-width: 700px; width: 100%; }
+.hours-wrap { display: flex; align-items: flex-start; gap: 3rem; flex-wrap: wrap; }
+.hours-wrap .bk-status { align-self: center; }
 /* Form */
 .bk-form {
   background: var(--surface);

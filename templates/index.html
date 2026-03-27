@@ -47,9 +47,7 @@
     <a href="#top" class="nav-logo">MÜNCHEN BARBER</a>
     <ul class="nav-links">
       <li><a href="#ueber" data-i18n="nav_ueber">Über mich</a></li>
-      <li><a href="#services" data-i18n="nav_services">Services</a></li>
-      <li><a href="#preise" data-i18n="nav_preise">Preise</a></li>
-      <li><a href="#termin" data-i18n="nav_termin">Termin</a></li>
+      <li><a href="#work" data-i18n="nav_services">Services</a></li>
     </ul>
     <div class="nav-right">
       <a href="https://www.instagram.com/munchen_barber?igsh=MW5ya2J2bzR3anE0bQ==" target="_blank" rel="noopener" class="nav-soc" title="Instagram">
@@ -72,10 +70,8 @@
 <div class="mob-menu" id="mobMenu">
   <div class="mob-inner">
     <ul>
-      <li><a href="#ueber" onclick="closeMob()"><em>01</em> <span data-i18n="nav_ueber">Über mich</span></a></li>
-      <li><a href="#services" onclick="closeMob()"><em>02</em> <span data-i18n="nav_services">Services</span></a></li>
-      <li><a href="#preise" onclick="closeMob()"><em>03</em> <span data-i18n="nav_preise">Preise</span></a></li>
-      <li><a href="#termin" onclick="closeMob()"><em>04</em> <span data-i18n="hero_btn">Termin buchen</span></a></li>
+      <li><a href="#termin" onclick="closeMob()"><span data-i18n="hero_btn">Termin buchen</span></a></li>
+      <li><a href="#work" onclick="closeMob()"><span data-i18n="nav_services">Services</span></a></li>
     </ul>
     <div class="mob-soc">
       <a href="https://www.instagram.com/munchen_barber?igsh=MW5ya2J2bzR3anE0bQ==" target="_blank">@munchen_barber</a>
@@ -141,17 +137,9 @@
 <!-- ══════════════════════ BOOKING ══════════════════════ -->
 <section class="sec sec-dark" id="termin">
   <div class="con">
-    <div class="bk-wrap">
-      <!-- Left info -->
-      <div class="bk-info reveal-l">
-        <div class="eyebrow" data-i18n="bk_eyebrow">TERMIN BUCHEN</div>
-        <h2 data-i18n="bk_h2">Wann<br>kommst du?</h2>
-        <p data-i18n="bk_desc">Wähle deinen Wunschtermin — Bestätigung kommt sofort.</p>
-        <div class="bk-status" id="bkStatus"></div>
-      </div>
-
-      <!-- Form -->
-      <form class="bk-form reveal-r" id="bookForm" novalidate>
+    <div class="eyebrow" style="margin-bottom:1.5rem" data-i18n="bk_eyebrow">TERMIN BUCHEN</div>
+    <div class="bk-wrap bk-wrap-solo">
+      <form class="bk-form" id="bookForm" novalidate>
         <div class="bf-row">
           <div class="bf-g"><label data-i18n="f_name">Name *</label><input type="text" id="bName" placeholder="Max Mustermann" required></div>
           <div class="bf-g"><label data-i18n="f_phone">Telefon *</label><input type="tel" id="bPhone" placeholder="+49 ..." required></div>
@@ -189,20 +177,6 @@
         </div>
         <button type="submit" class="btn-primary btn-full" id="submitBtn" data-i18n="f_submit">Termin buchen ✂</button>
       </form>
-    </div>
-
-    <!-- Hours + location below form -->
-    <div class="bk-footer reveal">
-      <div class="oh">
-        <div class="oh-title" data-i18n="oh_title">ÖFFNUNGSZEITEN</div>
-        <div class="oh-row oh-closed"><span data-i18n="oh_mon">Montag</span><span data-i18n="oh_closed">Geschlossen</span></div>
-        <div class="oh-row"><span data-i18n="oh_di">Di — Fr</span><span class="gold">10:00 — 20:00</span></div>
-        <div class="oh-row"><span data-i18n="oh_sat">Samstag</span><span class="gold">9:00 — 18:00</span></div>
-        <div class="oh-row oh-closed"><span data-i18n="oh_sun">Sonntag</span><span data-i18n="oh_closed">Geschlossen</span></div>
-      </div>
-      <a href="https://www.google.com/maps/search/?api=1&query=Seidlstra%C3%9Fe+2A%2C+M%C3%BCnchen%2C+80335" target="_blank" rel="noopener" class="bk-maps-link">
-        📍 Seidlstraße 2A, München 80335 ↗
-      </a>
     </div>
   </div>
 </section>
@@ -281,6 +255,25 @@
     <div class="svc-chip"><span data-i18n="svc8">Styling</span><span class="scp">15€</span></div>
     <div class="svc-chip"><span data-i18n="svc9">Grau-Kaschierung</span><span class="scp">35€</span></div>
     <div class="svc-chip"><span data-i18n="svc10">Haarschnitt + Styling</span><span class="scp">35€</span></div>
+  </div>
+</section>
+
+<!-- ══════════════════════ HOURS ══════════════════════ -->
+<section class="sec" id="hours">
+  <div class="con">
+    <div class="hours-wrap reveal">
+      <div id="bkStatus" class="bk-status"></div>
+      <div class="oh">
+        <div class="oh-title" data-i18n="oh_title">ÖFFNUNGSZEITEN</div>
+        <div class="oh-row oh-closed"><span data-i18n="oh_mon">Montag</span><span data-i18n="oh_closed">Geschlossen</span></div>
+        <div class="oh-row"><span data-i18n="oh_di">Di — Fr</span><span class="gold">10:00 — 20:00</span></div>
+        <div class="oh-row"><span data-i18n="oh_sat">Samstag</span><span class="gold">9:00 — 18:00</span></div>
+        <div class="oh-row oh-closed"><span data-i18n="oh_sun">Sonntag</span><span data-i18n="oh_closed">Geschlossen</span></div>
+      </div>
+      <a href="https://www.google.com/maps/search/?api=1&query=Seidlstra%C3%9Fe+2A%2C+M%C3%BCnchen%2C+80335" target="_blank" rel="noopener" class="bk-maps-link">
+        📍 Seidlstraße 2A, München 80335 ↗
+      </a>
+    </div>
   </div>
 </section>
 

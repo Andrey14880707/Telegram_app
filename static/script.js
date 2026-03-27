@@ -81,8 +81,11 @@ function checkStatus() {
   // Mon(1): closed, Tue-Fri(2-5): 10-20, Sat(6): 9-18, Sun(0): closed
   if (wd >= 2 && wd <= 5) open = h >= 10 && h < 20;
   else if (wd === 6)       open = h >= 9  && h < 18;
+  const lang = localStorage.getItem('lang') || 'de';
+  const openTxt  = {de:'🟢 Jetzt geöffnet',  ru:'🟢 Сейчас открыто',  uk:'🟢 Зараз відкрито'}[lang]  || '🟢 Jetzt geöffnet';
+  const closeTxt = {de:'🔴 Aktuell geschlossen', ru:'🔴 Сейчас закрыто', uk:'🔴 Зараз зачинено'}[lang] || '🔴 Aktuell geschlossen';
   el.className = 'bk-status ' + (open ? 'open' : 'closed');
-  el.textContent = open ? '🟢 Jetzt geöffnet' : '🔴 Aktuell geschlossen';
+  el.textContent = open ? openTxt : closeTxt;
 }
 checkStatus();
 
@@ -388,7 +391,7 @@ const LANGS = {
     svc4:'★ Haarschnitt + Bart', svc5:'Bartpflege', svc6:'Heißrasur',
     svc7:'Kinder (bis 12 J.)', svc8:'Styling', svc9:'Grau-Kaschierung', svc10:'Haarschnitt + Styling',
     prices_note:'* Alle Preise inkl. MwSt.', prices_btn:'Jetzt buchen',
-    bk_eyebrow:'04 — TERMIN BUCHEN', bk_h2:'Wann<br>kommst du?',
+    bk_eyebrow:'TERMIN BUCHEN', bk_h2:'Wann<br>kommst du?',
     bk_desc:'Wähle deinen Wunschtermin — Bestätigung kommt sofort.',
     oh_title:'ÖFFNUNGSZEITEN', oh_mon:'Montag', oh_closed:'Geschlossen',
     oh_di:'Di — Fr', oh_sat:'Samstag', oh_sun:'Sonntag',
@@ -421,7 +424,7 @@ const LANGS = {
     svc4:'★ Стрижка + Борода', svc5:'Уход за бородой', svc6:'Горячее бритьё',
     svc7:'Дети (до 12 лет)', svc8:'Стайлинг', svc9:'Камуфляж седины', svc10:'Стрижка + Стайлинг',
     prices_note:'* Все цены вкл. НДС.', prices_btn:'Записаться сейчас',
-    bk_eyebrow:'04 — ОНЛАЙН ЗАПИСЬ', bk_h2:'Когда<br>придёшь?',
+    bk_eyebrow:'ОНЛАЙН ЗАПИСЬ', bk_h2:'Когда<br>придёшь?',
     bk_desc:'Выберите удобное время — подтверждение придёт сразу.',
     oh_title:'ЧАСЫ РАБОТЫ', oh_mon:'Понедельник', oh_closed:'Закрыто',
     oh_di:'Вт — Пт', oh_sat:'Суббота', oh_sun:'Воскресенье',
@@ -454,7 +457,7 @@ const LANGS = {
     svc4:'★ Стрижка + Борода', svc5:'Догляд за бородою', svc6:'Гаряче гоління',
     svc7:'Діти (до 12 р.)', svc8:'Стайлінг', svc9:'Камуфляж сивини', svc10:'Стрижка + Стайлінг',
     prices_note:'* Всі ціни вкл. ПДВ.', prices_btn:'Записатися зараз',
-    bk_eyebrow:'04 — ОНЛАЙН ЗАПИС', bk_h2:'Коли<br>прийдеш?',
+    bk_eyebrow:'ОНЛАЙН ЗАПИС', bk_h2:'Коли<br>прийдеш?',
     bk_desc:'Оберіть зручний час — підтвердження надійде одразу.',
     oh_title:'ГОДИНИ РОБОТИ', oh_mon:'Понеділок', oh_closed:'Зачинено',
     oh_di:'Вт — Пт', oh_sat:'Субота', oh_sun:'Неділя',
