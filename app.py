@@ -414,12 +414,8 @@ def get_slots():
 
     # Get blocked slots
     blocked_s = {r['time'] for r in conn.execute(
-        "SELECT time FROM appointments WHERE date=? AND status='blocked'", (date_str,)
-    ).fetchall()}
-    # Also check the new blocked_slots table
-    blocked_s.update({r['time'] for r in conn.execute(
         "SELECT time FROM blocked_slots WHERE date=?", (date_str,)
-    ).fetchall()})
+    ).fetchall()}
 
     conn.close()
 
