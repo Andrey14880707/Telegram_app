@@ -610,6 +610,34 @@
 </div>
 <div class="m-overlay" id="cdOverlay" onclick="closeCd()" style="position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:199;display:none"></div>
 
+  <!-- ── Google Calendar Settings Modal ── -->
+  <div id="gcalModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-head">
+        <span>Google Calendar</span>
+        <button class="m-close" onclick="closeModal('gcalModal')">✕</button>
+      </div>
+      <div class="m-form">
+        <div class="m-group">
+          <label class="m-label">Client ID</label>
+          <input type="text" id="gcalClientId" class="m-input" placeholder="1234567890-xxx.apps.googleusercontent.com">
+        </div>
+        <div class="m-group">
+          <label class="m-label">Client Secret</label>
+          <input type="text" id="gcalClientSecret" class="m-input" placeholder="GOCSPX-xxxxxxxxxx">
+        </div>
+        <div class="m-group">
+          <label class="m-label">Redirect URI</label>
+          <input type="text" id="gcalRedirectUri" class="m-input" value="https://munchen-barber.onrender.com/api/admin/google/callback">
+        </div>
+        <div style="display:flex;gap:.75rem;margin-top:1rem">
+          <button class="btn btn-gold" style="flex:1" onclick="gcalSaveCredentials()">Сохранить</button>
+          <button class="btn btn-blue" style="flex:1" id="gcalConnectBtn" onclick="gcalConnectAfterSave()">Подключить →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ── Modals ── -->
   <div id="bookModal" class="modal-overlay">
     <div class="modal">
@@ -741,19 +769,34 @@ async function gcalAction() {
     toast('Google Calendar отключён');
     loadGcalStatus();
   } else {
-    try {
-      const r = await fetch('/api/admin/google/connect');
-      const d = await r.json();
-      if (d.auth_url) {
-        // Mobile-friendly: redirect directly instead of popup
-        window.location.href = d.auth_url;
-      } else {
-        toast(d.error || 'Ошибка подключения', 'err');
-      }
-    } catch(e) {
-      toast('Ошибка соединения', 'err');
-    }
+    openModal('gcalModal');
   }
+}
+async function gcalSaveCredentials() {
+  const body = {
+    client_id:     document.getElementById('gcalClientId').value.trim(),
+    client_secret: document.getElementById('gcalClientSecret').value.trim(),
+    redirect_uri:  document.getElementById('gcalRedirectUri').value.trim(),
+    calendar_id:   'primary',
+  };
+  if (!body.client_id || !body.client_secret) { toast('Заполни Client ID и Secret', 'err'); return; }
+  const r = await fetch('/api/admin/google/save-credentials', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)});
+  const d = await r.json();
+  if (d.success) { toast('✓ Сохранено', 'ok'); }
+  else toast('Ошибка сохранения', 'err');
+}
+async function gcalConnectAfterSave() {
+  await gcalSaveCredentials();
+  try {
+    const r = await fetch('/api/admin/google/connect');
+    const d = await r.json();
+    if (d.auth_url) {
+      closeModal('gcalModal');
+      window.location.href = d.auth_url;
+    } else {
+      toast(d.error || 'Ошибка', 'err');
+    }
+  } catch(e) { toast('Ошибка соединения', 'err'); }
 }
 function showDash() {
   document.getElementById('loginScreen').style.display = 'none';

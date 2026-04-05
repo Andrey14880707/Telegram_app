@@ -131,6 +131,12 @@ def init_db():
         )
     ''')
     conn.execute('''
+        CREATE TABLE IF NOT EXISTS admin_settings (
+            key TEXT PRIMARY KEY,
+            value TEXT DEFAULT ''
+        )
+    ''')
+    conn.execute('''
         CREATE TABLE IF NOT EXISTS blocked_dates (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             date TEXT NOT NULL UNIQUE,
@@ -254,11 +260,36 @@ def sync_to_sheets(row_data):
 
 # ── Google Calendar ───────────────────────────────────────────────────────────
 
+def get_setting(key, default=''):
+    try:
+        conn = get_db()
+        row = conn.execute('SELECT value FROM admin_settings WHERE key=?', (key,)).fetchone()
+        conn.close()
+        return row['value'] if row and row['value'] else default
+    except Exception:
+        return default
+
+def set_setting(key, value):
+    conn = get_db()
+    conn.execute('INSERT INTO admin_settings (key, value) VALUES (?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value', (key, value))
+    conn.commit()
+    conn.close()
+
+def get_gcal_creds():
+    """Get Google credentials from DB (preferred) or env vars (fallback)."""
+    return {
+        'client_id':     get_setting('gcal_client_id')     or GOOGLE_CLIENT_ID,
+        'client_secret': get_setting('gcal_client_secret') or GOOGLE_CLIENT_SECRET,
+        'redirect_uri':  get_setting('gcal_redirect_uri')  or GOOGLE_REDIRECT_URI,
+        'calendar_id':   get_setting('gcal_calendar_id')   or GOOGLE_CALENDAR_ID or 'primary',
+    }
+
 def _gcal_client_config():
+    c = get_gcal_creds()
     return {
         "web": {
-            "client_id": GOOGLE_CLIENT_ID,
-            "client_secret": GOOGLE_CLIENT_SECRET,
+            "client_id": c['client_id'],
+            "client_secret": c['client_secret'],
             "auth_uri": "https://accounts.google.com/o/oauth2/auth",
             "token_uri": "https://oauth2.googleapis.com/token",
         }
@@ -290,12 +321,13 @@ def get_gcal_service():
     if not token_data:
         return None
     try:
+        c = get_gcal_creds()
         creds = GCredentials(
             token=token_data.get('token'),
             refresh_token=token_data.get('refresh_token'),
             token_uri='https://oauth2.googleapis.com/token',
-            client_id=GOOGLE_CLIENT_ID,
-            client_secret=GOOGLE_CLIENT_SECRET,
+            client_id=c['client_id'],
+            client_secret=c['client_secret'],
             scopes=GCAL_SCOPES,
         )
         if creds.expired and creds.refresh_token:
@@ -1169,7 +1201,8 @@ def test_email():
 def gcal_status():
     if not session.get('admin'):
         return jsonify({'error': 'Unauthorized'}), 401
-    configured = bool(GCAL_AVAILABLE and GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET and GOOGLE_REDIRECT_URI)
+    c = get_gcal_creds()
+    configured = bool(GCAL_AVAILABLE and c['client_id'] and c['client_secret'] and c['redirect_uri'])
     connected  = bool(load_gcal_tokens())
     return jsonify({
         'configured': configured,
@@ -1202,9 +1235,10 @@ def gcal_debug():
 def gcal_connect():
     if not session.get('admin'):
         return jsonify({'error': 'Unauthorized'}), 401
-    if not GCAL_AVAILABLE or not GOOGLE_CLIENT_ID or not GOOGLE_CLIENT_SECRET or not GOOGLE_REDIRECT_URI:
-        return jsonify({'error': 'Google Calendar not configured in .env'}), 400
-    flow = Flow.from_client_config(_gcal_client_config(), scopes=GCAL_SCOPES, redirect_uri=GOOGLE_REDIRECT_URI)
+    c = get_gcal_creds()
+    if not GCAL_AVAILABLE or not c['client_id'] or not c['client_secret'] or not c['redirect_uri']:
+        return jsonify({'error': 'Укажите Client ID, Secret и Redirect URI в настройках Google Calendar'}), 400
+    flow = Flow.from_client_config(_gcal_client_config(), scopes=GCAL_SCOPES, redirect_uri=c['redirect_uri'])
     auth_url, state = flow.authorization_url(access_type='offline', prompt='consent')
     session['gcal_state'] = state
     return jsonify({'auth_url': auth_url})
@@ -1218,9 +1252,10 @@ def gcal_callback():
     if not GCAL_AVAILABLE:
         return 'google-auth-oauthlib not installed', 500
     try:
+        c = get_gcal_creds()
         flow = Flow.from_client_config(
             _gcal_client_config(), scopes=GCAL_SCOPES,
-            redirect_uri=GOOGLE_REDIRECT_URI, state=state
+            redirect_uri=c['redirect_uri'], state=state
         )
         # Reconstruct full URL with https (Render terminates SSL at proxy)
         auth_response = request.url.replace('http://', 'https://', 1)
@@ -1247,6 +1282,21 @@ def gcal_disconnect():
     conn.execute('DELETE FROM google_tokens WHERE id=1')
     conn.commit()
     conn.close()
+    return jsonify({'success': True})
+
+
+@app.route('/api/admin/google/save-credentials', methods=['POST'])
+def gcal_save_credentials():
+    if not session.get('admin'):
+        return jsonify({'error': 'Unauthorized'}), 401
+    data = request.get_json() or {}
+    if data.get('client_id'):
+        set_setting('gcal_client_id', data['client_id'].strip())
+    if data.get('client_secret'):
+        set_setting('gcal_client_secret', data['client_secret'].strip())
+    if data.get('redirect_uri'):
+        set_setting('gcal_redirect_uri', data['redirect_uri'].strip())
+    set_setting('gcal_calendar_id', data.get('calendar_id', 'primary').strip())
     return jsonify({'success': True})
 
 
