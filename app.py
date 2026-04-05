@@ -1186,13 +1186,15 @@ def gcal_status():
 
 @app.route('/api/debug/gcal')
 def gcal_debug():
+    import os as _os
+    google_vars = {k: v[:12]+'...' for k, v in _os.environ.items() if 'GOOGLE' in k}
     return jsonify({
         'lib_installed': GCAL_AVAILABLE,
         'has_client_id': bool(GOOGLE_CLIENT_ID),
         'has_client_secret': bool(GOOGLE_CLIENT_SECRET),
         'has_redirect_uri': bool(GOOGLE_REDIRECT_URI),
         'redirect_uri': GOOGLE_REDIRECT_URI,
-        'calendar_id': GOOGLE_CALENDAR_ID,
+        'google_env_vars_found': google_vars,
     })
 
 
