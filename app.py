@@ -1184,6 +1184,18 @@ def gcal_status():
     })
 
 
+@app.route('/api/debug/gcal')
+def gcal_debug():
+    return jsonify({
+        'lib_installed': GCAL_AVAILABLE,
+        'has_client_id': bool(GOOGLE_CLIENT_ID),
+        'has_client_secret': bool(GOOGLE_CLIENT_SECRET),
+        'has_redirect_uri': bool(GOOGLE_REDIRECT_URI),
+        'redirect_uri': GOOGLE_REDIRECT_URI,
+        'calendar_id': GOOGLE_CALENDAR_ID,
+    })
+
+
 @app.route('/api/admin/google/connect')
 def gcal_connect():
     if not session.get('admin'):
