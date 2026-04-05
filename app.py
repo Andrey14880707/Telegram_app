@@ -315,7 +315,10 @@ def save_gcal_tokens(token_dict):
 
 
 def get_gcal_service():
-    if not GCAL_AVAILABLE or not GOOGLE_CLIENT_ID or not GOOGLE_CLIENT_SECRET:
+    if not GCAL_AVAILABLE:
+        return None
+    c = get_gcal_creds()
+    if not c['client_id'] or not c['client_secret']:
         return None
     token_data = load_gcal_tokens()
     if not token_data:
@@ -368,8 +371,9 @@ def gcal_create_event(apt):
         }
         if apt.get('email'):
             event['attendees'] = [{'email': apt['email']}]
+        cal_id = get_gcal_creds()['calendar_id']
         result = service.events().insert(
-            calendarId=GOOGLE_CALENDAR_ID,
+            calendarId=cal_id,
             body=event,
             sendUpdates='all' if apt.get('email') else 'none'
         ).execute()
@@ -387,12 +391,13 @@ def gcal_update_event(event_id, apt):
     try:
         dt_start = datetime.strptime(f"{apt['date']} {apt['time']}", '%Y-%m-%d %H:%M')
         dt_end   = dt_start + timedelta(hours=1)
-        event = service.events().get(calendarId=GOOGLE_CALENDAR_ID, eventId=event_id).execute()
+        cal_id = get_gcal_creds()['calendar_id']
+        event = service.events().get(calendarId=cal_id, eventId=event_id).execute()
         event['summary'] = f'✂ {apt["service"]} — {apt["name"]}'
         event['start']   = {'dateTime': dt_start.strftime('%Y-%m-%dT%H:%M:%S'), 'timeZone': 'Europe/Berlin'}
         event['end']     = {'dateTime': dt_end.strftime('%Y-%m-%dT%H:%M:%S'),   'timeZone': 'Europe/Berlin'}
         service.events().update(
-            calendarId=GOOGLE_CALENDAR_ID, eventId=event_id, body=event,
+            calendarId=cal_id, eventId=event_id, body=event,
             sendUpdates='all' if apt.get('email') else 'none'
         ).execute()
         return True
@@ -407,7 +412,7 @@ def gcal_delete_event(event_id):
     if not service or not event_id:
         return False
     try:
-        service.events().delete(calendarId=GOOGLE_CALENDAR_ID, eventId=event_id).execute()
+        service.events().delete(calendarId=get_gcal_creds()['calendar_id'], eventId=event_id).execute()
         return True
     except Exception as e:
         print(f'[GCal] delete_event error: {e}')
