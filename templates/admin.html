@@ -738,27 +738,20 @@ async function gcalAction() {
   if (_gcalConnected) {
     if (!confirm('Отключить Google Calendar?')) return;
     await fetch('/api/admin/google/disconnect', {method:'POST'});
-    showToast('Google Calendar отключён');
+    toast('Google Calendar отключён');
     loadGcalStatus();
   } else {
-    const r = await fetch('/api/admin/google/connect');
-    const d = await r.json();
-    if (d.auth_url) {
-      window.open(d.auth_url, '_blank', 'width=500,height=620');
-      showToast('Авторизуйтесь в открывшемся окне Google');
-      // Poll for connection
-      let attempts = 0;
-      const poll = setInterval(async () => {
-        attempts++;
-        const s = await fetch('/api/admin/google/status').then(r=>r.json());
-        if (s.connected || attempts > 30) {
-          clearInterval(poll);
-          loadGcalStatus();
-          if (s.connected) showToast('✅ Google Calendar подключён!');
-        }
-      }, 3000);
-    } else {
-      showToast(d.error || 'Ошибка подключения');
+    try {
+      const r = await fetch('/api/admin/google/connect');
+      const d = await r.json();
+      if (d.auth_url) {
+        // Mobile-friendly: redirect directly instead of popup
+        window.location.href = d.auth_url;
+      } else {
+        toast(d.error || 'Ошибка подключения', 'err');
+      }
+    } catch(e) {
+      toast('Ошибка соединения', 'err');
     }
   }
 }
@@ -767,6 +760,10 @@ function showDash() {
   document.getElementById('dashboard').style.display = 'flex';
   startClock(); loadStats(); loadTermine(); loadGcalStatus();
   setInterval(() => { loadStats(); loadTermine(); }, 120000);
+  if (new URLSearchParams(location.search).get('gcal') === 'connected') {
+    history.replaceState({}, '', '/admin');
+    setTimeout(() => toast('✅ Google Calendar подключён!', 'ok'), 800);
+  }
 }
 
 // ── Tab switch ──────────────────────────────────────────
