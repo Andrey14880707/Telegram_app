@@ -90,6 +90,10 @@
     .dh-date { font-size: .72rem; color: var(--gray); }
     .dh-right { margin-left: auto; display: flex; align-items: center; gap: 1rem; }
     .dh-badge { font-size: .7rem; letter-spacing: 2px; color: var(--gold); border: 1px solid rgba(212,175,55,.3); padding: .25rem .8rem; text-transform: uppercase; }
+    .gcal-btn { position: relative; display: inline-flex; align-items: center; gap: .4rem; }
+    .gcal-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gray2); flex-shrink: 0; transition: background .3s; }
+    .gcal-dot.connected { background: var(--green); box-shadow: 0 0 6px var(--green); }
+    .gcal-dot.disconnected { background: #888; }
 
     /* Stats */
     .stats-ticker {
@@ -426,6 +430,11 @@
     </div>
     <div class="dh-right">
       <div class="dh-badge">Admin</div>
+      <button class="btn btn-ghost gcal-btn" id="gcalBtn" onclick="gcalAction()" title="Google Calendar">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M19 3h-1V1h-2v2H8V1H6v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm0 16H5V8h14v11z"/></svg>
+        <span class="gcal-dot" id="gcalDot"></span>
+        <span class="btn-lbl" id="gcalLbl">Google</span>
+      </button>
       <a href="/" target="_blank" class="btn btn-ghost">↗ <span class="btn-lbl">Сайт</span></a>
       <button class="btn btn-ghost" onclick="doLogout()">⏏ <span class="btn-lbl">Выйти</span></button>
     </div>
@@ -698,10 +707,65 @@ async function doLogout() {
   await fetch('/api/admin/logout', {method:'POST'});
   location.reload();
 }
+
+// ── Google Calendar ────────────────────────────────────────────────────────
+let _gcalConnected = false;
+
+async function loadGcalStatus() {
+  try {
+    const r = await fetch('/api/admin/google/status');
+    const d = await r.json();
+    const dot = document.getElementById('gcalDot');
+    const lbl = document.getElementById('gcalLbl');
+    _gcalConnected = d.connected;
+    if (!d.configured) {
+      dot.className = 'gcal-dot disconnected';
+      lbl.textContent = 'Google';
+      document.getElementById('gcalBtn').title = 'Настройте GOOGLE_CLIENT_ID в .env';
+    } else if (d.connected) {
+      dot.className = 'gcal-dot connected';
+      lbl.textContent = 'Google';
+      document.getElementById('gcalBtn').title = 'Google Calendar подключён';
+    } else {
+      dot.className = 'gcal-dot disconnected';
+      lbl.textContent = 'Google';
+      document.getElementById('gcalBtn').title = 'Подключить Google Calendar';
+    }
+  } catch(e) {}
+}
+
+async function gcalAction() {
+  if (_gcalConnected) {
+    if (!confirm('Отключить Google Calendar?')) return;
+    await fetch('/api/admin/google/disconnect', {method:'POST'});
+    showToast('Google Calendar отключён');
+    loadGcalStatus();
+  } else {
+    const r = await fetch('/api/admin/google/connect');
+    const d = await r.json();
+    if (d.auth_url) {
+      window.open(d.auth_url, '_blank', 'width=500,height=620');
+      showToast('Авторизуйтесь в открывшемся окне Google');
+      // Poll for connection
+      let attempts = 0;
+      const poll = setInterval(async () => {
+        attempts++;
+        const s = await fetch('/api/admin/google/status').then(r=>r.json());
+        if (s.connected || attempts > 30) {
+          clearInterval(poll);
+          loadGcalStatus();
+          if (s.connected) showToast('✅ Google Calendar подключён!');
+        }
+      }, 3000);
+    } else {
+      showToast(d.error || 'Ошибка подключения');
+    }
+  }
+}
 function showDash() {
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('dashboard').style.display = 'flex';
-  startClock(); loadStats(); loadTermine();
+  startClock(); loadStats(); loadTermine(); loadGcalStatus();
   setInterval(() => { loadStats(); loadTermine(); }, 120000);
 }
 

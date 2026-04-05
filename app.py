@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request, jsonify, session, Response, send_from_directory
+from flask import Flask, render_template, request, jsonify, session, Response, send_from_directory, redirect
 import sqlite3
 import os
 import csv
 import io
 import uuid
+import json
 from datetime import datetime, timedelta
 from werkzeug.utils import secure_filename
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -28,6 +29,22 @@ SMTP_PORT = int(os.getenv('SMTP_PORT', '587'))
 SMTP_USER = os.getenv('SMTP_USER', '')
 SMTP_PASS = os.getenv('SMTP_PASS', '')
 N8N_WEBHOOK = os.getenv('N8N_WEBHOOK', 'https://usteem.app.n8n.cloud/webhook-test/barber-booking')
+
+# Google Calendar OAuth
+GOOGLE_CLIENT_ID     = os.getenv('GOOGLE_CLIENT_ID', '')
+GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET', '')
+GOOGLE_REDIRECT_URI  = os.getenv('GOOGLE_REDIRECT_URI', '')
+GOOGLE_CALENDAR_ID   = os.getenv('GOOGLE_CALENDAR_ID', 'primary')
+GCAL_SCOPES = ['https://www.googleapis.com/auth/calendar.events']
+
+try:
+    from google_auth_oauthlib.flow import Flow
+    from google.auth.transport.requests import Request as GRequest
+    from google.oauth2.credentials import Credentials as GCredentials
+    from googleapiclient.discovery import build as gbuild
+    GCAL_AVAILABLE = True
+except ImportError:
+    GCAL_AVAILABLE = False
 
 # On Render (and similar) use /data (persistent disk); locally use project dir
 _BASE = '/data' if os.path.isdir('/data') else os.path.dirname(__file__)
@@ -99,11 +116,20 @@ def init_db():
     for col_def in [
         "ALTER TABLE appointments ADD COLUMN reminder_2h_sent INTEGER DEFAULT 0",
         "ALTER TABLE appointments ADD COLUMN followup_sent INTEGER DEFAULT 0",
+        "ALTER TABLE appointments ADD COLUMN google_event_id TEXT DEFAULT ''",
     ]:
         try:
             conn.execute(col_def)
         except Exception:
             pass
+
+    conn.execute('''
+        CREATE TABLE IF NOT EXISTS google_tokens (
+            id INTEGER PRIMARY KEY,
+            token_data TEXT NOT NULL,
+            updated_at TEXT
+        )
+    ''')
     conn.execute('''
         CREATE TABLE IF NOT EXISTS blocked_dates (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -224,6 +250,136 @@ def sync_to_sheets(row_data):
         ws.append_row(row_data)
     except Exception as e:
         print(f'[Sheets] {e}')
+
+
+# ── Google Calendar ───────────────────────────────────────────────────────────
+
+def _gcal_client_config():
+    return {
+        "web": {
+            "client_id": GOOGLE_CLIENT_ID,
+            "client_secret": GOOGLE_CLIENT_SECRET,
+            "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+            "token_uri": "https://oauth2.googleapis.com/token",
+        }
+    }
+
+
+def load_gcal_tokens():
+    conn = get_db()
+    row = conn.execute('SELECT token_data FROM google_tokens WHERE id=1').fetchone()
+    conn.close()
+    return json.loads(row['token_data']) if row else None
+
+
+def save_gcal_tokens(token_dict):
+    conn = get_db()
+    conn.execute('''
+        INSERT INTO google_tokens (id, token_data, updated_at)
+        VALUES (1, ?, datetime('now','localtime'))
+        ON CONFLICT(id) DO UPDATE SET token_data=excluded.token_data, updated_at=excluded.updated_at
+    ''', (json.dumps(token_dict),))
+    conn.commit()
+    conn.close()
+
+
+def get_gcal_service():
+    if not GCAL_AVAILABLE or not GOOGLE_CLIENT_ID or not GOOGLE_CLIENT_SECRET:
+        return None
+    token_data = load_gcal_tokens()
+    if not token_data:
+        return None
+    try:
+        creds = GCredentials(
+            token=token_data.get('token'),
+            refresh_token=token_data.get('refresh_token'),
+            token_uri='https://oauth2.googleapis.com/token',
+            client_id=GOOGLE_CLIENT_ID,
+            client_secret=GOOGLE_CLIENT_SECRET,
+            scopes=GCAL_SCOPES,
+        )
+        if creds.expired and creds.refresh_token:
+            creds.refresh(GRequest())
+            save_gcal_tokens({
+                'token': creds.token,
+                'refresh_token': creds.refresh_token,
+                'expiry': creds.expiry.isoformat() if creds.expiry else None,
+            })
+        return gbuild('calendar', 'v3', credentials=creds)
+    except Exception as e:
+        print(f'[GCal] get_service error: {e}')
+        return None
+
+
+def gcal_create_event(apt):
+    """Create calendar event; returns Google event ID or None."""
+    service = get_gcal_service()
+    if not service:
+        return None
+    try:
+        dt_start = datetime.strptime(f"{apt['date']} {apt['time']}", '%Y-%m-%d %H:%M')
+        dt_end   = dt_start + timedelta(hours=1)
+        event = {
+            'summary': f'✂ {apt["service"]} — {apt["name"]}',
+            'description': (
+                f'Клиент: {apt["name"]}\n'
+                f'Телефон: {apt["phone"]}\n'
+                f'Цена: {apt["price"]}€'
+                + (f'\nКомментарий: {apt["comment"]}' if apt.get('comment') else '')
+            ),
+            'start': {'dateTime': dt_start.strftime('%Y-%m-%dT%H:%M:%S'), 'timeZone': 'Europe/Berlin'},
+            'end':   {'dateTime': dt_end.strftime('%Y-%m-%dT%H:%M:%S'),   'timeZone': 'Europe/Berlin'},
+            'reminders': {'useDefault': False, 'overrides': [
+                {'method': 'popup', 'minutes': 120},
+                {'method': 'popup', 'minutes': 30},
+            ]},
+        }
+        if apt.get('email'):
+            event['attendees'] = [{'email': apt['email']}]
+        result = service.events().insert(
+            calendarId=GOOGLE_CALENDAR_ID,
+            body=event,
+            sendUpdates='all' if apt.get('email') else 'none'
+        ).execute()
+        return result.get('id')
+    except Exception as e:
+        print(f'[GCal] create_event error: {e}')
+        return None
+
+
+def gcal_update_event(event_id, apt):
+    """Update existing calendar event after reschedule."""
+    service = get_gcal_service()
+    if not service or not event_id:
+        return False
+    try:
+        dt_start = datetime.strptime(f"{apt['date']} {apt['time']}", '%Y-%m-%d %H:%M')
+        dt_end   = dt_start + timedelta(hours=1)
+        event = service.events().get(calendarId=GOOGLE_CALENDAR_ID, eventId=event_id).execute()
+        event['summary'] = f'✂ {apt["service"]} — {apt["name"]}'
+        event['start']   = {'dateTime': dt_start.strftime('%Y-%m-%dT%H:%M:%S'), 'timeZone': 'Europe/Berlin'}
+        event['end']     = {'dateTime': dt_end.strftime('%Y-%m-%dT%H:%M:%S'),   'timeZone': 'Europe/Berlin'}
+        service.events().update(
+            calendarId=GOOGLE_CALENDAR_ID, eventId=event_id, body=event,
+            sendUpdates='all' if apt.get('email') else 'none'
+        ).execute()
+        return True
+    except Exception as e:
+        print(f'[GCal] update_event error: {e}')
+        return False
+
+
+def gcal_delete_event(event_id):
+    """Delete a calendar event."""
+    service = get_gcal_service()
+    if not service or not event_id:
+        return False
+    try:
+        service.events().delete(calendarId=GOOGLE_CALENDAR_ID, eventId=event_id).execute()
+        return True
+    except Exception as e:
+        print(f'[GCal] delete_event error: {e}')
+        return False
 
 
 # ── Scheduler ─────────────────────────────────────────────────────────────────
@@ -500,6 +656,18 @@ def book():
           data.get('comment', ''), initial_status))
     apt_id = cur.lastrowid
     conn.commit()
+
+    # Google Calendar — create event
+    gcal_event_id = gcal_create_event({
+        'name': data['name'], 'phone': data['phone'],
+        'email': data.get('email', ''), 'service': service_name,
+        'price': price, 'date': data['date'], 'time': data['time'],
+        'comment': data.get('comment', ''),
+    })
+    if gcal_event_id:
+        conn.execute('UPDATE appointments SET google_event_id=? WHERE id=?', (gcal_event_id, apt_id))
+        conn.commit()
+
     conn.close()
 
     # Notify admin (only for client self-bookings)
@@ -671,6 +839,11 @@ def patch_appointment(apt_id):
     conn.commit()
 
     row = conn.execute('SELECT * FROM appointments WHERE id=?', (apt_id,)).fetchone()
+
+    # Google Calendar — delete event on cancel/delete
+    if row and new_status in ('cancelled', 'deleted') and row['google_event_id']:
+        gcal_delete_event(row['google_event_id'])
+
     if row:
         send_to_n8n({
             'event_type': 'status_changed',
@@ -724,6 +897,10 @@ def reschedule():
 
     row = conn.execute('SELECT * FROM appointments WHERE id=?', (apt_id,)).fetchone()
     conn.close()
+
+    # Google Calendar — update event time
+    if row and row['google_event_id']:
+        gcal_update_event(row['google_event_id'], dict(row))
 
     old_date = data.get('old_date', '')
     old_time = data.get('old_time', '')
@@ -984,6 +1161,69 @@ def test_email():
         return jsonify({'ok': True, 'message': f'Test email sent to {SMTP_USER}'})
     else:
         return jsonify({'ok': False, 'error': 'send_email returned False — check server logs'})
+
+
+# ── Google Calendar OAuth Routes ──────────────────────────────────────────────
+
+@app.route('/api/admin/google/status')
+def gcal_status():
+    if not session.get('admin'):
+        return jsonify({'error': 'Unauthorized'}), 401
+    configured = bool(GCAL_AVAILABLE and GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET and GOOGLE_REDIRECT_URI)
+    connected  = bool(load_gcal_tokens())
+    return jsonify({'configured': configured, 'connected': connected})
+
+
+@app.route('/api/admin/google/connect')
+def gcal_connect():
+    if not session.get('admin'):
+        return jsonify({'error': 'Unauthorized'}), 401
+    if not GCAL_AVAILABLE or not GOOGLE_CLIENT_ID or not GOOGLE_CLIENT_SECRET or not GOOGLE_REDIRECT_URI:
+        return jsonify({'error': 'Google Calendar not configured in .env'}), 400
+    flow = Flow.from_client_config(_gcal_client_config(), scopes=GCAL_SCOPES, redirect_uri=GOOGLE_REDIRECT_URI)
+    auth_url, state = flow.authorization_url(access_type='offline', prompt='consent')
+    session['gcal_state'] = state
+    return jsonify({'auth_url': auth_url})
+
+
+@app.route('/api/admin/google/callback')
+def gcal_callback():
+    state = request.args.get('state', '')
+    if state != session.get('gcal_state', ''):
+        return 'Invalid state parameter', 400
+    if not GCAL_AVAILABLE:
+        return 'google-auth-oauthlib not installed', 500
+    try:
+        flow = Flow.from_client_config(
+            _gcal_client_config(), scopes=GCAL_SCOPES,
+            redirect_uri=GOOGLE_REDIRECT_URI, state=state
+        )
+        # Reconstruct full URL with https (Render terminates SSL at proxy)
+        auth_response = request.url.replace('http://', 'https://', 1)
+        os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+        flow.fetch_token(authorization_response=auth_response)
+        creds = flow.credentials
+        save_gcal_tokens({
+            'token':         creds.token,
+            'refresh_token': creds.refresh_token,
+            'expiry':        creds.expiry.isoformat() if creds.expiry else None,
+        })
+        session.pop('gcal_state', None)
+    except Exception as e:
+        print(f'[GCal] callback error: {e}')
+        return f'Ошибка авторизации: {e}', 500
+    return redirect('/admin?gcal=connected')
+
+
+@app.route('/api/admin/google/disconnect', methods=['POST'])
+def gcal_disconnect():
+    if not session.get('admin'):
+        return jsonify({'error': 'Unauthorized'}), 401
+    conn = get_db()
+    conn.execute('DELETE FROM google_tokens WHERE id=1')
+    conn.commit()
+    conn.close()
+    return jsonify({'success': True})
 
 
 # ── Boot ──────────────────────────────────────────────────────────────────────
