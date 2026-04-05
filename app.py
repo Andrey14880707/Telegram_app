@@ -1240,14 +1240,15 @@ def gcal_connect():
         return jsonify({'error': 'Укажите Client ID, Secret и Redirect URI в настройках Google Calendar'}), 400
     flow = Flow.from_client_config(_gcal_client_config(), scopes=GCAL_SCOPES, redirect_uri=c['redirect_uri'])
     auth_url, state = flow.authorization_url(access_type='offline', prompt='consent')
-    session['gcal_state'] = state
+    set_setting('gcal_oauth_state', state)  # store in DB, not session
     return jsonify({'auth_url': auth_url})
 
 
 @app.route('/api/admin/google/callback')
 def gcal_callback():
     state = request.args.get('state', '')
-    if state != session.get('gcal_state', ''):
+    saved_state = get_setting('gcal_oauth_state')
+    if not saved_state or state != saved_state:
         return 'Invalid state parameter', 400
     if not GCAL_AVAILABLE:
         return 'google-auth-oauthlib not installed', 500
@@ -1267,7 +1268,7 @@ def gcal_callback():
             'refresh_token': creds.refresh_token,
             'expiry':        creds.expiry.isoformat() if creds.expiry else None,
         })
-        session.pop('gcal_state', None)
+        set_setting('gcal_oauth_state', '')  # clear state
     except Exception as e:
         print(f'[GCal] callback error: {e}')
         return f'Ошибка авторизации: {e}', 500
