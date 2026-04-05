@@ -12,8 +12,8 @@
   --gold:    #d4af37;
   --gold2:   #b8860b;
   --gold3:   #f7ef8a;
-  --cyan:    rgba(0, 255, 255, 0.4); 
-  --violet:  rgba(138, 43, 226, 0.4);
+  --cyan:    rgba(212, 175, 55, 0.05);
+  --violet:  rgba(212, 175, 55, 0.02);
   --white:   #ffffff;
   --gray:    rgba(255, 255, 255, 0.65);
   --gray2:   rgba(255, 255, 255, 0.45);
@@ -379,7 +379,7 @@ em { font-style: italic; color: var(--gold); }
 .btn-primary:hover {
   background: rgba(255, 255, 255, 0.1);
   transform: translateY(-2px);
-  box-shadow: 0 12px 30px rgba(212,175,55,.3), inset 0 1px 1px rgba(255,255,255,0.4);
+  box-shadow: 0 8px 24px rgba(212,175,55,.2);
   color: var(--gold);
   border: 1px solid var(--gold);
 }
@@ -589,10 +589,10 @@ em { font-style: italic; color: var(--gold); }
 }
 
 .wc:hover {
-  transform: translateY(-8px);
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(212, 175, 55, 0.3);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(212, 175, 55, 0.1);
+  transform: translateY(-4px);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(212, 175, 55, 0.2);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.4);
 }
 
 .wc img {
@@ -811,7 +811,7 @@ em { font-style: italic; color: var(--gold); }
   backdrop-filter: blur(40px);
   -webkit-backdrop-filter: blur(40px);
   border: 1px solid var(--border);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.2);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.5);
   border-radius: 20px;
   padding: 2.5rem;
   position: relative;
@@ -870,13 +870,13 @@ em { font-style: italic; color: var(--gold); }
   -webkit-backdrop-filter: blur(25px);
   border: 1px solid var(--border);
   border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.15);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.35);
   transition: border-color var(--tr), transform var(--tr), box-shadow var(--tr);
   cursor: pointer;
 }
-.soc-card:hover { 
-  transform: translateY(-5px) scale(1.02); 
-  box-shadow: 0 15px 35px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.3);
+.soc-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.45);
 }
 .soc-ig:hover { border-color: rgba(225,48,108,.6); }
 .soc-tg:hover { border-color: rgba(41,182,246,.6); }
