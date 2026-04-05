@@ -6,350 +6,306 @@
   <title>München Barber — Fades & Style</title>
   <meta name="description" content="Professional Barber in München. Fades, Classic Cuts, Beard Care. Book online.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 <body>
 
-<!-- Preloader -->
+<!-- ── PRELOADER ── -->
 <div class="preloader" id="preloader">
   <div class="pl-content">
-    <svg class="loader-scissors" viewBox="0 0 24 24" width="52" height="52" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="6" cy="18" r="3" stroke-width="1.5"/>
-      <line x1="8.12" y1="15.88" x2="22" y2="2" stroke-width="2"/>
-      <circle cx="6" cy="6" r="3" stroke-width="1.5"/>
-      <line x1="8.12" y1="8.12" x2="22" y2="22" stroke-width="2"/>
-      <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/>
+    <svg class="loader-scissors" viewBox="0 0 24 24" width="60" height="60" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <g class="blade-top">
+        <circle cx="6" cy="18" r="3" stroke-width="1.5" />
+        <line x1="8.12" y1="15.88" x2="22" y2="2" stroke-width="2" />
+        <line x1="3.88" y1="20.12" x2="1" y2="23" stroke-width="1.5" />
+      </g>
+      <g class="blade-bottom">
+        <circle cx="6" cy="6" r="3" stroke-width="1.5" />
+        <line x1="8.12" y1="8.12" x2="22" y2="22" stroke-width="2" />
+      </g>
+      <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none" />
     </svg>
     <div class="pl-bar"><div class="pl-fill" id="plFill"></div></div>
   </div>
 </div>
 
-<!-- Background -->
+<!-- ── PATTERN BACKGROUND ── -->
 <div class="bg-pattern"></div>
-<div class="bg-noise"></div>
+<div class="bg-frosted-glass"></div>
 
-<!-- Cursor -->
+<!-- ── CURSOR ── -->
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 
-<!-- ══════════════════════════════ NAVBAR ══════════════════════════════ -->
-<nav class="navbar" id="navbar">
-  <a href="/" class="nav-logo">
-    <span class="nav-logo-icon">✂</span>
-    München Barber
-  </a>
-  <div class="nav-links">
-    <a href="#uber-uns" data-i18n="nav_about">Über uns</a>
-    <a href="#arbeiten" data-i18n="nav_works">Arbeiten</a>
-    <a href="#preise"   data-i18n="nav_prices">Preise</a>
-    <a href="#termin"   data-i18n="nav_book">Termin</a>
-  </div>
-  <div class="nav-actions">
-    <div class="lang-sw">
-      <button data-lang="de">DE</button>
-      <button data-lang="ru">RU</button>
-      <button data-lang="uk">UK</button>
+<!-- ── NAVBAR ── -->
+<nav class="nav" id="nav">
+  <div class="nav-c">
+    <a href="#top" class="nav-logo">MÜNCHEN BARBER</a>
+    <ul class="nav-links">
+      <li><a href="#ueber" data-i18n="nav_ueber">Über mich</a></li>
+      <li><a href="#work" data-i18n="nav_services">Services</a></li>
+    </ul>
+    <div class="nav-right">
+      <a href="https://www.instagram.com/munchen_barber?igsh=MW5ya2J2bzR3anE0bQ==" target="_blank" rel="noopener" class="nav-soc" title="Instagram">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+      </a>
+      <a href="https://t.me/barbermunich1" target="_blank" rel="noopener" class="nav-soc" title="Telegram">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+      </a>
+      <div class="lang-sw">
+        <button data-lang="de" class="active">DE</button>
+        <button data-lang="ru">RU</button>
+        <button data-lang="uk">UK</button>
+      </div>
+      <button class="nav-burger" id="navBurger" aria-label="Menu"><span></span><span></span></button>
     </div>
-    <a href="#termin" class="btn-book-nav" data-i18n="wc_book">Buchen ↗</a>
-    <button class="nav-burger" id="navBurger" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
   </div>
 </nav>
 
-<!-- Mobile menu -->
-<div class="nav-mobile" id="navMobile">
-  <button class="nav-close" id="navClose">✕</button>
-  <a href="#uber-uns" data-i18n="nav_about">Über uns</a>
-  <a href="#arbeiten" data-i18n="nav_works">Arbeiten</a>
-  <a href="#preise"   data-i18n="nav_prices">Preise</a>
-  <a href="#termin"   data-i18n="nav_book">Termin</a>
-  <div class="lang-sw" style="margin-top:1rem">
-    <button data-lang="de">DE</button>
-    <button data-lang="ru">RU</button>
-    <button data-lang="uk">UK</button>
+<!-- ── MOBILE MENU ── -->
+<div class="mob-menu" id="mobMenu">
+  <div class="mob-inner">
+    <ul>
+      <li><a href="#termin" onclick="closeMob()"><span data-i18n="hero_btn">Termin buchen</span></a></li>
+      <li><a href="#work" onclick="closeMob()"><span data-i18n="nav_services">Services</span></a></li>
+    </ul>
+    <div class="mob-soc">
+      <a href="https://www.instagram.com/munchen_barber?igsh=MW5ya2J2bzR3anE0bQ==" target="_blank">@munchen_barber</a>
+      <a href="https://t.me/barbermunich1" target="_blank">@barbermunich1</a>
+    </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════ HERO ══════════════════════════════ -->
-<section class="hero" id="home">
-  <div class="hero-bg"></div>
-  <div class="hero-grid"></div>
-  <div class="hero-content">
-    <div class="hero-eyebrow" data-i18n="hero_eyebrow">Premium Barber · München</div>
-    <h1 class="hero-h1" data-i18n="hero_h1">Dein Style,<br><em>Dein Auftritt</em></h1>
-    <p class="hero-sub" data-i18n="hero_sub">
-      Fades, klassische Schnitte und Bartpflege —
-      professionell und mit Leidenschaft seit 2019.
-    </p>
-    <div class="hero-actions">
-      <a href="#termin" class="btn-primary reveal">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"/></svg>
-        <span data-i18n="hero_cta">Termin buchen</span>
-      </a>
-      <a href="#arbeiten" class="btn-outline reveal" style="transition-delay:.1s" data-i18n="hero_works">Arbeiten ansehen</a>
-    </div>
-    <div class="hero-stats">
-      <div class="hero-stat">
-        <div class="hero-stat-num" id="counterYears">0</div>
-        <div class="hero-stat-label" data-i18n="stat_years">Jahre Erfahrung</div>
-      </div>
-      <div class="hero-stat">
-        <div class="hero-stat-num" id="counterClients">0</div>
-        <div class="hero-stat-label" data-i18n="stat_clients">Zufriedene Kunden</div>
-      </div>
+<!-- ══════════════════════ HERO ══════════════════════ -->
+<section class="hero" id="top">
+  <div class="hero-noise"></div>
+  <div class="hero-glow"></div>
+
+  <div class="hero-body">
+    <h1 class="hero-title">
+      <span class="ht-line" style="--d:.2s">MÜNCHEN</span>
+      <span class="ht-line gold" style="--d:.5s">BARBER</span>
+    </h1>
+    <p class="hero-tag"><em data-i18n="hero_tag">Ich mache deinen Look besser</em></p>
+    <div class="hero-clock-inline">
+      <span class="hci-time" id="heroTime">—:—:—</span>
+      <span class="hci-label">MÜNCHEN TIME</span>
     </div>
   </div>
+
   <div class="hero-scroll">
-    <span data-i18n="scroll_label">Scroll</span>
-    <div class="scroll-line"></div>
+    <span>SCROLL</span>
+    <div class="hs-line"></div>
   </div>
 </section>
 
-<!-- ══════════════════════════════ ABOUT ══════════════════════════════ -->
-<section class="about" id="uber-uns">
-  <div class="section-inner">
-    <div class="about-grid">
-      <div class="about-visual reveal-left">
-        <div class="about-img-wrap">
-          <img src="/static/bg.png" alt="Barber at work" loading="lazy">
+<!-- ── TICKER ── -->
+<div class="ticker">
+  <div class="ticker-track">
+    <span>✦ FADE</span><span>✦ SKIN FADE</span><span>✦ KLASSISCHER HAARSCHNITT</span>
+    <span>✦ BARTPFLEGE</span><span>✦ HEISSRASUR</span><span>✦ MÜNCHEN BARBER</span>
+    <span>✦ STYLING</span><span>✦ GRAU-KASCHIERUNG</span><span>✦ FADES & STYLE</span>
+    <!-- duplicate for seamless loop -->
+    <span>✦ FADE</span><span>✦ SKIN FADE</span><span>✦ KLASSISCHER HAARSCHNITT</span>
+    <span>✦ BARTPFLEGE</span><span>✦ HEISSRASUR</span><span>✦ MÜNCHEN BARBER</span>
+    <span>✦ STYLING</span><span>✦ GRAU-KASCHIERUNG</span><span>✦ FADES & STYLE</span>
+  </div>
+</div>
+
+<!-- ══════════════════════ WORK ══════════════════════ -->
+<section class="sec sec-dark" id="work">
+  <div class="con">
+    <div class="work-head reveal">
+      <div class="eyebrow" data-i18n="work_eyebrow">UNSERE ARBEIT</div>
+      <h2 data-i18n="work_h2">Aktuelle<br>Arbeiten</h2>
+    </div>
+    <div class="work-cats" id="workCats" style="display:none">
+      <button class="wcat active" data-cat="all" data-i18n="cat_all">Alle</button>
+      <button class="wcat" data-cat="Fade">Fade</button>
+      <button class="wcat" data-cat="Classic">Classic</button>
+      <button class="wcat" data-cat="Bart">Bart</button>
+      <button class="wcat" data-cat="FullLook">Full Look</button>
+      <button class="wcat" data-cat="Sonstiges">Mehr</button>
+    </div>
+    <div class="work-container reveal">
+      <button class="w-arrow w-prev" id="workPrev" aria-label="Zurück">‹</button>
+      <div class="work-grid" id="workGrid">
+        <div class="wc" style="--i:0">
+          <div class="wc-img-placeholder">✂</div>
+          <div class="wc-price-tag">30€</div>
+          <div class="wc-bottom"><span class="wc-t">Skin Fade</span><span class="wc-sub">60 min</span></div>
+          <a href="#termin" class="wc-overlay">Buchen ↗</a>
         </div>
-        <div class="about-badge">
-          <div class="about-badge-icon">✂</div>
-          <div class="about-badge-text">
-            <strong data-i18n="badge_title">Premium Service</strong>
-            <span data-i18n="badge_sub">München · seit 2019</span>
+        <div class="wc" style="--i:1">
+          <div class="wc-img-placeholder">💈</div>
+          <div class="wc-price-tag">25€</div>
+          <div class="wc-bottom"><span class="wc-t">Classic Cut</span><span class="wc-sub">45 min</span></div>
+          <a href="#termin" class="wc-overlay">Buchen ↗</a>
+        </div>
+        <div class="wc" style="--i:2">
+          <div class="wc-img-placeholder">🪒</div>
+          <div class="wc-price-tag">20€</div>
+          <div class="wc-bottom"><span class="wc-t">Beard Trim</span><span class="wc-sub">30 min</span></div>
+          <a href="#termin" class="wc-overlay">Buchen ↗</a>
+        </div>
+        <div class="wc" style="--i:3">
+          <div class="wc-img-placeholder">⚔</div>
+          <div class="wc-price-tag">40€</div>
+          <div class="wc-bottom"><span class="wc-t">Schnitt + Bart</span><span class="wc-sub">75 min</span></div>
+          <a href="#termin" class="wc-overlay">Buchen ↗</a>
+        </div>
+        <div class="wc" style="--i:4">
+          <div class="wc-img-placeholder">🔥</div>
+          <div class="wc-price-tag">30€</div>
+          <div class="wc-bottom"><span class="wc-t">Heißrasur</span><span class="wc-sub">45 min</span></div>
+          <a href="#termin" class="wc-overlay">Buchen ↗</a>
+        </div>
+        <div class="wc" style="--i:5">
+          <div class="wc-img-placeholder">✨</div>
+          <div class="wc-price-tag">15€</div>
+          <div class="wc-bottom"><span class="wc-t">Styling</span><span class="wc-sub">20 min</span></div>
+          <a href="#termin" class="wc-overlay">Buchen ↗</a>
+        </div>
+      </div>
+      <button class="w-arrow w-next" id="workNext" aria-label="Weiter">›</button>
+    </div>
+    <div class="work-dots" id="workDots"></div>
+  </div>
+</section>
+
+<!-- ══════════════════════ BOOKING ══════════════════════ -->
+<section class="sec sec-dark" id="termin">
+  <div class="con">
+    <div class="eyebrow" style="margin-bottom:1.5rem" data-i18n="bk_eyebrow">TERMIN BUCHEN</div>
+    <div class="bk-wrap bk-wrap-solo">
+      <form class="bk-form" id="bookForm" novalidate>
+        <div class="bf-row">
+          <div class="bf-g"><label data-i18n="f_name">Name *</label><input type="text" id="bName" placeholder="Max Mustermann" required></div>
+          <div class="bf-g"><label data-i18n="f_phone">Telefon *</label><input type="tel" id="bPhone" placeholder="+49 ..." required></div>
+        </div>
+        <div class="bf-row">
+          <div class="bf-g"><label>E-Mail <small data-i18n="f_reminder">(Erinnerung)</small></label><input type="email" id="bEmail" placeholder="email@example.com"></div>
+          <div class="bf-g"><label>Telegram <small data-i18n="f_reminder">(Erinnerung)</small></label><input type="text" id="bTelegram" placeholder="@username"></div>
+        </div>
+        <div class="bf-g">
+          <label data-i18n="f_service">Service *</label>
+          <select id="bService" required>
+            <option value="" data-i18n="f_service_ph">Service wählen ...</option>
+            <option value="Klassischer Haarschnitt|25" data-i18n="f_svc1">Klassischer Haarschnitt — 25€</option>
+            <option value="Haarschnitt (Maschine)|20" data-i18n="f_svc2">Haarschnitt (Maschine) — 20€</option>
+            <option value="Fade / Skin Fade|30" data-i18n="f_svc3">Fade / Skin Fade — 30€</option>
+            <option value="Haarschnitt + Bart|40" data-i18n="f_svc4">★ Haarschnitt + Bart — 40€</option>
+            <option value="Bartpflege|20" data-i18n="f_svc5">Bartpflege — 20€</option>
+            <option value="Heißrasur|30" data-i18n="f_svc6">Heißrasur — 30€</option>
+            <option value="Kinder (bis 12 J.)|20" data-i18n="f_svc7">Kinder (bis 12 J.) — 20€</option>
+            <option value="Styling|15" data-i18n="f_svc8">Styling — 15€</option>
+            <option value="Grau-Kaschierung|35" data-i18n="f_svc9">Grau-Kaschierung — 35€</option>
+            <option value="Haarschnitt + Styling|35" data-i18n="f_svc10">Haarschnitt + Styling — 35€</option>
+          </select>
+        </div>
+        <div class="bf-row">
+          <div class="bf-g"><label data-i18n="f_date">Datum *</label><input type="text" id="bDate" data-i18n-ph="f_date_ph" placeholder="Datum wählen" autocomplete="off" readonly required></div>
+          <div class="bf-g"><label data-i18n="f_time">Uhrzeit *</label>
+            <input type="hidden" id="bTime" required>
+            <div class="time-grid" id="timeGrid"><div class="tg-hint" data-i18n="f_time_hint">Erst Datum wählen</div></div>
           </div>
         </div>
-      </div>
-      <div class="about-text reveal-right">
-        <div class="section-header">
-          <span class="eyebrow" data-i18n="about_eyebrow">01 — Über uns</span>
-          <h2 class="section-title" data-i18n="about_h2">Handwerk &<br><em>Leidenschaft</em></h2>
-          <span class="section-divider"></span>
+        <div class="bf-g">
+          <label data-i18n="f_comment">Anmerkungen</label>
+          <textarea id="bComment" data-i18n-ph="f_comment_ph" placeholder="Besondere Wünsche..." rows="3"></textarea>
         </div>
-        <p class="about-desc" data-i18n="about_p1">
-          Spezialist für Fades, klassische Schnitte und Bartpflege.
-          Über 5 Jahre Erfahrung und ein Auge fürs Detail — jeder Look auf ein neues Level.
-        </p>
-        <div class="about-skills">
-          <span class="skill-tag" data-i18n="skill1">Fades & Skin Fades</span>
-          <span class="skill-tag" data-i18n="skill2">Klassische Schnitte</span>
-          <span class="skill-tag" data-i18n="skill3">Bartpflege & Rasur</span>
-        </div>
-        <a href="https://instagram.com/barbermunich1" target="_blank" class="about-ig-link" data-i18n="about_ig">Instagram ansehen ↗</a>
-      </div>
+        <button type="submit" class="btn-primary btn-full" id="submitBtn" data-i18n="f_submit">Termin buchen ✂</button>
+      </form>
     </div>
   </div>
 </section>
 
-<!-- ══════════════════════════════ WORKS ══════════════════════════════ -->
-<section class="works" id="arbeiten">
-  <div class="section-inner">
-    <div class="works-header reveal">
-      <div class="section-header" style="margin-bottom:0">
-        <span class="eyebrow" data-i18n="work_eyebrow">02 — Portfolio</span>
-        <h2 class="section-title" data-i18n="work_h2">Aktuelle<br><em>Arbeiten</em></h2>
+<!-- ══════════════════════ SERVICES STRIP ══════════════════════ -->
+<section class="svc-strip-sec" id="services">
+  <div class="svc-scroll">
+    <div class="svc-chip"><span data-i18n="svc1">Klassischer Haarschnitt</span><span class="scp">25€</span></div>
+    <div class="svc-chip"><span data-i18n="svc2">Haarschnitt (Maschine)</span><span class="scp">20€</span></div>
+    <div class="svc-chip svc-hl"><span data-i18n="svc3">✦ Fade / Skin Fade</span><span class="scp">30€</span></div>
+    <div class="svc-chip svc-best"><span data-i18n="svc4">★ Haarschnitt + Bart</span><span class="scp">40€</span></div>
+    <div class="svc-chip"><span data-i18n="svc5">Bartpflege</span><span class="scp">20€</span></div>
+    <div class="svc-chip"><span data-i18n="svc6">Heißrasur</span><span class="scp">30€</span></div>
+    <div class="svc-chip"><span data-i18n="svc7">Kinder (bis 12 J.)</span><span class="scp">20€</span></div>
+    <div class="svc-chip"><span data-i18n="svc8">Styling</span><span class="scp">15€</span></div>
+    <div class="svc-chip"><span data-i18n="svc9">Grau-Kaschierung</span><span class="scp">35€</span></div>
+    <div class="svc-chip"><span data-i18n="svc10">Haarschnitt + Styling</span><span class="scp">35€</span></div>
+  </div>
+</section>
+
+<!-- ══════════════════════ HOURS ══════════════════════ -->
+<section class="sec sec-dark" id="hours">
+  <div class="con">
+    <div class="hours-card reveal">
+      <div class="hours-top">
+        <div class="eyebrow" data-i18n="oh_title">ÖFFNUNGSZEITEN</div>
+        <div id="bkStatus" class="bk-status"></div>
       </div>
-      <div class="works-filter" id="worksFilter">
-        <button class="filter-btn active" data-cat="" data-i18n="cat_all">Alle</button>
+      <div class="hours-grid">
+        <div class="hrow hrow-closed"><span data-i18n="oh_mon">Montag</span><span data-i18n="oh_closed">Geschlossen</span></div>
+        <div class="hrow"><span data-i18n="oh_di">Di — Fr</span><span class="gold">10:00 — 20:00</span></div>
+        <div class="hrow"><span data-i18n="oh_sat">Samstag</span><span class="gold">9:00 — 18:00</span></div>
+        <div class="hrow hrow-closed"><span data-i18n="oh_sun">Sonntag</span><span data-i18n="oh_closed">Geschlossen</span></div>
       </div>
-    </div>
-    <div class="gallery-grid" id="galleryGrid">
-      <div class="gallery-item reveal" style="background:var(--bg-3);display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-size:.8rem">
-        Fotos werden geladen…
-      </div>
-    </div>
-    <div class="works-ig reveal">
-      <a href="https://instagram.com/barbermunich1" target="_blank" class="btn-ig">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>
-        <span data-i18n="work_more">Mehr auf Instagram ↗</span>
+      <a href="https://www.google.com/maps/search/?api=1&query=Seidlstra%C3%9Fe+2A%2C+M%C3%BCnchen%2C+80335" target="_blank" rel="noopener" class="hours-maps">
+        📍 Seidlstraße 2A, München 80335 ↗
       </a>
     </div>
   </div>
 </section>
 
-<!-- ══════════════════════════════ PRICES ══════════════════════════════ -->
-<section class="prices" id="preise">
-  <div class="section-inner">
-    <div class="section-header reveal">
-      <span class="eyebrow" data-i18n="prices_eyebrow">03 — Preisliste</span>
-      <h2 class="section-title" data-i18n="prices_h2">Was ich<br><em>anbiete</em></h2>
-      <span class="section-divider"></span>
-    </div>
-    <div class="prices-grid">
-      <div class="price-card reveal">
-        <div class="price-info"><div class="price-name" data-i18n="svc1">Klassischer Haarschnitt</div></div>
-        <div class="price-tag">25€</div>
+<!-- ── FOOTER ── -->
+<footer class="footer">
+  <div class="con">
+    <div class="ft-top">
+      <div class="ft-brand">
+        <div class="ft-logo">MÜNCHEN BARBER</div>
+        <div class="ft-tag" data-i18n="hero_tag">Ich mache deinen Look besser</div>
       </div>
-      <div class="price-card reveal" style="transition-delay:.05s">
-        <div class="price-info"><div class="price-name" data-i18n="svc2">Maschinenschnitt</div></div>
-        <div class="price-tag">20€</div>
-      </div>
-      <div class="price-card featured reveal" style="transition-delay:.1s">
-        <div class="price-info"><div class="price-name" data-i18n="svc3">Fade / Skin Fade</div></div>
-        <div class="price-tag">30€</div>
-      </div>
-      <div class="price-card featured reveal" style="transition-delay:.15s">
-        <div class="price-info"><div class="price-name" data-i18n="svc4">Schnitt + Bart</div></div>
-        <div class="price-tag">40€</div>
-      </div>
-      <div class="price-card reveal" style="transition-delay:.2s">
-        <div class="price-info"><div class="price-name" data-i18n="svc5">Bartpflege</div></div>
-        <div class="price-tag">20€</div>
-      </div>
-      <div class="price-card reveal" style="transition-delay:.25s">
-        <div class="price-info"><div class="price-name" data-i18n="svc6">Heißrasur</div></div>
-        <div class="price-tag">30€</div>
-      </div>
-      <div class="price-card reveal" style="transition-delay:.3s">
-        <div class="price-info"><div class="price-name" data-i18n="svc7">Kinder (bis 12)</div></div>
-        <div class="price-tag">20€</div>
-      </div>
-      <div class="price-card reveal" style="transition-delay:.35s">
-        <div class="price-info"><div class="price-name" data-i18n="svc8">Styling</div></div>
-        <div class="price-tag">15€</div>
-      </div>
-      <div class="price-card reveal" style="transition-delay:.4s">
-        <div class="price-info"><div class="price-name" data-i18n="svc9">Graukaschierung</div></div>
-        <div class="price-tag">35€</div>
-      </div>
-      <div class="price-card reveal" style="transition-delay:.45s">
-        <div class="price-info"><div class="price-name" data-i18n="svc10">Schnitt + Styling</div></div>
-        <div class="price-tag">35€</div>
+      <nav class="ft-nav">
+        <a href="#ueber" data-i18n="nav_ueber">Über mich</a>
+        <a href="#services" data-i18n="nav_services">Services</a>
+        <a href="#preise" data-i18n="nav_preise">Preise</a>
+        <a href="#termin" data-i18n="nav_termin">Termin</a>
+        <a href="/admin">Admin</a>
+      </nav>
+      <div class="ft-soc">
+        <a href="https://www.instagram.com/munchen_barber?igsh=MW5ya2J2bzR3anE0bQ==" target="_blank">Instagram</a>
+        <a href="https://t.me/barbermunich1" target="_blank">Telegram</a>
       </div>
     </div>
-    <p class="prices-note reveal" data-i18n="prices_note">* Alle Preise inkl. MwSt.</p>
-    <div class="prices-cta reveal">
-      <a href="#termin" class="btn-primary" data-i18n="prices_btn">Jetzt buchen</a>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════ BOOKING ══════════════════════════════ -->
-<section class="booking" id="termin">
-  <div class="section-inner">
-    <div class="booking-layout">
-      <div class="booking-info reveal-left">
-        <div class="section-header">
-          <span class="eyebrow" data-i18n="bk_eyebrow">04 — Online Termin</span>
-          <h2 class="section-title" data-i18n="bk_h2">Wann<br><em>kommst du?</em></h2>
-          <span class="section-divider"></span>
-        </div>
-        <p style="color:var(--text-muted);margin-bottom:2.5rem;line-height:1.8" data-i18n="bk_desc">
-          Wähle einen passenden Termin — die Bestätigung kommt sofort.
-        </p>
-        <div id="openStatus" class="open-status closed">
-          <span class="dot"></span>
-          <span id="openStatusText">—</span>
-        </div>
-        <div class="hours-card">
-          <div class="hours-title" data-i18n="oh_title">Öffnungszeiten</div>
-          <div class="hours-row"><span class="day" data-i18n="oh_mon">Montag</span><span class="time closed" data-i18n="oh_closed">Geschlossen</span></div>
-          <div class="hours-row"><span class="day" data-i18n="oh_di">Di — Fr</span><span class="time">10:00 — 20:00</span></div>
-          <div class="hours-row"><span class="day" data-i18n="oh_sat">Samstag</span><span class="time">09:00 — 18:00</span></div>
-          <div class="hours-row"><span class="day" data-i18n="oh_sun">Sonntag</span><span class="time closed" data-i18n="oh_closed">Geschlossen</span></div>
-        </div>
-      </div>
-      <div class="reveal-right">
-        <div class="booking-form-wrap">
-          <div class="form-title" data-i18n="form_title">Termin <em>buchen</em></div>
-          <form id="bookingForm" novalidate>
-            <div class="form-grid">
-              <div class="field">
-                <label data-i18n="f_name">Name *</label>
-                <input type="text" id="fName" data-i18n-ph="f_name" placeholder="Dein Name" required autocomplete="given-name">
-              </div>
-              <div class="field">
-                <label data-i18n="f_phone">Telefon *</label>
-                <input type="tel" id="fPhone" data-i18n-ph="f_phone" placeholder="+49 …" required autocomplete="tel">
-              </div>
-              <div class="field">
-                <label>E-Mail</label>
-                <input type="email" id="fEmail" placeholder="optional" autocomplete="email">
-              </div>
-              <div class="field">
-                <label data-i18n="f_reminder">Telegram</label>
-                <input type="text" id="fTelegram" placeholder="@username">
-              </div>
-              <div class="field form-full">
-                <label data-i18n="f_service">Service *</label>
-                <select id="fService" required>
-                  <option value="" data-i18n="f_service_ph">Service wählen …</option>
-                  <option value="Klassischer Haarschnitt|25"  data-i18n="f_svc1">Klassischer Haarschnitt — 25€</option>
-                  <option value="Maschinenschnitt|20"         data-i18n="f_svc2">Maschinenschnitt — 20€</option>
-                  <option value="Fade / Skin Fade|30"         data-i18n="f_svc3">Fade / Skin Fade — 30€</option>
-                  <option value="Schnitt + Bart|40"           data-i18n="f_svc4">★ Schnitt + Bart — 40€</option>
-                  <option value="Bartpflege|20"               data-i18n="f_svc5">Bartpflege — 20€</option>
-                  <option value="Heißrasur|30"                data-i18n="f_svc6">Heißrasur — 30€</option>
-                  <option value="Kinder (bis 12)|20"          data-i18n="f_svc7">Kinder (bis 12) — 20€</option>
-                  <option value="Styling|15"                  data-i18n="f_svc8">Styling — 15€</option>
-                  <option value="Graukaschierung|35"          data-i18n="f_svc9">Graukaschierung — 35€</option>
-                  <option value="Schnitt + Styling|35"        data-i18n="f_svc10">Schnitt + Styling — 35€</option>
-                </select>
-              </div>
-              <div class="field">
-                <label data-i18n="f_date">Datum *</label>
-                <input type="text" id="fDate" data-i18n-ph="f_date_ph" placeholder="Datum wählen" readonly required>
-              </div>
-              <div class="field">
-                <label data-i18n="f_time">Uhrzeit *</label>
-                <div class="slots-wrap" id="slotsWrap">
-                  <span class="slot-hint" data-i18n="f_time_hint">Zuerst Datum wählen</span>
-                </div>
-                <input type="hidden" id="fTime" required>
-              </div>
-              <div class="field form-full">
-                <label data-i18n="f_comment">Notizen</label>
-                <textarea id="fComment" data-i18n-ph="f_comment_ph" placeholder="Besondere Wünsche…"></textarea>
-              </div>
-            </div>
-            <button type="submit" class="btn-submit" data-i18n="f_submit">Termin buchen ✂</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════ FOOTER ══════════════════════════════ -->
-<footer>
-  <div class="footer-inner">
-    <div class="footer-brand">
-      <div class="nav-logo">✂ München Barber</div>
-      <p>Premium Barber · München, DE</p>
-    </div>
-    <nav class="footer-links">
-      <a href="#uber-uns" data-i18n="nav_about">Über uns</a>
-      <a href="#arbeiten" data-i18n="nav_works">Arbeiten</a>
-      <a href="#preise"   data-i18n="nav_prices">Preise</a>
-      <a href="#termin"   data-i18n="nav_book">Termin</a>
-      <a href="/admin">Admin</a>
-    </nav>
-    <div class="footer-copy">
-      <div class="live-clock" id="liveClock"><span id="clockTime">--:--:--</span></div>
-      <div style="margin-top:.4rem">© 2025 München Barber</div>
+    <div class="ft-bottom">
+      <span>© 2024 München Barber · München, Deutschland</span>
+      <span>Made with ✂ & ♥</span>
     </div>
   </div>
 </footer>
 
-<!-- Success Modal -->
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal-box">
-    <div class="modal-icon">✂</div>
-    <div class="modal-h" data-i18n="modal_h3">Termin bestätigt!</div>
-    <p class="modal-p" data-i18n="modal_msg">Bis bald! Die Bestätigung kommt in Kürze.</p>
-    <button class="modal-btn" id="modalBtn" data-i18n="modal_btn">Super!</button>
-  </div>
+<!-- ── MODAL ── -->
+<div class="m-overlay" id="mOverlay" onclick="closeModal()"></div>
+<div class="m-box" id="mBox">
+  <div class="m-check">✓</div>
+  <h3 data-i18n="modal_h3">Termin bestätigt!</h3>
+  <p id="mMsg" data-i18n="modal_msg">Bis bald! Bestätigung kommt in Kürze.</p>
+  <button class="btn-primary" onclick="closeModal()" data-i18n="modal_btn">Perfekt!</button>
 </div>
 
-<!-- Float CTA -->
-<a href="#termin" class="float-cta" id="floatCta">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"/></svg>
-  <span data-i18n="float_btn">Buchen</span>
-</a>
+<!-- ── FLOATING SOCIAL BUTTONS ── -->
+<div class="floating-controls">
+  <div class="floating-soc">
+    <a href="https://www.instagram.com/munchen_barber?igsh=MW5ya2J2bzR3anE0bQ==" target="_blank" class="glass-bubble gb-ig" aria-label="Instagram">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+    </a>
+    <a href="https://t.me/barbermunich1" target="_blank" class="glass-bubble gb-tg" aria-label="Telegram">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+    </a>
+  </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/de.js"></script>
