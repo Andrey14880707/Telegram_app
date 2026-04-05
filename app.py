@@ -1306,6 +1306,35 @@ def gcal_save_credentials():
     return jsonify({'success': True})
 
 
+@app.route('/api/debug/gcal-test')
+def gcal_test():
+    c = get_gcal_creds()
+    tokens = load_gcal_tokens()
+    service = get_gcal_service()
+    if not service:
+        return jsonify({
+            'error': 'get_gcal_service returned None',
+            'lib_installed': GCAL_AVAILABLE,
+            'has_client_id': bool(c['client_id']),
+            'has_client_secret': bool(c['client_secret']),
+            'has_tokens': bool(tokens),
+        })
+    try:
+        now = datetime.now()
+        end = now + timedelta(hours=1)
+        event = {
+            'summary': '✂ TEST — München Barber',
+            'start': {'dateTime': now.strftime('%Y-%m-%dT%H:%M:%S'), 'timeZone': 'Europe/Berlin'},
+            'end':   {'dateTime': end.strftime('%Y-%m-%dT%H:%M:%S'), 'timeZone': 'Europe/Berlin'},
+        }
+        result = service.events().insert(calendarId=c['calendar_id'], body=event, sendUpdates='none').execute()
+        # Delete test event immediately
+        service.events().delete(calendarId=c['calendar_id'], eventId=result['id']).execute()
+        return jsonify({'success': True, 'event_id': result['id'], 'message': 'Google Calendar работает!'})
+    except Exception as e:
+        return jsonify({'error': str(e)})
+
+
 # ── Boot ──────────────────────────────────────────────────────────────────────
 
 init_db()
