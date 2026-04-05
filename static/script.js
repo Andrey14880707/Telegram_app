@@ -1,480 +1,437 @@
-/* ═══════════════════════════════════════════════════
-   MÜNCHEN BARBER — Main Script
-   ═══════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════
+   München Barber — Public Site Script
+   ════════════════════════════════════════════════ */
 
-// ── Preloader ────────────────────────────────────────
-window.addEventListener('DOMContentLoaded', () => {
+// ── Preloader ─────────────────────────────────────
+(function(){
   const fill = document.getElementById('plFill');
   const pl   = document.getElementById('preloader');
-  if (!pl) return;
-  if (fill) fill.style.width = '100%';
-  setTimeout(() => pl.classList.add('out'), 1200);
-});
-
-// ── Custom Cursor ────────────────────────────────────
-const cur  = document.getElementById('cursor');
-const ring = document.getElementById('cursorRing');
-if (cur && ring && window.matchMedia('(hover:hover)').matches) {
-  let rx = 0, ry = 0;
-  document.addEventListener('mousemove', e => {
-    cur.style.left  = e.clientX + 'px';
-    cur.style.top   = e.clientY + 'px';
-    rx += (e.clientX - rx) * .12;
-    ry += (e.clientY - ry) * .12;
-    ring.style.left = rx + 'px';
-    ring.style.top  = ry + 'px';
+  let v = 0;
+  const iv = setInterval(() => {
+    v += Math.random() * 18 + 6;
+    if (v >= 100) { v = 100; clearInterval(iv); }
+    fill.style.width = v + '%';
+  }, 120);
+  window.addEventListener('load', () => {
+    fill.style.width = '100%';
+    setTimeout(() => pl.classList.add('done'), 400);
   });
-  requestAnimationFrame(function loop() {
-    ring.style.left = rx + 'px';
-    ring.style.top  = ry + 'px';
-    requestAnimationFrame(loop);
-  });
-}
-
-// ── Navbar ───────────────────────────────────────────
-const nav = document.getElementById('nav');
-window.addEventListener('scroll', () => {
-  nav && (window.scrollY > 60 ? nav.classList.add('stuck') : nav.classList.remove('stuck'));
-}, { passive: true });
-
-// ── Mobile Menu ──────────────────────────────────────
-const burger  = document.getElementById('navBurger');
-const mobMenu = document.getElementById('mobMenu');
-function closeMob() {
-  if (!mobMenu) return;
-  mobMenu.classList.remove('open');
-  burger && burger.classList.remove('open');
-  document.body.style.overflow = '';
-}
-if (burger) {
-  burger.addEventListener('click', () => {
-    const isOpen = mobMenu.classList.toggle('open');
-    burger.classList.toggle('open', isOpen);
-    document.body.style.overflow = isOpen ? 'hidden' : '';
-  });
-}
-
-// ── Clock ────────────────────────────────────────────
-function updateClock() {
-  const t = new Date().toLocaleTimeString('de-DE', {
-    hour: '2-digit', minute: '2-digit', second: '2-digit',
-    timeZone: 'Europe/Berlin'
-  });
-  const mob = document.getElementById('heroTime');
-  if (mob) mob.textContent = t;
-}
-updateClock();
-setInterval(updateClock, 1000);
-
-// ── Open/Closed status ────────────────────────────────
-function checkStatus() {
-  const el = document.getElementById('bkStatus');
-  if (!el) return;
-  const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Berlin' }));
-  const wd = now.getDay();   // 0=Sun
-  const h  = now.getHours() + now.getMinutes() / 60;
-  let open = false;
-  // Mon(1): closed, Tue-Fri(2-5): 10-20, Sat(6): 9-18, Sun(0): closed
-  if (wd >= 2 && wd <= 5) open = h >= 10 && h < 20;
-  else if (wd === 6)       open = h >= 9  && h < 18;
-  const lang = localStorage.getItem('lang') || 'de';
-  const openTxt  = {de:'🟢 Jetzt geöffnet',  ru:'🟢 Сейчас открыто',  uk:'🟢 Зараз відкрито'}[lang]  || '🟢 Jetzt geöffnet';
-  const closeTxt = {de:'🔴 Aktuell geschlossen', ru:'🔴 Сейчас закрыто', uk:'🔴 Зараз зачинено'}[lang] || '🔴 Aktuell geschlossen';
-  el.className = 'bk-status ' + (open ? 'open' : 'closed');
-  el.textContent = open ? openTxt : closeTxt;
-}
-checkStatus();
-
-// ── Counter animation ─────────────────────────────────
-function animateCounter(el) {
-  const target = parseInt(el.dataset.target, 10);
-  const suffix = el.dataset.suffix || '';
-  let current = 0;
-  const duration = 1800;
-  const step = target / (duration / 16);
-  const timer = setInterval(() => {
-    current = Math.min(current + step, target);
-    el.textContent = Math.floor(current) + suffix;
-    if (current >= target) clearInterval(timer);
-  }, 16);
-}
-
-// ── Scroll reveal ─────────────────────────────────────
-const revealObs = new IntersectionObserver((entries) => {
-  entries.forEach((entry, i) => {
-    if (!entry.isIntersecting) return;
-    setTimeout(() => {
-      entry.target.classList.add('in');
-      // Skills
-      entry.target.querySelectorAll('.sbar > div').forEach(bar => {
-        bar.style.width = (bar.dataset.w || 0) + '%';
-      });
-      // Counters
-      entry.target.querySelectorAll('.bnum[data-target]').forEach(animateCounter);
-    }, i * 100);
-    revealObs.unobserve(entry.target);
-  });
-}, { threshold: .12 });
-
-document.querySelectorAll('.reveal, .reveal-l, .reveal-r').forEach(el => revealObs.observe(el));
-
-// Observe stat numbers separately (they're inside reveal-l)
-const numObs = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.querySelectorAll('.bnum[data-target]').forEach(animateCounter);
-      numObs.unobserve(entry.target);
-    }
-  });
-}, { threshold: .3 });
-document.querySelectorAll('.about-nums').forEach(el => numObs.observe(el));
-
-// ── Work Slider (Premium Snap) ──────────────────────
-let _workPhotos = [], _workFiltered = [], _workIdx = 0;
-const CAT_LABELS = {Fade:'✂ Fade',Classic:'💈 Classic',Bart:'🪒 Bart',FullLook:'⚡ Full Look',Sonstiges:'📷 Sonstiges'};
-
-(async function initWork() {
-  const grid = document.getElementById('workGrid');
-  const prev = document.getElementById('workPrev');
-  const next = document.getElementById('workNext');
-  if (!grid) return;
-
-  try {
-    const res  = await fetch('/api/photos');
-    const data = await res.json();
-    if (data.photos && data.photos.length) {
-      _workPhotos = data.photos;
-      _workFiltered = data.photos;
-      buildWork();
-    }
-  } catch { /* keep fallbacks */ }
-
-  // Arrows
-  prev?.addEventListener('click', () => {
-    grid.scrollBy({ left: -grid.offsetWidth * 0.8, behavior: 'smooth' });
-  });
-  next?.addEventListener('click', () => {
-    grid.scrollBy({ left: grid.offsetWidth * 0.8, behavior: 'smooth' });
-  });
-
-  // Category pills
-  document.querySelectorAll('.wcat').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.wcat').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      _workFiltered = btn.dataset.cat === 'all' ? _workPhotos : _workPhotos.filter(p => p.category === btn.dataset.cat);
-      buildWork();
-    });
-  });
-
-  // Track scroll for dots
-  grid.addEventListener('scroll', () => {
-    const idx = Math.round(grid.scrollLeft / (grid.querySelector('.wc')?.offsetWidth || 1));
-    updateWorkDots(idx);
-  }, { passive: true });
 })();
 
-function buildWork() {
-  const grid = document.getElementById('workGrid');
-  const dots = document.getElementById('workDots');
+// ── Cursor ────────────────────────────────────────
+(function(){
+  const c  = document.getElementById('cursor');
+  const cr = document.getElementById('cursorRing');
+  if (!c || !cr) return;
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
+  function loop(){
+    c.style.left  = mx+'px'; c.style.top  = my+'px';
+    rx += (mx-rx)*.12; ry += (my-ry)*.12;
+    cr.style.left = rx+'px'; cr.style.top = ry+'px';
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+
+// ── Navbar scroll ─────────────────────────────────
+(function(){
+  const nav = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  }, {passive:true});
+})();
+
+// ── Mobile menu ───────────────────────────────────
+(function(){
+  const burger = document.getElementById('navBurger');
+  const mobile = document.getElementById('navMobile');
+  const close  = document.getElementById('navClose');
+  if (!burger) return;
+  burger.addEventListener('click', () => mobile.classList.add('open'));
+  close.addEventListener('click',  () => mobile.classList.remove('open'));
+  mobile.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobile.classList.remove('open')));
+})();
+
+// ── Float CTA ─────────────────────────────────────
+(function(){
+  const el = document.getElementById('floatCta');
+  if (!el) return;
+  window.addEventListener('scroll', () => {
+    el.classList.toggle('visible', window.scrollY > 500);
+  }, {passive:true});
+})();
+
+// ── Live clock ────────────────────────────────────
+(function(){
+  const el = document.getElementById('clockTime');
+  if (!el) return;
+  function tick(){
+    const d = new Date();
+    const tz = 'Europe/Berlin';
+    el.textContent = d.toLocaleTimeString('de-DE', {timeZone:tz, hour:'2-digit', minute:'2-digit', second:'2-digit'});
+  }
+  tick(); setInterval(tick, 1000);
+})();
+
+// ── Open/closed status ────────────────────────────
+(function(){
+  const el   = document.getElementById('openStatus');
+  const text = document.getElementById('openStatusText');
+  if (!el) return;
+  const HOURS = {1:[10,20],2:[10,20],3:[10,20],4:[10,20],5:[9,18]};
+  function update(){
+    const now = new Date(new Date().toLocaleString('en-US',{timeZone:'Europe/Berlin'}));
+    const wd  = now.getDay() === 0 ? 7 : now.getDay();
+    const h   = HOURS[wd];
+    if (!h){ el.className='open-status closed'; text.textContent=text.closest('[data-i18n]')? '':'Geschlossen'; return; }
+    const cur = now.getHours() + now.getMinutes()/60;
+    if (cur >= h[0] && cur < h[1]){
+      el.className='open-status open';
+      text.textContent = `Geöffnet · schließt ${h[1]}:00`;
+    } else {
+      el.className='open-status closed';
+      const opens = Object.entries(HOURS).find(([d])=> parseInt(d) > wd);
+      text.textContent = opens ? `Geschlossen · öffnet Di ${opens[1][0]}:00` : 'Geschlossen';
+    }
+  }
+  update(); setInterval(update, 60000);
+})();
+
+// ── Counters ──────────────────────────────────────
+(function(){
+  function animateCounter(el, target, suffix=''){
+    let v = 0;
+    const step = () => {
+      v += Math.ceil((target-v)/12) || 1;
+      el.textContent = (v >= target ? target : v) + suffix;
+      if (v < target) requestAnimationFrame(step);
+    };
+    step();
+  }
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const years   = document.getElementById('counterYears');
+      const clients = document.getElementById('counterClients');
+      if (years)   animateCounter(years, 5, '+');
+      if (clients) animateCounter(clients, 500, '+');
+      obs.disconnect();
+    });
+  }, {threshold:.5});
+  const target = document.querySelector('.hero-stats');
+  if (target) obs.observe(target);
+})();
+
+// ── Scroll reveal ─────────────────────────────────
+(function(){
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); }
+    });
+  }, {threshold:.12, rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(el => obs.observe(el));
+})();
+
+// ── Gallery ───────────────────────────────────────
+(function(){
+  const grid   = document.getElementById('galleryGrid');
+  const filter = document.getElementById('worksFilter');
   if (!grid) return;
 
-  if (_workFiltered.length) {
-    grid.innerHTML = _workFiltered.map((p, i) => `
-      <div class="wc" style="--i:${i}">
-        <img src="/uploads/${p.filename}" alt="${p.caption || ''}" loading="lazy">
-        <div class="wc-bottom">
-          <span class="wc-t">${p.category}</span>
-          <span class="wc-sub">${p.caption || 'Haircut & Design'}</span>
+  let allPhotos = [];
+
+  function renderGallery(cat){
+    const items = cat ? allPhotos.filter(p => p.category === cat) : allPhotos;
+    if (!items.length){
+      grid.innerHTML = '<div class="gallery-item" style="aspect-ratio:1;display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-size:.8rem">Keine Fotos</div>';
+      return;
+    }
+    grid.innerHTML = items.map(p => `
+      <div class="gallery-item reveal" data-cat="${p.category||''}">
+        <img src="/uploads/${p.filename}" alt="${p.caption||''}" loading="lazy">
+        <div class="gallery-overlay">
+          <div class="gallery-caption">
+            ${p.category ? `<strong>${p.category}</strong>` : ''}
+            ${p.caption ? `<span>${p.caption}</span>` : ''}
+          </div>
         </div>
-        <a href="#termin" class="wc-overlay">Buchen ↗</a>
-      </div>`).join('');
+      </div>
+    `).join('');
+    // Re-trigger reveal observer
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting){ e.target.classList.add('in'); obs.unobserve(e.target); }});
+    }, {threshold:.1});
+    grid.querySelectorAll('.reveal').forEach(el => obs.observe(el));
   }
 
-  // Build dots
-  if (dots) {
-    dots.innerHTML = _workFiltered.map((_, i) => `<div class="w-dot ${i===0?'active':''}" onclick="workTo(${i})"></div>`).join('');
-  }
-}
-
-function updateWorkDots(idx) {
-  document.querySelectorAll('.w-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
-}
-
-function workTo(idx) {
-  const grid = document.getElementById('workGrid');
-  const cards = grid.querySelectorAll('.wc');
-  if (cards[idx]) {
-    cards[idx].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-  }
-}
-
-// ── Flatpickr date picker ─────────────────────────────
-let _disabledDates = [];
-async function initDatePicker() {
-  const dateInput = document.getElementById('bDate');
-  if (!dateInput || typeof flatpickr === 'undefined') return;
-
-  try {
-    const res  = await fetch('/api/availability');
-    const data = await res.json();
-    _disabledDates = data.disabled || [];
-  } catch { _disabledDates = []; }
-
-  const today  = new Date();
-  const maxDay = new Date(today); maxDay.setDate(today.getDate() + 60);
-
-  flatpickr(dateInput, {
-    locale: 'de',
-    minDate: today,
-    maxDate: maxDay,
-    disable: _disabledDates,
-    disableMobile: true,
-    onChange: ([selectedDate]) => {
-      if (selectedDate) loadSlots();
-    },
-  });
-}
-initDatePicker();
-
-// ── Time slots (grid) ──────────────────────────────────
-async function loadSlots() {
-  const date = document.getElementById('bDate').value;
-  const grid = document.getElementById('timeGrid');
-  const hidden = document.getElementById('bTime');
-  if (!date || !grid) return;
-
-  grid.innerHTML = '<div class="tg-loading">Lädt...</div>';
-  if (hidden) hidden.value = '';
-
-  try {
-    const res  = await fetch(`/api/slots?date=${date}`);
-    const data = await res.json();
-
-    grid.innerHTML = '';
-    if (data.closed) {
-      grid.innerHTML = '<div class="tg-hint">Geschlossen</div>';
-      return;
-    }
-    const available = data.slots || [];
-    const booked    = data.booked || [];
-    if (!available.length && !booked.length) {
-      grid.innerHTML = '<div class="tg-hint">Keine freien Zeiten</div>';
-      return;
-    }
-    // Merge + sort all slots
-    const all = [...new Set([...available, ...booked])].sort();
-    all.forEach(slot => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'tg-slot' + (booked.includes(slot) ? ' booked' : '');
-      btn.textContent = slot;
-      if (!booked.includes(slot)) {
-        btn.addEventListener('click', () => {
-          grid.querySelectorAll('.tg-slot').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          if (hidden) hidden.value = slot;
-        });
+  function buildFilters(photos){
+    const cats = [...new Set(photos.map(p => p.category).filter(Boolean))];
+    const existing = [...filter.querySelectorAll('.filter-btn')];
+    cats.forEach(cat => {
+      if (!existing.find(b => b.dataset.cat === cat)){
+        const btn = document.createElement('button');
+        btn.className = 'filter-btn';
+        btn.dataset.cat = cat;
+        btn.textContent = cat;
+        filter.appendChild(btn);
       }
-      grid.appendChild(btn);
     });
-  } catch {
-    grid.innerHTML = '<div class="tg-hint">Fehler beim Laden</div>';
   }
-}
 
-// ── Floating book button ───────────────────────────────
-const floatBook = document.getElementById('floatBook');
-const heroSection = document.querySelector('.hero');
-const bookingSection = document.getElementById('termin');
-if (floatBook && heroSection) {
-  const updateFloat = () => {
-    const heroBottom    = heroSection.getBoundingClientRect().bottom;
-    const bookingTop    = bookingSection ? bookingSection.getBoundingClientRect().top : Infinity;
-    const wh            = window.innerHeight;
-    const pastHero      = heroBottom < 0;
-    const atBooking     = bookingTop < wh * 0.8;
-    if (pastHero && !atBooking) {
-      floatBook.classList.add('visible');
-    } else {
-      floatBook.classList.remove('visible');
+  filter.addEventListener('click', e => {
+    const btn = e.target.closest('.filter-btn');
+    if (!btn) return;
+    filter.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderGallery(btn.dataset.cat);
+  });
+
+  fetch('/api/photos').then(r => r.json()).then(d => {
+    allPhotos = d.photos || [];
+    if (!allPhotos.length){
+      grid.innerHTML = '<div class="gallery-item" style="grid-column:1/-1;aspect-ratio:unset;padding:3rem;display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-size:.85rem;border-radius:var(--radius-lg)">Noch keine Fotos vorhanden</div>';
+      return;
     }
-  };
-  window.addEventListener('scroll', updateFloat, { passive: true });
-  updateFloat();
-}
+    buildFilters(allPhotos);
+    renderGallery('');
+  }).catch(() => {
+    grid.innerHTML = '';
+  });
+})();
 
-// ── Booking form ──────────────────────────────────────
-const bookForm = document.getElementById('bookForm');
-if (bookForm) {
-  bookForm.addEventListener('submit', async (e) => {
+// ── Booking form ──────────────────────────────────
+(function(){
+  const dateInput = document.getElementById('fDate');
+  const slotsWrap = document.getElementById('slotsWrap');
+  const timeInput = document.getElementById('fTime');
+  const form      = document.getElementById('bookingForm');
+  const modal     = document.getElementById('modalOverlay');
+  const modalBtn  = document.getElementById('modalBtn');
+  if (!dateInput) return;
+
+  let fp;
+
+  fetch('/api/availability').then(r => r.json()).then(d => {
+    fp = flatpickr(dateInput, {
+      locale: 'de',
+      minDate: 'today',
+      maxDate: new Date(Date.now() + 60*24*60*60*1000),
+      disable: d.disabled || [],
+      disableMobile: false,
+      dateFormat: 'Y-m-d',
+      altInput: true,
+      altFormat: 'D, d. M Y',
+      onChange: ([date]) => {
+        if (!date) return;
+        const ds = date.toISOString().slice(0,10);
+        loadSlots(ds);
+      }
+    });
+  });
+
+  function loadSlots(dateStr){
+    slotsWrap.innerHTML = '<span class="slot-hint">…</span>';
+    timeInput.value = '';
+    fetch('/api/slots?date=' + dateStr).then(r => r.json()).then(d => {
+      if (d.closed || !d.slots.length){
+        const L = window._L || {};
+        slotsWrap.innerHTML = `<span class="slot-hint">${L.closed || 'Geschlossen / keine freien Slots'}</span>`;
+        return;
+      }
+      slotsWrap.innerHTML = d.slots.map(s =>
+        `<button type="button" class="slot-btn" data-time="${s}">${s}</button>`
+      ).join('');
+    });
+  }
+
+  slotsWrap.addEventListener('click', e => {
+    const btn = e.target.closest('.slot-btn');
+    if (!btn) return;
+    slotsWrap.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    timeInput.value = btn.dataset.time;
+  });
+
+  form.addEventListener('submit', async e => {
     e.preventDefault();
-    const btn = document.getElementById('submitBtn');
-    const orig = btn.textContent;
-    btn.disabled = true;
-    btn.textContent = 'Wird gesendet...';
-    document.querySelector('.form-err')?.remove();
+    const btn = form.querySelector('.btn-submit');
+    const name    = document.getElementById('fName').value.trim();
+    const phone   = document.getElementById('fPhone').value.trim();
+    const service = document.getElementById('fService').value;
+    const date    = dateInput.value;
+    const time    = timeInput.value;
 
-    const payload = {
-      name:    document.getElementById('bName').value.trim(),
-      phone:   document.getElementById('bPhone').value.trim(),
-      email:   document.getElementById('bEmail').value.trim(),
-      telegram:document.getElementById('bTelegram').value.trim(),
-      service: document.getElementById('bService').value,
-      date:    document.getElementById('bDate').value,
-      time:    document.getElementById('bTime').value,
-      comment: document.getElementById('bComment').value.trim(),
-    };
+    if (!name || !phone || !service || !date || !time) {
+      btn.textContent = '⚠ Bitte alle Pflichtfelder ausfüllen';
+      setTimeout(() => btn.setAttribute('data-i18n','f_submit') && setLang(localStorage.getItem('lang')||'de'), 2500);
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = '…';
 
     try {
-      const res  = await fetch('/api/book', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+      const res = await fetch('/api/book', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          name, phone,
+          email:    document.getElementById('fEmail').value.trim(),
+          telegram: document.getElementById('fTelegram').value.trim(),
+          service, date, time,
+          comment:  document.getElementById('fComment').value.trim(),
+        })
       });
       const data = await res.json();
-      if (data.success) {
-        document.getElementById('mMsg').textContent = data.message;
-        openModal();
-        bookForm.reset();
-        const grid = document.getElementById('timeGrid');
-        if (grid) grid.innerHTML = '<div class="tg-hint">Erst Datum wählen</div>';
+      if (data.success){
+        modal.classList.add('show');
+        form.reset();
+        slotsWrap.innerHTML = '<span class="slot-hint" data-i18n="f_time_hint">Zuerst Datum wählen</span>';
+        timeInput.value = '';
+        if (fp) fp.clear();
       } else {
-        showErr(data.error || 'Unbekannter Fehler');
+        btn.textContent = data.error || 'Fehler — bitte erneut versuchen';
+        btn.disabled = false;
+        setTimeout(() => { btn.disabled=false; setLang(localStorage.getItem('lang')||'de'); }, 3000);
       }
     } catch {
-      showErr('Verbindungsfehler — bitte erneut versuchen');
-    } finally {
+      btn.textContent = 'Netzwerkfehler';
       btn.disabled = false;
-      btn.textContent = orig;
     }
   });
-}
 
-function showErr(msg) {
-  const el = document.createElement('div');
-  el.className = 'form-err';
-  el.style.cssText = 'color:#ef4444;background:rgba(239,68,68,.08);border-left:2px solid #ef4444;padding:.75rem 1rem;font-size:.82rem;margin-bottom:1rem;';
-  el.textContent = '⚠ ' + msg;
-  bookForm.insertBefore(el, bookForm.querySelector('[type=submit]'));
-}
+  if (modalBtn) modalBtn.addEventListener('click', () => modal.classList.remove('show'));
+  modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('show'); });
+})();
 
-// ── Modal ──────────────────────────────────────────────
-function openModal() {
-  document.getElementById('mOverlay').classList.add('on');
-  document.getElementById('mBox').classList.add('on');
-}
-function closeModal() {
-  document.getElementById('mOverlay').classList.remove('on');
-  document.getElementById('mBox').classList.remove('on');
-}
-
-// ── Language Switcher ─────────────────────────────────
+// ── i18n ─────────────────────────────────────────
 const LANGS = {
   de: {
-    nav_ueber:'Über mich', nav_services:'Services', nav_preise:'Preise', nav_termin:'Termin',
-    hero_tag:'Ich mache deinen Look besser', hero_btn:'Termin buchen',
-    stat_kunden:'KUNDEN', stat_exp:'JAHRE ERFAHRUNG',
-    about_eyebrow:'01 — ÜBER MICH',
-    about_h2:'Professioneller<br><em>Barbier</em><br>in München',
-    about_p1:'Spezialist für Fades, klassische Haarschnitte und Bartpflege. Mit über 5 Jahren Erfahrung und einem Auge fürs Detail bringe ich jeden Look auf das nächste Level.',
+    nav_about:'Über uns', nav_works:'Arbeiten', nav_prices:'Preise', nav_book:'Termin',
+    hero_eyebrow:'Premium Barber · München',
+    hero_h1:'Dein Style,<br><em>Dein Auftritt</em>',
+    hero_sub:'Fades, klassische Schnitte und Bartpflege — professionell und mit Leidenschaft seit 2019.',
+    hero_cta:'Termin buchen', hero_works:'Arbeiten ansehen',
+    stat_years:'Jahre Erfahrung', stat_clients:'Zufriedene Kunden',
+    scroll_label:'Scroll',
+    badge_title:'Premium Service', badge_sub:'München · seit 2019',
+    about_eyebrow:'01 — Über uns', about_h2:'Handwerk &<br><em>Leidenschaft</em>',
+    about_p1:'Spezialist für Fades, klassische Schnitte und Bartpflege. Über 5 Jahre Erfahrung und ein Auge fürs Detail — jeder Look auf ein neues Level.',
     about_ig:'Instagram ansehen ↗',
-    skill1:'Fades & Skin Fades', skill2:'Klassische Haarschnitte', skill3:'Bartpflege & Rasur',
-    work_eyebrow:'UNSERE ARBEIT', work_h2:'Aktuelle<br>Arbeiten',
-    work_more:'Mehr auf Instagram ↗', cat_all:'Alle', work_ig_p:'Echte Ergebnisse auf Instagram',
-    prices_eyebrow:'03 — PREISLISTE', prices_h2:'Was ich<br>anbiete',
-    svc1:'Klassischer Haarschnitt', svc2:'Haarschnitt (Maschine)', svc3:'✦ Fade / Skin Fade',
-    svc4:'★ Haarschnitt + Bart', svc5:'Bartpflege', svc6:'Heißrasur',
-    svc7:'Kinder (bis 12 J.)', svc8:'Styling', svc9:'Grau-Kaschierung', svc10:'Haarschnitt + Styling',
+    skill1:'Fades & Skin Fades', skill2:'Klassische Schnitte', skill3:'Bartpflege & Rasur',
+    work_eyebrow:'02 — Portfolio', work_h2:'Aktuelle<br><em>Arbeiten</em>',
+    work_more:'Mehr auf Instagram ↗', cat_all:'Alle',
+    prices_eyebrow:'03 — Preisliste', prices_h2:'Was ich<br><em>anbiete</em>',
+    svc1:'Klassischer Haarschnitt', svc2:'Maschinenschnitt', svc3:'Fade / Skin Fade',
+    svc4:'Schnitt + Bart', svc5:'Bartpflege', svc6:'Heißrasur',
+    svc7:'Kinder (bis 12)', svc8:'Styling', svc9:'Graukaschierung', svc10:'Schnitt + Styling',
     prices_note:'* Alle Preise inkl. MwSt.', prices_btn:'Jetzt buchen',
-    bk_eyebrow:'TERMIN BUCHEN', bk_h2:'Wann<br>kommst du?',
-    bk_desc:'Wähle deinen Wunschtermin — Bestätigung kommt sofort.',
-    oh_title:'ÖFFNUNGSZEITEN', oh_mon:'Montag', oh_closed:'Geschlossen',
+    bk_eyebrow:'04 — Online Termin', bk_h2:'Wann<br><em>kommst du?</em>',
+    bk_desc:'Wähle einen passenden Termin — die Bestätigung kommt sofort.',
+    oh_title:'Öffnungszeiten', oh_mon:'Montag', oh_closed:'Geschlossen',
     oh_di:'Di — Fr', oh_sat:'Samstag', oh_sun:'Sonntag',
-    f_name:'Name *', f_phone:'Telefon *', f_reminder:'(Erinnerung)',
-    f_service:'Service *', f_service_ph:'Service wählen ...',
-    f_svc1:'Klassischer Haarschnitt — 25€', f_svc2:'Haarschnitt (Maschine) — 20€',
-    f_svc3:'Fade / Skin Fade — 30€', f_svc4:'★ Haarschnitt + Bart — 40€',
+    form_title:'Termin <em>buchen</em>',
+    f_name:'Name *', f_phone:'Telefon *', f_reminder:'Telegram',
+    f_service:'Service *', f_service_ph:'Service wählen …',
+    f_svc1:'Klassischer Haarschnitt — 25€', f_svc2:'Maschinenschnitt — 20€',
+    f_svc3:'Fade / Skin Fade — 30€', f_svc4:'★ Schnitt + Bart — 40€',
     f_svc5:'Bartpflege — 20€', f_svc6:'Heißrasur — 30€',
-    f_svc7:'Kinder (bis 12 J.) — 20€', f_svc8:'Styling — 15€',
-    f_svc9:'Grau-Kaschierung — 35€', f_svc10:'Haarschnitt + Styling — 35€',
-    f_date:'Datum *', f_time:'Uhrzeit *', f_time_hint:'Erst Datum wählen',
-    f_date_ph:'Datum wählen', f_comment_ph:'Besondere Wünsche...',
-    f_comment:'Anmerkungen', f_submit:'Termin buchen ✂',
-    modal_h3:'Termin bestätigt!', modal_msg:'Bis bald! Bestätigung kommt in Kürze.', modal_btn:'Perfekt!',
-    float_btn:'✂ Termin buchen', wc_book:'Buchen ↗',
+    f_svc7:'Kinder (bis 12) — 20€', f_svc8:'Styling — 15€',
+    f_svc9:'Graukaschierung — 35€', f_svc10:'Schnitt + Styling — 35€',
+    f_date:'Datum *', f_time:'Uhrzeit *', f_time_hint:'Zuerst Datum wählen',
+    f_date_ph:'Datum wählen', f_comment_ph:'Besondere Wünsche…',
+    f_comment:'Notizen', f_submit:'Termin buchen ✂',
+    modal_h3:'Termin bestätigt!', modal_msg:'Bis bald! Die Bestätigung kommt in Kürze.', modal_btn:'Super!',
+    float_btn:'Buchen', wc_book:'Buchen ↗',
+    closed:'Geschlossen / keine freien Slots',
   },
   ru: {
-    nav_ueber:'Обо мне', nav_services:'Услуги', nav_preise:'Цены', nav_termin:'Запись',
-    hero_tag:'Я делаю твой образ лучше', hero_btn:'Записаться',
-    stat_kunden:'КЛИЕНТОВ', stat_exp:'ЛЕТ ОПЫТА',
-    about_eyebrow:'01 — ОБО МНЕ',
-    about_h2:'Профессиональный<br><em>Барбер</em><br>в Мюнхене',
+    nav_about:'О нас', nav_works:'Работы', nav_prices:'Цены', nav_book:'Запись',
+    hero_eyebrow:'Премиум барбер · Мюнхен',
+    hero_h1:'Твой стиль,<br><em>твой образ</em>',
+    hero_sub:'Фейды, классические стрижки и уход за бородой — профессионально и с душой с 2019 года.',
+    hero_cta:'Записаться', hero_works:'Смотреть работы',
+    stat_years:'Лет опыта', stat_clients:'Довольных клиентов',
+    scroll_label:'Листай',
+    badge_title:'Премиум сервис', badge_sub:'Мюнхен · с 2019',
+    about_eyebrow:'01 — О нас', about_h2:'Мастерство &<br><em>страсть</em>',
     about_p1:'Специалист по фейдам, классическим стрижкам и уходу за бородой. Более 5 лет опыта и внимание к деталям — каждый образ на новый уровень.',
-    about_ig:'Смотреть Instagram ↗',
-    skill1:'Фейды & Скин Фейды', skill2:'Классические стрижки', skill3:'Уход за бородой & бритьё',
-    work_eyebrow:'НАШИ РАБОТЫ', work_h2:'Актуальные<br>Работы',
-    work_more:'Больше в Instagram ↗', cat_all:'Все', work_ig_p:'Реальные результаты в Instagram',
-    prices_eyebrow:'03 — ПРАЙСЛИСТ', prices_h2:'Что я<br>предлагаю',
-    svc1:'Классическая стрижка', svc2:'Стрижка машинкой', svc3:'✦ Fade / Skin Fade',
-    svc4:'★ Стрижка + Борода', svc5:'Уход за бородой', svc6:'Горячее бритьё',
-    svc7:'Дети (до 12 лет)', svc8:'Стайлинг', svc9:'Камуфляж седины', svc10:'Стрижка + Стайлинг',
+    about_ig:'Instagram ↗',
+    skill1:'Фейды & Скин Фейды', skill2:'Классические стрижки', skill3:'Уход за бородой',
+    work_eyebrow:'02 — Портфолио', work_h2:'Последние<br><em>работы</em>',
+    work_more:'Больше в Instagram ↗', cat_all:'Все',
+    prices_eyebrow:'03 — Прайслист', prices_h2:'Что я<br><em>предлагаю</em>',
+    svc1:'Классическая стрижка', svc2:'Стрижка машинкой', svc3:'Fade / Skin Fade',
+    svc4:'Стрижка + Борода', svc5:'Уход за бородой', svc6:'Горячее бритьё',
+    svc7:'Дети (до 12)', svc8:'Стайлинг', svc9:'Камуфляж седины', svc10:'Стрижка + Стайлинг',
     prices_note:'* Все цены вкл. НДС.', prices_btn:'Записаться сейчас',
-    bk_eyebrow:'ОНЛАЙН ЗАПИСЬ', bk_h2:'Когда<br>придёшь?',
-    bk_desc:'Выберите удобное время — подтверждение придёт сразу.',
-    oh_title:'ЧАСЫ РАБОТЫ', oh_mon:'Понедельник', oh_closed:'Закрыто',
+    bk_eyebrow:'04 — Онлайн запись', bk_h2:'Когда<br><em>придёшь?</em>',
+    bk_desc:'Выбери удобное время — подтверждение придёт сразу.',
+    oh_title:'Часы работы', oh_mon:'Понедельник', oh_closed:'Закрыто',
     oh_di:'Вт — Пт', oh_sat:'Суббота', oh_sun:'Воскресенье',
-    f_name:'Имя *', f_phone:'Телефон *', f_reminder:'(напоминание)',
+    form_title:'Запись <em>онлайн</em>',
+    f_name:'Имя *', f_phone:'Телефон *', f_reminder:'Telegram',
     f_service:'Услуга *', f_service_ph:'Выберите услугу ...',
     f_svc1:'Классическая стрижка — 25€', f_svc2:'Стрижка машинкой — 20€',
     f_svc3:'Fade / Skin Fade — 30€', f_svc4:'★ Стрижка + Борода — 40€',
     f_svc5:'Уход за бородой — 20€', f_svc6:'Горячее бритьё — 30€',
-    f_svc7:'Дети (до 12 лет) — 20€', f_svc8:'Стайлинг — 15€',
+    f_svc7:'Дети (до 12) — 20€', f_svc8:'Стайлинг — 15€',
     f_svc9:'Камуфляж седины — 35€', f_svc10:'Стрижка + Стайлинг — 35€',
-    f_date:'Дата *', f_time:'Время *', f_time_hint:'Сначала дату',
-    f_date_ph:'Выбрать дату', f_comment_ph:'Особые пожелания...',
-    f_comment:'Примечания', f_submit:'Записаться ✂',
-    modal_h3:'Запись подтверждена!', modal_msg:'До скорого! Подтверждение придёт в ближайшее время.', modal_btn:'Отлично!',
+    f_date:'Дата *', f_time:'Время *', f_time_hint:'Сначала выберите дату',
+    f_date_ph:'Выбрать дату', f_comment_ph:'Особые пожелания…',
+    f_comment:'Примечание', f_submit:'Записаться ✂',
+    modal_h3:'Запись подтверждена!', modal_msg:'До встречи! Подтверждение придёт скоро.', modal_btn:'Отлично!',
     float_btn:'✂ Записаться', wc_book:'Записаться ↗',
+    closed:'Закрыто / нет свободных слотов',
   },
   uk: {
-    nav_ueber:'Про мене', nav_services:'Послуги', nav_preise:'Ціни', nav_termin:'Запис',
-    hero_tag:'Я роблю твій образ кращим', hero_btn:'Записатися',
-    stat_kunden:'КЛІЄНТІВ', stat_exp:'РОКІВ ДОСВІДУ',
-    about_eyebrow:'01 — ПРО МЕНЕ',
-    about_h2:'Професійний<br><em>Барбер</em><br>у Мюнхені',
-    about_p1:'Спеціаліст з фейдів, класичних стрижок та догляду за бородою. Понад 5 років досвіду та увага до деталей — кожен образ на новий рівень.',
+    nav_about:'Про нас', nav_works:'Роботи', nav_prices:'Ціни', nav_book:'Запис',
+    hero_eyebrow:'Преміум барбер · Мюнхен',
+    hero_h1:'Твій стиль,<br><em>твій образ</em>',
+    hero_sub:'Фейди, класичні стрижки та догляд за бородою — професійно і з пристрастю з 2019 року.',
+    hero_cta:'Записатися', hero_works:'Дивитися роботи',
+    stat_years:'Років досвіду', stat_clients:'Задоволених клієнтів',
+    scroll_label:'Гортай',
+    badge_title:'Преміум сервіс', badge_sub:'Мюнхен · з 2019',
+    about_eyebrow:'01 — Про нас', about_h2:'Майстерність &<br><em>пристрасть</em>',
+    about_p1:'Спеціаліст з фейдів, класичних стрижок та догляду за бородою. Понад 5 років досвіду — кожен образ на новий рівень.',
     about_ig:'Дивитися Instagram ↗',
-    skill1:'Фейди & Скін Фейди', skill2:'Класичні стрижки', skill3:'Догляд за бородою & гоління',
-    work_eyebrow:'НАШІ РОБОТИ', work_h2:'Актуальні<br>Роботи',
-    work_more:'Більше в Instagram ↗', cat_all:'Всі', work_ig_p:'Реальні результати в Instagram',
-    prices_eyebrow:'03 — ПРАЙСЛІСТ', prices_h2:'Що я<br>пропоную',
-    svc1:'Класична стрижка', svc2:'Стрижка машинкою', svc3:'✦ Fade / Skin Fade',
-    svc4:'★ Стрижка + Борода', svc5:'Догляд за бородою', svc6:'Гаряче гоління',
-    svc7:'Діти (до 12 р.)', svc8:'Стайлінг', svc9:'Камуфляж сивини', svc10:'Стрижка + Стайлінг',
+    skill1:'Фейди & Скін Фейди', skill2:'Класичні стрижки', skill3:'Догляд за бородою',
+    work_eyebrow:'02 — Портфоліо', work_h2:'Останні<br><em>роботи</em>',
+    work_more:'Більше в Instagram ↗', cat_all:'Всі',
+    prices_eyebrow:'03 — Прайс-ліст', prices_h2:'Що я<br><em>пропоную</em>',
+    svc1:'Класична стрижка', svc2:'Стрижка машинкою', svc3:'Fade / Skin Fade',
+    svc4:'Стрижка + Борода', svc5:'Догляд за бородою', svc6:'Гаряче гоління',
+    svc7:'Діти (до 12)', svc8:'Стайлінг', svc9:'Камуфляж сивини', svc10:'Стрижка + Стайлінг',
     prices_note:'* Всі ціни вкл. ПДВ.', prices_btn:'Записатися зараз',
-    bk_eyebrow:'ОНЛАЙН ЗАПИС', bk_h2:'Коли<br>прийдеш?',
+    bk_eyebrow:'04 — Онлайн запис', bk_h2:'Коли<br><em>прийдеш?</em>',
     bk_desc:'Оберіть зручний час — підтвердження надійде одразу.',
-    oh_title:'ГОДИНИ РОБОТИ', oh_mon:'Понеділок', oh_closed:'Зачинено',
+    oh_title:'Години роботи', oh_mon:'Понеділок', oh_closed:'Зачинено',
     oh_di:'Вт — Пт', oh_sat:'Субота', oh_sun:'Неділя',
-    f_name:"Ім'я *", f_phone:'Телефон *', f_reminder:'(нагадування)',
+    form_title:'Запис <em>онлайн</em>',
+    f_name:"Ім'я *", f_phone:'Телефон *', f_reminder:'Telegram',
     f_service:'Послуга *', f_service_ph:'Оберіть послугу ...',
     f_svc1:'Класична стрижка — 25€', f_svc2:'Стрижка машинкою — 20€',
     f_svc3:'Fade / Skin Fade — 30€', f_svc4:'★ Стрижка + Борода — 40€',
     f_svc5:'Догляд за бородою — 20€', f_svc6:'Гаряче гоління — 30€',
-    f_svc7:'Діти (до 12 р.) — 20€', f_svc8:'Стайлінг — 15€',
+    f_svc7:'Діти (до 12) — 20€', f_svc8:'Стайлінг — 15€',
     f_svc9:'Камуфляж сивини — 35€', f_svc10:'Стрижка + Стайлінг — 35€',
     f_date:'Дата *', f_time:'Час *', f_time_hint:'Спочатку дату',
-    f_date_ph:'Обрати дату', f_comment_ph:'Особливі побажання...',
+    f_date_ph:'Обрати дату', f_comment_ph:'Особливі побажання…',
     f_comment:'Примітки', f_submit:'Записатися ✂',
     modal_h3:'Запис підтверджено!', modal_msg:'До зустрічі! Підтвердження надійде незабаром.', modal_btn:'Чудово!',
     float_btn:'✂ Записатися', wc_book:'Записатися ↗',
+    closed:'Зачинено / немає вільних слотів',
   }
 };
 
-function setLang(lang) {
+window._L = LANGS.de;
+
+function setLang(lang){
   if (!LANGS[lang]) return;
   const L = LANGS[lang];
+  window._L = L;
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.dataset.i18n;
     if (L[key] !== undefined) el.innerHTML = L[key];
@@ -488,6 +445,13 @@ function setLang(lang) {
   );
   document.documentElement.lang = lang;
   localStorage.setItem('lang', lang);
+
+  // Update flatpickr locale
+  if (window.flatpickr && document.getElementById('fDate')?._flatpickr){
+    const fp = document.getElementById('fDate')._flatpickr;
+    const locale = lang === 'de' ? 'de' : 'default';
+    fp.set('locale', locale);
+  }
 }
 
 document.querySelectorAll('.lang-sw button').forEach(b =>
