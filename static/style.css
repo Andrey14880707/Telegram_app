@@ -369,12 +369,13 @@ em { font-style: italic; color: var(--gold); }
 .hero-cta { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
 .btn-primary {
   display: inline-flex; align-items: center; justify-content: center;
-  padding: .9rem 2.4rem;
+  padding: 1rem 2.4rem;
   background: var(--gold); color: #000;
-  font-family: inherit; font-size: .85rem; font-weight: 600;
-  letter-spacing: 1.5px; text-transform: uppercase;
-  border: none; cursor: pointer;
-  transition: background var(--tr), transform var(--tr), box-shadow var(--tr);
+  font-family: inherit; font-size: .85rem; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  border: 1px solid transparent;
+  cursor: pointer; border-radius: 2px;
+  transition: background var(--tr), transform var(--tr), box-shadow var(--tr), color var(--tr), border-color var(--tr);
 }
 .btn-primary:hover {
   background: rgba(255, 255, 255, 0.1);
@@ -478,7 +479,7 @@ em { font-style: italic; color: var(--gold); }
 }
 .ticker-track {
   display: inline-flex; gap: 0;
-  animation: tickerScroll 30s linear infinite;
+  animation: tickerScroll 45s linear infinite;
   white-space: nowrap;
 }
 .ticker-track span {
@@ -811,6 +812,7 @@ em { font-style: italic; color: var(--gold); }
   backdrop-filter: blur(40px);
   -webkit-backdrop-filter: blur(40px);
   border: 1px solid var(--border);
+  border-top: 1px solid rgba(212,175,55,.25);
   box-shadow: 0 8px 40px rgba(0,0,0,0.5);
   border-radius: 20px;
   padding: 2.5rem;
@@ -840,11 +842,13 @@ em { font-style: italic; color: var(--gold); }
   background: var(--card); border: 1px solid var(--border);
   color: var(--white); font-family: inherit; font-size: .9rem;
   padding: .8rem 1rem; outline: none;
-  transition: border-color var(--tr), box-shadow var(--tr);
+  border-radius: 8px;
+  transition: border-color var(--tr), box-shadow var(--tr), background var(--tr);
 }
 .bf-g input:focus, .bf-g select:focus, .bf-g textarea:focus {
-  border-color: var(--gold);
-  box-shadow: 0 0 0 3px rgba(212,175,55,.08);
+  border-color: rgba(212,175,55,.5);
+  background: rgba(212,175,55,.03);
+  box-shadow: 0 0 0 3px rgba(212,175,55,.07);
 }
 .bf-g select { cursor: pointer; }
 .bf-g textarea { resize: vertical; min-height: 90px; }
