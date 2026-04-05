@@ -1171,7 +1171,17 @@ def gcal_status():
         return jsonify({'error': 'Unauthorized'}), 401
     configured = bool(GCAL_AVAILABLE and GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET and GOOGLE_REDIRECT_URI)
     connected  = bool(load_gcal_tokens())
-    return jsonify({'configured': configured, 'connected': connected})
+    return jsonify({
+        'configured': configured,
+        'connected': connected,
+        'debug': {
+            'lib_installed': GCAL_AVAILABLE,
+            'has_client_id': bool(GOOGLE_CLIENT_ID),
+            'has_client_secret': bool(GOOGLE_CLIENT_SECRET),
+            'has_redirect_uri': bool(GOOGLE_REDIRECT_URI),
+            'redirect_uri': GOOGLE_REDIRECT_URI,
+        }
+    })
 
 
 @app.route('/api/admin/google/connect')
