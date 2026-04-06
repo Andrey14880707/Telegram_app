@@ -19,6 +19,14 @@ from blueprints.feed          import bp as feed_bp
 for bp in (auth_bp, booking_bp, admin_apts_bp, admin_clients_bp, photos_bp, hours_bp, gcal_bp, feed_bp):
     app.register_blueprint(bp)
 
+import json as _json
+@app.template_filter('fromjson')
+def fromjson_filter(s):
+    try:
+        return _json.loads(s or '[]')
+    except Exception:
+        return []
+
 # ── Pages ─────────────────────────────────────────────────────────────────────
 @app.route('/')
 def index():

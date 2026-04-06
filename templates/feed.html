@@ -163,13 +163,23 @@
         {% if post.text %}
         <p class="post-text">{{ post.text }}</p>
         {% endif %}
-        {% if post.media_type == 'image' %}
+        {% if post.media_url %}
         <div class="post-media">
-          <img src="{{ post.media_url }}" alt="Фото поста" loading="lazy" style="width:100%;border-radius:4px;margin-top:0.75rem;">
-        </div>
-        {% elif post.media_type == 'video' %}
-        <div class="post-media">
-          <video src="{{ post.media_url }}" controls style="width:100%;border-radius:4px;margin-top:0.75rem;"></video>
+          {% if post.media_type == 'video' %}
+          <video src="{{ post.media_url }}" controls style="width:100%;border-radius:8px;margin-top:0.75rem;"></video>
+          {% else %}
+          <img src="{{ post.media_url }}" alt="" loading="lazy" style="width:100%;border-radius:8px;margin-top:0.75rem;">
+          {% endif %}
+          {% if post.media_extra and post.media_extra != '[]' %}
+          {% import 'macros.html' as m ignore missing %}
+          {% for item in post.media_extra | fromjson %}
+            {% if item.type == 'video' %}
+            <video src="{{ item.url }}" controls style="width:100%;border-radius:8px;margin-top:0.5rem;"></video>
+            {% else %}
+            <img src="{{ item.url }}" alt="" loading="lazy" style="width:100%;border-radius:8px;margin-top:0.5rem;">
+            {% endif %}
+          {% endfor %}
+          {% endif %}
         </div>
         {% endif %}
       </article>

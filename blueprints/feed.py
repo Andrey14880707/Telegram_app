@@ -51,19 +51,25 @@ def sign_upload():
 
 @bp.route('/api/admin/posts/save', methods=['POST'])
 def save_post():
-    """Save post with pre-uploaded media URL from Cloudinary."""
+    """Save post with pre-uploaded media from Cloudinary (supports multiple files)."""
     if not session.get('admin'):
         return jsonify({'error': 'Unauthorized'}), 401
+    import json as _json
     data = request.get_json() or {}
     text = data.get('text', '').strip()
-    media_url = data.get('media_url', '')
-    media_type = data.get('media_type', '')
-    if not text and not media_url:
+    media_items = data.get('media_items', [])  # [{url, type}, ...]
+    # backwards compat single file
+    if not media_items and data.get('media_url'):
+        media_items = [{'url': data['media_url'], 'type': data.get('media_type', 'image')}]
+    if not text and not media_items:
         return jsonify({'success': False, 'error': 'Пост пустой'}), 400
+    media_url = media_items[0]['url'] if media_items else ''
+    media_type = media_items[0]['type'] if media_items else ''
+    media_extra = _json.dumps(media_items[1:]) if len(media_items) > 1 else '[]'
     with get_db() as conn:
         conn.execute(
-            'INSERT INTO posts (text, media_url, media_type) VALUES (?, ?, ?)',
-            (text, media_url, media_type)
+            'INSERT INTO posts (text, media_url, media_type, media_extra) VALUES (?, ?, ?, ?)',
+            (text, media_url, media_type, media_extra)
         )
         conn.commit()
     return jsonify({'success': True})
