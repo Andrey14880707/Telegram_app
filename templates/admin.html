@@ -1184,7 +1184,7 @@ async function submitFeedPost() {
         { method: 'POST', body: fd }
       );
       const uploadD = await uploadR.json();
-      if (!uploadD.secure_url) { toast('Ошибка загрузки файла', 'err'); return; }
+      if (!uploadD.secure_url) { toast('Cloudinary: ' + (uploadD.error?.message || JSON.stringify(uploadD)), 'err'); return; }
       media_url = uploadD.secure_url;
       media_type = isVideo ? 'video' : 'image';
     } catch(e) {
