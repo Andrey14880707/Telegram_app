@@ -402,7 +402,7 @@ const LANGS = {
     f_date_ph:'Datum wählen', f_comment_ph:'Besondere Wünsche...',
     f_comment:'Anmerkungen', f_submit:'Termin buchen ✂',
     modal_h3:'Termin bestätigt!', modal_msg:'Bis bald! Bestätigung kommt in Kürze.', modal_btn:'Perfekt!',
-    float_btn:'✂ Termin buchen', wc_book:'Buchen ↗',
+    float_btn:'✂ Termin buchen', wc_book:'Buchen ↗', nav_feed:'Feed',
   },
   ru: {
     nav_ueber:'Обо мне', nav_services:'Услуги', nav_preise:'Цены', nav_termin:'Запись',
@@ -435,7 +435,7 @@ const LANGS = {
     f_date_ph:'Выбрать дату', f_comment_ph:'Особые пожелания...',
     f_comment:'Примечания', f_submit:'Записаться ✂',
     modal_h3:'Запись подтверждена!', modal_msg:'До скорого! Подтверждение придёт в ближайшее время.', modal_btn:'Отлично!',
-    float_btn:'✂ Записаться', wc_book:'Записаться ↗',
+    float_btn:'✂ Записаться', wc_book:'Записаться ↗', nav_feed:'Лента',
   },
   uk: {
     nav_ueber:'Про мене', nav_services:'Послуги', nav_preise:'Ціни', nav_termin:'Запис',
@@ -468,7 +468,7 @@ const LANGS = {
     f_date_ph:'Обрати дату', f_comment_ph:'Особливі побажання...',
     f_comment:'Примітки', f_submit:'Записатися ✂',
     modal_h3:'Запис підтверджено!', modal_msg:'До зустрічі! Підтвердження надійде незабаром.', modal_btn:'Чудово!',
-    float_btn:'✂ Записатися', wc_book:'Записатися ↗',
+    float_btn:'✂ Записатися', wc_book:'Записатися ↗', nav_feed:'Стрічка',
   }
 };
 
