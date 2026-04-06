@@ -559,13 +559,9 @@ em { font-style: italic; color: var(--gold); }
 
 .work-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
   padding: 10px 0;
-}
-
-@media (max-width: 960px) {
-  .work-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
 }
 
 @media (max-width: 640px) {
@@ -608,9 +604,9 @@ em { font-style: italic; color: var(--gold); }
 
 @media (max-width: 640px) {
   .wc {
-    flex: 0 0 82%;
+    flex: 0 0 88%;
     scroll-snap-align: center;
-    aspect-ratio: 4/5;
+    aspect-ratio: 3/4;
     height: auto;
   }
 }
