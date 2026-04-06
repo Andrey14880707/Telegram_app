@@ -1158,11 +1158,46 @@ async function submitFeedPost() {
   const text = document.getElementById('feedPostText').value.trim();
   const file = document.getElementById('feedPostFile').files[0];
   if (!text && !file) { toast('Добавьте текст или медиафайл', 'err'); return; }
-  const fd = new FormData();
-  fd.append('text', text);
-  if (file) fd.append('file', file);
+
+  let media_url = '', media_type = '';
+
+  if (file) {
+    toast('Загрузка файла...', 'ok');
+    try {
+      // Get upload signature from server
+      const sigR = await fetch('/api/admin/posts/sign');
+      const sig = await sigR.json();
+      if (sig.error) { toast(sig.error, 'err'); return; }
+
+      // Upload directly to Cloudinary from browser
+      const isVideo = file.type.startsWith('video');
+      const resourceType = isVideo ? 'video' : 'image';
+      const fd = new FormData();
+      fd.append('file', file);
+      fd.append('timestamp', sig.timestamp);
+      fd.append('signature', sig.signature);
+      fd.append('api_key', sig.api_key);
+      fd.append('folder', sig.folder);
+
+      const uploadR = await fetch(
+        `https://api.cloudinary.com/v1_1/${sig.cloud_name}/${resourceType}/upload`,
+        { method: 'POST', body: fd }
+      );
+      const uploadD = await uploadR.json();
+      if (!uploadD.secure_url) { toast('Ошибка загрузки файла', 'err'); return; }
+      media_url = uploadD.secure_url;
+      media_type = isVideo ? 'video' : 'image';
+    } catch(e) {
+      toast('Ошибка загрузки файла', 'err'); return;
+    }
+  }
+
   try {
-    const r = await fetch('/api/admin/posts', { method: 'POST', body: fd });
+    const r = await fetch('/api/admin/posts/save', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ text, media_url, media_type })
+    });
     const d = await r.json();
     if (d.success) {
       toast('✓ Пост опубликован', 'ok');

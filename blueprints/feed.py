@@ -1,13 +1,18 @@
 from flask import Blueprint, request, jsonify, session, render_template
 from db import get_db
+import hashlib, time
+
+CLOUDINARY_CLOUD = "du4oyqcl0"
+CLOUDINARY_API_KEY = "556112684556269"
+CLOUDINARY_API_SECRET = "tT04gZYKmEySyCXsCP-SvWn6sio"
 
 try:
     import cloudinary
     import cloudinary.uploader
     cloudinary.config(
-        cloud_name="du4oyqcl0",
-        api_key="556112684556269",
-        api_secret="tT04gZYKmEySyCXsCP-SvWn6sio"
+        cloud_name=CLOUDINARY_CLOUD,
+        api_key=CLOUDINARY_API_KEY,
+        api_secret=CLOUDINARY_API_SECRET
     )
     CLOUDINARY_AVAILABLE = True
 except ImportError:
@@ -24,6 +29,44 @@ def feed():
         ).fetchall()
     posts = [dict(r) for r in rows]
     return render_template('feed.html', posts=posts)
+
+
+@bp.route('/api/admin/posts/sign', methods=['GET'])
+def sign_upload():
+    """Generate a signed Cloudinary upload signature for direct browser upload."""
+    if not session.get('admin'):
+        return jsonify({'error': 'Unauthorized'}), 401
+    ts = int(time.time())
+    folder = 'barber_feed'
+    params = f"folder={folder}&timestamp={ts}"
+    sig = hashlib.sha1((params + CLOUDINARY_API_SECRET).encode()).hexdigest()
+    return jsonify({
+        'timestamp': ts,
+        'signature': sig,
+        'api_key': CLOUDINARY_API_KEY,
+        'cloud_name': CLOUDINARY_CLOUD,
+        'folder': folder
+    })
+
+
+@bp.route('/api/admin/posts/save', methods=['POST'])
+def save_post():
+    """Save post with pre-uploaded media URL from Cloudinary."""
+    if not session.get('admin'):
+        return jsonify({'error': 'Unauthorized'}), 401
+    data = request.get_json() or {}
+    text = data.get('text', '').strip()
+    media_url = data.get('media_url', '')
+    media_type = data.get('media_type', '')
+    if not text and not media_url:
+        return jsonify({'success': False, 'error': 'Пост пустой'}), 400
+    with get_db() as conn:
+        conn.execute(
+            'INSERT INTO posts (text, media_url, media_type) VALUES (?, ?, ?)',
+            (text, media_url, media_type)
+        )
+        conn.commit()
+    return jsonify({'success': True})
 
 
 @bp.route('/api/admin/posts', methods=['GET'])
