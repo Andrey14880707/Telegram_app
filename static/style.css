@@ -370,19 +370,21 @@ em { font-style: italic; color: var(--gold); }
 .btn-primary {
   display: inline-flex; align-items: center; justify-content: center;
   padding: 1rem 2.4rem;
-  background: var(--gold); color: #000;
-  font-family: inherit; font-size: .85rem; font-weight: 700;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: var(--gold);
+  font-family: inherit; font-size: .85rem; font-weight: 600;
   letter-spacing: 2px; text-transform: uppercase;
-  border: 1px solid transparent;
-  cursor: pointer; border-radius: 2px;
-  transition: background var(--tr), transform var(--tr), box-shadow var(--tr), color var(--tr), border-color var(--tr);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  cursor: pointer; border-radius: 8px;
+  transition: background var(--tr), transform var(--tr), box-shadow var(--tr), border-color var(--tr);
 }
 .btn-primary:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(212, 175, 55, 0.1);
+  border-color: rgba(212, 175, 55, 0.65);
+  box-shadow: 0 8px 28px rgba(212,175,55,.15);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(212,175,55,.2);
-  color: var(--gold);
-  border: 1px solid var(--gold);
 }
 .btn-full { width: 100%; }
 .btn-link {
