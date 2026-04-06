@@ -57,6 +57,19 @@ p { color: var(--gray); line-height: 1.7; }
 h1, h2, h3 { font-family: 'Playfair Display', serif; line-height: 1.1; }
 h2 { font-size: clamp(2rem, 4vw, 3.2rem); }
 .gold { color: var(--gold); }
+.barber-pole {
+  background: repeating-linear-gradient(
+    -55deg,
+    #c8102e 0px,
+    #c8102e 10px,
+    #ffffff 10px,
+    #ffffff 20px
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 28px 28px;
+}
 .mt1 { margin-top: 1rem; }
 .mt2 { margin-top: 2rem; display: inline-flex !important; }
 em { font-style: italic; color: var(--gold); }
