@@ -171,7 +171,6 @@
           <img src="{{ post.media_url }}" alt="" loading="lazy" style="width:100%;border-radius:8px;margin-top:0.75rem;">
           {% endif %}
           {% if post.media_extra and post.media_extra != '[]' %}
-          {% import 'macros.html' as m ignore missing %}
           {% for item in post.media_extra | fromjson %}
             {% if item.type == 'video' %}
             <video src="{{ item.url }}" controls style="width:100%;border-radius:8px;margin-top:0.5rem;"></video>

@@ -266,6 +266,48 @@
   </div>
 </section>
 
+<!-- ══════════════════════ FEED BLOCK ══════════════════════ -->
+<section class="sec" id="feed-block" style="padding:4rem 0">
+  <div class="con">
+    <div class="work-head reveal" style="margin-bottom:1.5rem">
+      <div class="sec-label">ЛЕНТА</div>
+      <h2 class="sec-title">Последние работы</h2>
+    </div>
+    <div id="feedScroll" style="max-height:520px;overflow-y:auto;display:flex;flex-direction:column;gap:1rem;padding-right:.5rem;scrollbar-width:thin;scrollbar-color:rgba(212,175,55,.3) transparent">
+      <div id="feedScrollInner" style="display:flex;flex-direction:column;gap:1rem"></div>
+    </div>
+    <div style="text-align:center;margin-top:1.5rem">
+      <a href="/feed" class="btn-outline" style="display:inline-flex;align-items:center;gap:.5rem;font-size:.82rem;letter-spacing:2px;text-decoration:none">Вся лента →</a>
+    </div>
+  </div>
+</section>
+
+<script>
+(async function loadFeedBlock() {
+  try {
+    const r = await fetch('/api/posts');
+    const d = await r.json();
+    const wrap = document.getElementById('feedScrollInner');
+    if (!d.posts || d.posts.length === 0) {
+      wrap.innerHTML = '<p style="color:rgba(255,255,255,.3);text-align:center;padding:2rem">Пока нет публикаций</p>';
+      return;
+    }
+    wrap.innerHTML = d.posts.map(p => {
+      const date = p.created_at ? p.created_at.slice(0,10) : '';
+      const media = p.media_url ? (p.media_type === 'video'
+        ? `<video src="${p.media_url}" controls style="width:100%;border-radius:8px;margin-top:.75rem;max-height:300px"></video>`
+        : `<img src="${p.media_url}" alt="" loading="lazy" style="width:100%;border-radius:8px;margin-top:.75rem;max-height:300px;object-fit:cover">`)
+        : '';
+      return `<div style="background:#0d0d14;border:1px solid rgba(212,175,55,.15);border-left:3px solid #d4af37;border-radius:10px;padding:1rem 1.25rem;position:relative">
+        <span style="position:absolute;top:.75rem;right:1rem;font-size:.7rem;color:rgba(255,255,255,.35)">${date}</span>
+        ${p.text ? `<p style="margin:0;padding-right:5rem;font-size:.88rem;line-height:1.7;color:rgba(255,255,255,.88);white-space:pre-wrap">${p.text}</p>` : ''}
+        ${media}
+      </div>`;
+    }).join('');
+  } catch(e) {}
+})();
+</script>
+
 <!-- ── FOOTER ── -->
 <footer class="footer">
   <div class="con">

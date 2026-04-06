@@ -27,8 +27,26 @@ def feed():
         rows = conn.execute(
             'SELECT * FROM posts ORDER BY created_at DESC'
         ).fetchall()
-    posts = [dict(r) for r in rows]
+    posts = []
+    for r in rows:
+        p = dict(r)
+        p.setdefault('media_extra', '[]')
+        posts.append(p)
     return render_template('feed.html', posts=posts)
+
+
+@bp.route('/api/posts')
+def public_posts():
+    with get_db() as conn:
+        rows = conn.execute(
+            'SELECT * FROM posts ORDER BY created_at DESC LIMIT 20'
+        ).fetchall()
+    posts = []
+    for r in rows:
+        p = dict(r)
+        p.setdefault('media_extra', '[]')
+        posts.append(p)
+    return __import__('flask').jsonify({'posts': posts})
 
 
 @bp.route('/api/admin/posts/sign', methods=['GET'])
