@@ -543,7 +543,7 @@ em { font-style: italic; color: var(--gold); }
 .work-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
+  gap: 20px;
   padding: 10px 0;
 }
 
@@ -573,11 +573,20 @@ em { font-style: italic; color: var(--gold); }
   -webkit-backdrop-filter: blur(25px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
-  aspect-ratio: 4/5;
+  aspect-ratio: 3/4;
   overflow: hidden;
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: transform 0.45s cubic-bezier(0.165, 0.84, 0.44, 1),
+              border-color 0.45s ease,
+              box-shadow 0.45s ease;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transform: translateY(24px);
+  animation: cardIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: calc(var(--i, 0) * 0.08s);
+}
+@keyframes cardIn {
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @media (max-width: 640px) {
