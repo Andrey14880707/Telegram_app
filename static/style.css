@@ -1061,9 +1061,7 @@ em { font-style: italic; color: var(--gold); }
   .blbl { font-size: .55rem; }
   .skills { margin-top: 1.5rem; }
 
-  /* Work grid — 2 cols, tighter */
-  .work-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-  .wc:nth-child(n) { aspect-ratio: 2/3; height: auto; margin-bottom: 0; }
+  /* Work grid — let 640px carousel rule handle it */
   .wc-ico-bg { font-size: 3.5rem; }
   .work-ig-cta { flex-direction: column; text-align: center; padding: 1.25rem 1rem; margin-top: 1.5rem; }
   .work-ig-cta .btn-primary { width: 100%; justify-content: center; }
@@ -1117,9 +1115,7 @@ em { font-style: italic; color: var(--gold); }
   .bstat-line { display: none; }
   .bnum { font-size: 2.2rem; }
 
-  /* Work grid — 2 cols on small phones */
-  .work-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 7px; }
-  .wc:nth-child(n) { aspect-ratio: 2/3; height: auto; }
+  /* Work grid — carousel handled by 640px rule */
   .wc-ico-bg { font-size: 3rem; }
 
   /* Services */
@@ -1151,8 +1147,7 @@ em { font-style: italic; color: var(--gold); }
   .hero-title { font-size: clamp(2.2rem, 16vw, 3.5rem); }
   .nav-c { padding: 0 .75rem; }
   .nav-logo { font-size: 1rem; letter-spacing: 1px; }
-  .work-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
-  .wc:nth-child(n) { aspect-ratio: 3/4; height: auto; }
+  /* Work grid — carousel handled by 640px rule */
   .bk-form { padding: .75rem; }
   .pm { padding: .5rem .6rem; font-size: .74rem; }
   .soc-card { padding: 2rem 1rem; }
