@@ -14,8 +14,9 @@ from blueprints.admin_clients import bp as admin_clients_bp
 from blueprints.photos        import bp as photos_bp
 from blueprints.hours         import bp as hours_bp
 from blueprints.gcal_routes   import bp as gcal_bp
+from blueprints.feed          import bp as feed_bp
 
-for bp in (auth_bp, booking_bp, admin_apts_bp, admin_clients_bp, photos_bp, hours_bp, gcal_bp):
+for bp in (auth_bp, booking_bp, admin_apts_bp, admin_clients_bp, photos_bp, hours_bp, gcal_bp, feed_bp):
     app.register_blueprint(bp)
 
 # ── Pages ─────────────────────────────────────────────────────────────────────

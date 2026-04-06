@@ -80,6 +80,15 @@ def init_db():
                 UNIQUE(date, time)
             )
         ''')
+        conn.execute('''
+            CREATE TABLE IF NOT EXISTS posts (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                text TEXT DEFAULT '',
+                media_url TEXT DEFAULT '',
+                media_type TEXT DEFAULT '',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
         # Migrations
         for col in [
             "ALTER TABLE appointments ADD COLUMN reminder_2h_sent INTEGER DEFAULT 0",
