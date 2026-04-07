@@ -574,14 +574,4 @@ if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
   });
 }
 
-// 6. Hero parallax on scroll
-(function initParallax() {
-  const hero = document.querySelector('.hero');
-  const bg   = document.querySelector('.bg-pattern');
-  if (!hero || !bg) return;
-  window.addEventListener('scroll', () => {
-    const y = window.scrollY;
-    if (y > window.innerHeight) return;
-    bg.style.transform = `translateY(${y * 0.3}px)`;
-  }, { passive: true });
-})();
+// bg-pattern is position:fixed — no parallax needed
