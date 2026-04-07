@@ -430,49 +430,11 @@
     <span>MÜNCHEN BARBER · POSTS</span>
   </div>
 
-  <div class="feed-column">
-    {% if posts %}
-      {% for post in posts %}
-      <article class="post-card">
-        <div class="pc-shimmer"></div>
-        <div class="pc-bar">
-          <div class="pc-badge">
-            <span class="pc-dot"></span>
-            MÜNCHEN BARBER
-          </div>
-          <span class="pc-date">{{ post.created_at[:10] if post.created_at else '' }}</span>
-        </div>
-        <div class="pc-body">
-          {% if post.text %}
-          <p class="post-text">{{ post.text }}</p>
-          {% endif %}
-          {% if post.media_url %}
-          <div class="post-media">
-            {% if post.media_type == 'video' %}
-            <video src="{{ post.media_url }}" controls></video>
-            {% else %}
-            <img src="{{ post.media_url }}" alt="" loading="lazy">
-            {% endif %}
-            {% if post.media_extra and post.media_extra != '[]' %}
-            {% for item in post.media_extra | fromjson %}
-              {% if item.type == 'video' %}
-              <video src="{{ item.url }}" controls></video>
-              {% else %}
-              <img src="{{ item.url }}" alt="" loading="lazy">
-              {% endif %}
-            {% endfor %}
-            {% endif %}
-          </div>
-          {% endif %}
-        </div>
-      </article>
-      {% endfor %}
-    {% else %}
-      <div class="feed-empty">
-        <div class="feed-empty-icon">✂</div>
-        <div class="feed-empty-msg">Keine Beiträge<span class="feed-empty-cursor"></span></div>
-      </div>
-    {% endif %}
+  <div class="feed-column" id="feedColumn">
+    <div class="feed-empty" id="feedLoading">
+      <div class="feed-empty-icon" style="opacity:.4;animation:ambientDrift 2s ease-in-out infinite alternate">✂</div>
+      <div class="feed-empty-msg" style="opacity:.5">Laden<span class="feed-empty-cursor"></span></div>
+    </div>
   </div>
 
   <div class="feed-cta">
@@ -511,6 +473,54 @@
 
 <script src="/static/script.js"></script>
 <script>
+// ── Load posts from API ──────────────────────────────
+(async function loadFeed() {
+  const col = document.getElementById('feedColumn');
+  try {
+    const r = await fetch('/api/posts');
+    const d = await r.json();
+    if (!d.posts || d.posts.length === 0) {
+      col.innerHTML = `<div class="feed-empty">
+        <div class="feed-empty-icon">✂</div>
+        <div class="feed-empty-msg" data-i18n="feed_empty">KEINE BEITRÄGE<span class="feed-empty-cursor"></span></div>
+      </div>`;
+      return;
+    }
+    col.innerHTML = d.posts.map((p, i) => {
+      const date = p.created_at ? p.created_at.slice(0,10) : '';
+      let mediaHtml = '';
+      if (p.media_url) {
+        const items = [{ url: p.media_url, type: p.media_type }];
+        try {
+          const extra = JSON.parse(p.media_extra || '[]');
+          items.push(...extra);
+        } catch(e) {}
+        mediaHtml = `<div class="post-media">${items.map(m =>
+          m.type === 'video'
+            ? `<video src="${m.url}" controls></video>`
+            : `<img src="${m.url}" alt="" loading="lazy">`
+        ).join('')}</div>`;
+      }
+      return `<article class="post-card" style="animation-delay:${i * 0.07}s">
+        <div class="pc-shimmer"></div>
+        <div class="pc-bar">
+          <div class="pc-badge"><span class="pc-dot"></span>MÜNCHEN BARBER</div>
+          <span class="pc-date">${date}</span>
+        </div>
+        <div class="pc-body">
+          ${p.text ? `<p class="post-text">${p.text}</p>` : ''}
+          ${mediaHtml}
+        </div>
+      </article>`;
+    }).join('');
+  } catch(e) {
+    col.innerHTML = `<div class="feed-empty">
+      <div class="feed-empty-icon">✂</div>
+      <div class="feed-empty-msg">Fehler beim Laden<span class="feed-empty-cursor"></span></div>
+    </div>`;
+  }
+})();
+
   // Scroll progress
   const bar = document.getElementById('fpProgress');
   window.addEventListener('scroll', () => {
