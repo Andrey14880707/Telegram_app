@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;1,400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <style>
     /* ── Profile Layout ── */
     .pf-wrap {
@@ -340,12 +341,203 @@
       font-family: 'JetBrains Mono', monospace;
       font-size: .8rem;
     }
+
+    /* ── Reschedule button ── */
+    .pf-reschedule-btn {
+      background: none;
+      border: 1px solid rgba(212,175,55,.25);
+      border-radius: 6px;
+      color: rgba(212,175,55,.7);
+      font-size: .68rem;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 1px;
+      padding: .3rem .7rem;
+      cursor: pointer;
+      transition: all .2s;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .pf-reschedule-btn:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+      background: rgba(212,175,55,.06);
+    }
+
+    /* ── Reschedule Modal ── */
+    .rs-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.75);
+      backdrop-filter: blur(6px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+    .rs-overlay.open { display: flex; }
+    .rs-modal {
+      background: rgba(14,14,20,.95);
+      border: 1px solid rgba(212,175,55,.2);
+      border-radius: 18px;
+      padding: 2rem;
+      width: 100%;
+      max-width: 440px;
+      position: relative;
+      box-shadow: 0 0 60px rgba(0,0,0,.6);
+    }
+    .rs-modal::before {
+      content: '';
+      position: absolute; top: -1px; left: -1px;
+      width: 32px; height: 32px;
+      border-top: 2px solid var(--gold);
+      border-left: 2px solid var(--gold);
+      border-radius: 18px 0 0 0;
+    }
+    .rs-close {
+      position: absolute; top: 1rem; right: 1rem;
+      background: none; border: none;
+      color: rgba(255,255,255,.3); font-size: 1.2rem;
+      cursor: pointer; transition: color .2s; line-height: 1;
+      width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+    }
+    .rs-close:hover { color: var(--white); }
+    .rs-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem; font-weight: 700;
+      color: var(--white); margin-bottom: .3rem;
+    }
+    .rs-apt-info {
+      font-size: .75rem;
+      color: rgba(255,255,255,.35);
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .rs-field { margin-bottom: 1.1rem; }
+    .rs-label {
+      display: block;
+      font-size: .68rem;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.4);
+      margin-bottom: .4rem;
+    }
+    .rs-field input[type=text] {
+      width: 100%;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 8px;
+      padding: .7rem 1rem;
+      color: var(--white);
+      font-family: 'Poppins', sans-serif;
+      font-size: .88rem;
+      outline: none;
+      transition: border-color .25s;
+    }
+    .rs-field input[type=text]:focus {
+      border-color: rgba(212,175,55,.5);
+      box-shadow: 0 0 0 3px rgba(212,175,55,.07);
+    }
+    /* Time slot grid inside modal */
+    .rs-time-grid {
+      display: flex; flex-wrap: wrap; gap: .4rem;
+      max-height: 160px; overflow-y: auto;
+      padding: .1rem;
+    }
+    .rs-slot {
+      padding: .35rem .7rem;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 6px;
+      font-size: .78rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: rgba(255,255,255,.6);
+      cursor: pointer;
+      transition: all .2s;
+      background: none;
+    }
+    .rs-slot:hover { border-color: rgba(212,175,55,.4); color: var(--gold); }
+    .rs-slot.active {
+      background: var(--gold); color: #05050a;
+      border-color: var(--gold); font-weight: 600;
+    }
+    .rs-slot.booked {
+      opacity: .25; cursor: not-allowed; pointer-events: none;
+      text-decoration: line-through;
+    }
+    .rs-hint {
+      font-size: .73rem; color: rgba(255,255,255,.25);
+      font-family: 'JetBrains Mono', monospace;
+      padding: .5rem 0;
+    }
+    .rs-confirm-btn {
+      width: 100%;
+      margin-top: 1.2rem;
+      padding: .8rem;
+      background: var(--gold); color: #05050a;
+      border: none; border-radius: 8px;
+      font-family: 'Poppins', sans-serif;
+      font-size: .85rem; font-weight: 600;
+      letter-spacing: 1px; text-transform: uppercase;
+      cursor: pointer;
+      transition: all .25s;
+    }
+    .rs-confirm-btn:hover { background: #e0c040; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(212,175,55,.3); }
+    .rs-confirm-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+    .rs-err {
+      display: none;
+      background: rgba(220,38,38,.08);
+      border-left: 3px solid #dc2626;
+      border-radius: 6px;
+      padding: .6rem .9rem;
+      font-size: .78rem;
+      color: #fca5a5;
+      margin-top: .8rem;
+    }
+    .rs-err.show { display: block; }
+    .rs-success {
+      display: none;
+      background: rgba(22,163,74,.1);
+      border-left: 3px solid #16a34a;
+      border-radius: 6px;
+      padding: .6rem .9rem;
+      font-size: .78rem;
+      color: #86efac;
+      margin-top: .8rem;
+    }
+    .rs-success.show { display: block; }
   </style>
 </head>
 <body>
 <div class="bg-pattern"></div>
 <div class="bg-frosted-glass"></div>
 <div class="neon-ambient"></div>
+
+<!-- ── Reschedule Modal ── -->
+<div class="rs-overlay" id="rsOverlay">
+  <div class="rs-modal">
+    <button class="rs-close" id="rsClose">✕</button>
+    <div class="rs-title">Termin verschieben</div>
+    <div class="rs-apt-info" id="rsAptInfo"></div>
+
+    <div class="rs-field">
+      <label class="rs-label">Neues Datum</label>
+      <input type="text" id="rsDate" placeholder="Datum wählen" readonly autocomplete="off">
+    </div>
+    <div class="rs-field">
+      <label class="rs-label">Neue Uhrzeit</label>
+      <input type="hidden" id="rsTime">
+      <div class="rs-time-grid" id="rsTimeGrid">
+        <div class="rs-hint">Erst Datum wählen</div>
+      </div>
+    </div>
+
+    <button class="rs-confirm-btn" id="rsConfirm" disabled>Termin verschieben ✂</button>
+    <div class="rs-err" id="rsErr"></div>
+    <div class="rs-success" id="rsSuccess"></div>
+  </div>
+</div>
 
 <div class="pf-wrap">
   <div class="pf-con">
@@ -449,6 +641,9 @@ function bookingCard(b, isUpcoming) {
       </div>
       <div class="pf-booking-price">${b.price}€</div>
       <span class="pf-status ${statusCls}">${STATUS_LABELS[b.status] || b.status}</span>
+      ${isUpcoming && ['pending','confirmed'].includes(b.status)
+        ? `<button class="pf-reschedule-btn" onclick="openReschedule(${b.id},'${b.service}','${b.date}','${b.time}')">↕ Verschieben</button>`
+        : ''}
     </div>`;
 }
 
@@ -527,6 +722,159 @@ document.getElementById('logoutBtn').addEventListener('click', async () => {
 });
 
 loadProfile();
+
+// ── Reschedule Modal ──────────────────────────────────────
+let _rsFp     = null;   // Flatpickr instance
+let _rsAptId  = null;   // current appointment id being rescheduled
+let _rsDisabled = [];   // disabled dates from API
+
+function openReschedule(aptId, service, oldDate, oldTime) {
+  _rsAptId = aptId;
+  document.getElementById('rsAptInfo').textContent =
+    `${service} · ${oldDate} · ${oldTime} → новая дата/время`;
+  document.getElementById('rsTime').value = '';
+  document.getElementById('rsTimeGrid').innerHTML = '<div class="rs-hint">Erst Datum wählen</div>';
+  document.getElementById('rsConfirm').disabled = true;
+  document.getElementById('rsErr').classList.remove('show');
+  document.getElementById('rsSuccess').classList.remove('show');
+
+  document.getElementById('rsOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  initRsFlatpickr();
+}
+
+function closeReschedule() {
+  document.getElementById('rsOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+  if (_rsFp) { _rsFp.destroy(); _rsFp = null; }
+}
+
+document.getElementById('rsClose').addEventListener('click', closeReschedule);
+document.getElementById('rsOverlay').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('rsOverlay')) closeReschedule();
+});
+
+async function initRsFlatpickr() {
+  const dateInput = document.getElementById('rsDate');
+  if (_rsFp) { _rsFp.destroy(); _rsFp = null; }
+
+  // Load disabled dates if not yet loaded
+  if (!_rsDisabled.length) {
+    try {
+      const res = await fetch('/api/availability');
+      const d   = await res.json();
+      _rsDisabled = d.disabled || [];
+    } catch { _rsDisabled = []; }
+  }
+
+  const today  = new Date();
+  const maxDay = new Date(today); maxDay.setDate(today.getDate() + 60);
+
+  _rsFp = flatpickr(dateInput, {
+    locale: 'de',
+    minDate: today,
+    maxDate: maxDay,
+    disable: _rsDisabled,
+    disableMobile: true,
+    onChange: ([sel]) => { if (sel) rsLoadSlots(); },
+  });
+}
+
+async function rsLoadSlots() {
+  const date   = document.getElementById('rsDate').value;
+  const grid   = document.getElementById('rsTimeGrid');
+  const hidden = document.getElementById('rsTime');
+  if (!date) return;
+
+  hidden.value = '';
+  document.getElementById('rsConfirm').disabled = true;
+  grid.innerHTML = '<div class="rs-hint">Lädt...</div>';
+
+  try {
+    const res  = await fetch(`/api/slots?date=${date}`);
+    const data = await res.json();
+
+    if (data.closed || (!data.slots?.length && !data.booked?.length)) {
+      grid.innerHTML = '<div class="rs-hint">Keine freien Zeiten</div>';
+      return;
+    }
+    const available = data.slots  || [];
+    const booked    = data.booked || [];
+    const all       = [...new Set([...available, ...booked])].sort();
+
+    grid.innerHTML = '';
+    all.forEach(slot => {
+      const btn = document.createElement('button');
+      btn.type      = 'button';
+      btn.className = 'rs-slot' + (booked.includes(slot) ? ' booked' : '');
+      btn.textContent = slot;
+      if (!booked.includes(slot)) {
+        btn.addEventListener('click', () => {
+          grid.querySelectorAll('.rs-slot').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          hidden.value = slot;
+          document.getElementById('rsConfirm').disabled = false;
+        });
+      }
+      grid.appendChild(btn);
+    });
+  } catch {
+    grid.innerHTML = '<div class="rs-hint">Fehler beim Laden</div>';
+  }
+}
+
+document.getElementById('rsConfirm').addEventListener('click', async () => {
+  const date = document.getElementById('rsDate').value;
+  const time = document.getElementById('rsTime').value;
+  const btn  = document.getElementById('rsConfirm');
+  const err  = document.getElementById('rsErr');
+  const succ = document.getElementById('rsSuccess');
+
+  err.classList.remove('show');
+  succ.classList.remove('show');
+
+  if (!date || !time) {
+    err.textContent = '⚠ Bitte Datum und Uhrzeit wählen';
+    err.classList.add('show');
+    return;
+  }
+
+  btn.disabled    = true;
+  btn.textContent = 'Wird verschoben...';
+
+  try {
+    const res  = await fetch('/api/client/reschedule', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ id: _rsAptId, date, time }),
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      succ.textContent = '✓ ' + data.message;
+      succ.classList.add('show');
+      btn.textContent = 'Verschoben ✓';
+      _rsDisabled = []; // reset cache so new slot reflects
+      setTimeout(() => {
+        closeReschedule();
+        loadProfile(); // reload profile to reflect new times
+      }, 1400);
+    } else {
+      err.textContent = '⚠ ' + data.error;
+      err.classList.add('show');
+      btn.disabled    = false;
+      btn.textContent = 'Termin verschieben ✂';
+    }
+  } catch {
+    err.textContent = '⚠ Verbindungsfehler — bitte erneut versuchen';
+    err.classList.add('show');
+    btn.disabled    = false;
+    btn.textContent = 'Termin verschieben ✂';
+  }
+});
 </script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/de.js"></script>
 </body>
 </html>
