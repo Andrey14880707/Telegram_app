@@ -497,3 +497,91 @@ document.querySelectorAll('.lang-sw button').forEach(b =>
   b.addEventListener('click', () => setLang(b.dataset.lang))
 );
 setLang(localStorage.getItem('lang') || 'de');
+
+// ── Premium Animations ────────────────────────────────
+
+// 1. Scroll progress bar
+(function initScrollProgress() {
+  const bar = document.createElement('div');
+  bar.className = 'scroll-progress';
+  document.body.prepend(bar);
+  window.addEventListener('scroll', () => {
+    const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+    bar.style.width = Math.min(pct, 100) + '%';
+  }, { passive: true });
+})();
+
+// 2. Counter animation for stat numbers
+function animateCounter(el) {
+  const target = parseFloat(el.dataset.target || el.textContent);
+  const suffix = el.dataset.suffix || '';
+  const duration = 1600;
+  const start = performance.now();
+  const isFloat = String(target).includes('.');
+  function step(now) {
+    const p = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - p, 4);
+    const val = target * ease;
+    el.textContent = (isFloat ? val.toFixed(1) : Math.floor(val)) + suffix;
+    if (p < 1) requestAnimationFrame(step);
+    else el.textContent = target + suffix;
+  }
+  requestAnimationFrame(step);
+}
+
+// 3. Intersection observer — reveal + stagger + counters
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const el = entry.target;
+    el.classList.add('in');
+    if (el.classList.contains('count-up')) animateCounter(el);
+    observer.unobserve(el);
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.reveal, .reveal-l, .reveal-r, .stagger-children, .count-up').forEach(el => observer.observe(el));
+
+// 4. Card tilt on desktop (also applies to .wc, .hours-card, .pr-card dynamically)
+if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+  document.querySelectorAll('.tilt-card, .wc, .hours-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width  - 0.5;
+      const y = (e.clientY - r.top)  / r.height - 0.5;
+      card.style.transform = `perspective(600px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg) scale(1.02)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = '';
+    });
+  });
+}
+
+// 5. Magnetic buttons (subtle follow on hover)
+if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+  document.querySelectorAll('.btn-primary, .btn-outline').forEach(btn => {
+    btn.addEventListener('mousemove', e => {
+      const r = btn.getBoundingClientRect();
+      const x = (e.clientX - r.left - r.width  / 2) * 0.25;
+      const y = (e.clientY - r.top  - r.height / 2) * 0.25;
+      btn.style.transform = `translate(${x}px, ${y}px)`;
+    });
+    btn.addEventListener('mouseleave', () => {
+      btn.style.transform = '';
+      btn.style.transition = 'transform .4s cubic-bezier(.16,1,.3,1)';
+      setTimeout(() => btn.style.transition = '', 400);
+    });
+  });
+}
+
+// 6. Hero parallax on scroll
+(function initParallax() {
+  const hero = document.querySelector('.hero');
+  const bg   = document.querySelector('.bg-pattern');
+  if (!hero || !bg) return;
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    if (y > window.innerHeight) return;
+    bg.style.transform = `translateY(${y * 0.3}px)`;
+  }, { passive: true });
+})();

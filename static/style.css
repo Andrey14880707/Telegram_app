@@ -1015,7 +1015,92 @@ em { font-style: italic; color: var(--gold); }
 .m-box h3 { font-family: 'Playfair Display', serif; margin-bottom: .75rem; }
 .m-box p { font-size: .9rem; color: var(--gray); margin-bottom: 2rem; }
 
-/* ══ REVEAL ANIMATIONS ═══════════════════════════════ */
+}
+
+/* ══ PREMIUM ANIMATIONS ══════════════════════════════ */
+
+/* Scroll progress bar */
+.scroll-progress {
+  position: fixed;
+  top: 0; left: 0;
+  width: 0%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold), rgba(212,175,55,.4));
+  z-index: 9999;
+  transition: width .1s linear;
+  box-shadow: 0 0 8px rgba(212,175,55,.5);
+}
+
+/* Gold shimmer on hover */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.shimmer-hover {
+  background: linear-gradient(90deg, var(--gold) 30%, #fff8e7 50%, var(--gold) 70%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.shimmer-hover:hover {
+  animation: shimmer 1.2s linear infinite;
+}
+
+/* Gold pulse glow */
+@keyframes goldPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(212,175,55,0); }
+  50%       { box-shadow: 0 0 20px 4px rgba(212,175,55,.25); }
+}
+.gold-pulse:hover { animation: goldPulse 1.5s ease infinite; }
+
+/* Floating subtle */
+@keyframes floatY {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+.float-anim { animation: floatY 4s ease-in-out infinite; }
+
+/* Counter number */
+.count-up { display: inline-block; }
+
+/* Stagger children */
+.stagger-children > * {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity .5s ease, transform .5s cubic-bezier(.16,1,.3,1);
+}
+.stagger-children.in > * { opacity: 1; transform: translateY(0); }
+.stagger-children.in > *:nth-child(1) { transition-delay: .05s; }
+.stagger-children.in > *:nth-child(2) { transition-delay: .12s; }
+.stagger-children.in > *:nth-child(3) { transition-delay: .19s; }
+.stagger-children.in > *:nth-child(4) { transition-delay: .26s; }
+.stagger-children.in > *:nth-child(5) { transition-delay: .33s; }
+.stagger-children.in > *:nth-child(6) { transition-delay: .40s; }
+
+/* Card tilt (desktop only) */
+.tilt-card {
+  transform-style: preserve-3d;
+  transition: transform .15s ease, box-shadow .3s ease;
+  will-change: transform;
+}
+
+/* Line draw underline on hover */
+.line-draw {
+  position: relative;
+  display: inline-block;
+}
+.line-draw::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0;
+  width: 0; height: 1px;
+  background: var(--gold);
+  transition: width .4s cubic-bezier(.16,1,.3,1);
+}
+.line-draw:hover::after { width: 100%; }
+
+/* ══ REVEAL ANIMATIONS ══════════════════════════════ */
 .reveal, .reveal-l, .reveal-r {
   opacity: 0;
   transition: opacity .8s ease, transform .8s cubic-bezier(.16,1,.3,1);
