@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- MB monogram centered for adaptive icon -->
+    <!-- M -->
+    <path
+        android:fillColor="#D4AF37"
+        android:pathData="M18,76 L18,36 L33,58 L48,36 L48,76 L43,76 L43,52 L33,68 L23,52 L23,76 Z" />
+    <!-- B -->
+    <path
+        android:fillColor="#D4AF37"
+        android:pathData="M56,76 L56,36 L72,36 Q83,36 83,47 Q83,53 78,55 Q85,58 85,66 Q85,76 71,76 Z
+                         M62,52 L71,52 Q77,52 77,47 Q77,42 71,42 L62,42 Z
+                         M62,70 L72,70 Q79,70 79,66 Q79,59 72,59 L62,59 Z" />
+
+</vector>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+
+    <!-- Border box -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#D4AF37"
+        android:strokeWidth="1.5"
+        android:pathData="M10,10 L110,10 L110,110 L10,110 Z" />
+
+    <!-- Corner accents TL -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#D4AF37"
+        android:strokeWidth="2.5"
+        android:pathData="M4,4 L24,4 M4,4 L4,24" />
+    <!-- Corner accents BR -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#D4AF37"
+        android:strokeWidth="2.5"
+        android:pathData="M116,116 L96,116 M116,116 L116,96" />
+
+    <!-- M letter -->
+    <path
+        android:fillColor="#D4AF37"
+        android:pathData="M22,80 L22,40 L38,65 L54,40 L54,80 L48,80 L48,55 L38,72 L28,55 L28,80 Z" />
+
+    <!-- B letter -->
+    <path
+        android:fillColor="#D4AF37"
+        android:pathData="M62,80 L62,40 L80,40 Q92,40 92,52 Q92,58 87,60.5 Q94,63 94,72 Q94,80 80,80 Z
+                         M68,57 L79,57 Q86,57 86,52 Q86,47 79,47 L68,47 Z
+                         M68,73 L80,73 Q88,73 88,71 Q88,63 80,63 L68,63 Z" />
+
+</vector>
