@@ -39,6 +39,7 @@
       --text: #fff; --gray: rgba(255,255,255,0.6); --gray2: rgba(255,255,255,0.4);
       --green: #16a34a; --red: #dc2626; --yellow: #d97706; --blue: #2563eb;
       --tr: .3s cubic-bezier(.4,0,.2,1);
+      --neon-glow: 0 0 12px rgba(212,175,55,.35), 0 0 30px rgba(212,175,55,.15);
     }
 
     /* reset Pico's body padding for full-screen app */
@@ -96,13 +97,25 @@
     .btn:hover::before { opacity: 1; }
 
     .btn-gold {
-      background: linear-gradient(135deg, var(--gold) 0%, #c9a227 100%);
+      background: linear-gradient(135deg, var(--gold) 0%, #c9a227 50%, #e8c94a 75%, #c9a227 100%);
+      background-size: 200% 100%;
       color: #000; font-weight: 700;
       border-color: var(--gold3);
       box-shadow: 0 0 0 0 rgba(212,175,55,0), 0 4px 12px rgba(0,0,0,.4);
+      transition: all var(--tr), background-position .4s ease;
+    }
+    .btn-gold::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,.25) 50%, transparent 70%);
+      transform: translateX(-120%); transition: transform 0s;
+    }
+    .btn-gold:hover::after {
+      transform: translateX(140%);
+      transition: transform .5s cubic-bezier(.4,0,.2,1);
     }
     .btn-gold:hover {
-      box-shadow: var(--neon-glow), 0 4px 20px rgba(0,0,0,.4);
+      background-position: 100% 0;
+      box-shadow: var(--neon-glow), 0 6px 24px rgba(0,0,0,.5);
       transform: translateY(-1px);
       border-color: var(--gold3);
     }
@@ -171,12 +184,38 @@
       position: sticky; top: 0; z-index: 100;
       box-shadow: 0 4px 30px rgba(0,0,0,.5), 0 1px 0 rgba(212,175,55,.1);
     }
-    .dh-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 3px; color: var(--gold); }
+    .dh-logo {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 3px; color: var(--gold);
+      text-shadow: 0 0 20px rgba(212,175,55,.35);
+      position: relative;
+    }
+    .dh-logo::after {
+      content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(212,175,55,.5), transparent);
+      animation: glowPulse 3s ease-in-out infinite;
+    }
+    @keyframes glowPulse {
+      0%,100% { opacity: .5; } 50% { opacity: 1; }
+    }
     .dh-sep { width: 1px; height: 20px; background: var(--border); }
     .dh-clock { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 2px; }
     .dh-date { font-size: .72rem; color: var(--gray); }
     .dh-right { margin-left: auto; display: flex; align-items: center; gap: 1rem; }
-    .dh-badge { font-size: .7rem; letter-spacing: 2px; color: var(--gold); border: 1px solid rgba(212,175,55,.3); padding: .25rem .8rem; text-transform: uppercase; }
+    .dh-badge {
+      font-size: .7rem; letter-spacing: 2px; color: var(--gold);
+      border: 1px solid rgba(212,175,55,.3); padding: .25rem .8rem; text-transform: uppercase;
+      position: relative;
+    }
+    .dh-badge::before {
+      content: ''; display: inline-block; width: 5px; height: 5px; border-radius: 50%;
+      background: var(--green); box-shadow: 0 0 6px var(--green);
+      margin-right: .4rem; vertical-align: middle;
+      animation: pulse-dot 1.8s ease-in-out infinite;
+    }
+    @keyframes pulse-dot {
+      0%,100% { transform: scale(1); box-shadow: 0 0 6px var(--green); }
+      50%      { transform: scale(1.3); box-shadow: 0 0 12px var(--green), 0 0 20px rgba(22,163,74,.3); }
+    }
     .gcal-btn { position: relative; display: inline-flex; align-items: center; gap: .4rem; }
     .gcal-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gray2); flex-shrink: 0; transition: background .3s; }
     .gcal-dot.connected { background: var(--green); box-shadow: 0 0 6px var(--green); }
@@ -195,6 +234,10 @@
     .st-item { display: inline-flex; align-items: center; gap: .5rem; padding: 0 1.8rem; border-right: 1px solid var(--border); height: 38px; }
     .st-lbl { font-size: .58rem; letter-spacing: 1.5px; color: var(--gray2); text-transform: uppercase; }
     .st-val { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 1px; }
+    .st-val.gold { color: var(--gold); text-shadow: 0 0 10px rgba(212,175,55,.4); }
+    .st-val.green { color: #4ade80; text-shadow: 0 0 10px rgba(74,222,128,.35); }
+    .st-val.cyan  { color: #22d3ee; text-shadow: 0 0 10px rgba(34,211,238,.35); }
+    .st-val.purple{ color: #c084fc; text-shadow: 0 0 10px rgba(192,132,252,.35); }
 
     /* Tabs */
     .tabs { display: flex; border-bottom: 1px solid rgba(212,175,55,.12); background: rgba(6,6,14,0.7); backdrop-filter: blur(20px); overflow-x: auto; -webkit-overflow-scrolling: touch; }
@@ -262,8 +305,15 @@
     .kunden-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 1rem; padding: 1.5rem; }
     .kc { background: rgba(10,10,18,.8); border: 1px solid rgba(212,175,55,.12); backdrop-filter: blur(25px); padding: 1.25rem; cursor: pointer; border-radius: 4px; transition: all var(--tr); position: relative; overflow: hidden; }
     .kc::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, transparent, var(--gold), transparent); opacity: 0; transition: opacity var(--tr); }
-    .kc:hover { border-color: rgba(212,175,55,.4); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,.5), 0 0 20px rgba(212,175,55,.07); }
+    /* shimmer sweep */
+    .kc::after {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,.06) 50%, transparent 70%);
+      transform: translateX(-120%); transition: transform 0s;
+    }
+    .kc:hover { border-color: rgba(212,175,55,.35); transform: translateY(-2px); box-shadow: 0 12px 35px rgba(0,0,0,.55), 0 0 25px rgba(212,175,55,.08), inset 0 0 15px rgba(212,175,55,.02); }
     .kc:hover::before { opacity: 1; }
+    .kc:hover::after { transform: translateX(130%); transition: transform .55s cubic-bezier(.4,0,.2,1); }
     .kc-head { display: flex; align-items: center; gap: .9rem; margin-bottom: 1rem; }
     .kc-av { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; flex-shrink: 0; }
     .kc-name { font-weight: 600; font-size: .92rem; } .kc-phone { font-size: .75rem; color: var(--gray); }
@@ -498,7 +548,12 @@
       border-bottom: 2px solid transparent; margin-bottom: -1px;
       transition: all var(--tr);
     }
-    .tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); text-shadow: 0 0 10px rgba(212,175,55,0.3); }
+    .tab-btn.active {
+      color: var(--gold);
+      border-bottom-color: var(--gold);
+      text-shadow: 0 0 14px rgba(212,175,55,.55), 0 0 30px rgba(212,175,55,.2);
+      background: linear-gradient(to bottom, transparent, rgba(212,175,55,.04));
+    }
     
     /* ── Schedule Timeline ── */
     .sch-wrap { padding: 1.5rem; max-width: 900px; margin: 0 auto; }
@@ -536,7 +591,7 @@
       background: var(--surface); border: 1px solid var(--border); color: #fff; padding: 0.8rem; 
       border-radius: 8px; font-family: inherit; outline: none; transition: border-color 0.3s;
     }
-    .m-input:focus { border-color: var(--gold); }
+    .m-input:focus { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(212,175,55,.12), 0 0 15px rgba(212,175,55,.08), inset 0 0 10px rgba(212,175,55,.03); }
 
     
 
@@ -568,7 +623,7 @@
       padding: .85rem 1rem; border-bottom: 1px solid var(--border);
       vertical-align: middle; font-size: .82rem;
     }
-    tr:hover td { background: rgba(255,255,255,.05); }
+    tr:hover td { background: rgba(212,175,55,.03); border-bottom-color: rgba(212,175,55,.12); }
     .badge { display: inline-block; padding: .22rem .7rem; font-size: .68rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; border-radius: 6px; }
     .badge-p { background: rgba(245,158,11,.15); color: var(--yellow); border: 1px solid rgba(245,158,11,.3); box-shadow: 0 0 10px rgba(245,158,11,0.1); }
     .badge-c { background: rgba(34,197,94,.15);  color: var(--green); border: 1px solid rgba(34,197,94,.3); box-shadow: 0 0 10px rgba(34,197,94,0.1); }
@@ -812,20 +867,20 @@
   <div class="stats-ticker">
     <div class="stats-ticker-track" id="statsTrack">
       <!-- first copy -->
-      <div class="st-item"><span class="st-lbl">Сегодня</span><span class="st-val" style="color:var(--gold)" id="s-today">—</span></div>
-      <div class="st-item"><span class="st-lbl">На неделе</span><span class="st-val" id="s-week">—</span></div>
-      <div class="st-item"><span class="st-lbl">Всего</span><span class="st-val" id="s-total">—</span></div>
-      <div class="st-item"><span class="st-lbl">Ожидает</span><span class="st-val" style="color:var(--yellow)" id="s-pend">—</span></div>
-      <div class="st-item"><span class="st-lbl">Клиентов</span><span class="st-val" id="s-clients">—</span></div>
-      <div class="st-item"><span class="st-lbl">Доход сегодня</span><span class="st-val" style="color:var(--green)" id="s-rev-d">—</span></div>
-      <div class="st-item"><span class="st-lbl">Доход за месяц</span><span class="st-val" style="color:var(--green)" id="s-rev-m">—</span></div>
+      <div class="st-item"><span class="st-lbl">Сегодня</span><span class="st-val gold" id="s-today">—</span></div>
+      <div class="st-item"><span class="st-lbl">На неделе</span><span class="st-val cyan" id="s-week">—</span></div>
+      <div class="st-item"><span class="st-lbl">Всего</span><span class="st-val purple" id="s-total">—</span></div>
+      <div class="st-item"><span class="st-lbl">Ожидает</span><span class="st-val" style="color:#fb923c;text-shadow:0 0 10px rgba(251,146,60,.35)" id="s-pend">—</span></div>
+      <div class="st-item"><span class="st-lbl">Клиентов</span><span class="st-val gold" id="s-clients">—</span></div>
+      <div class="st-item"><span class="st-lbl">Доход сегодня</span><span class="st-val green" id="s-rev-d">—</span></div>
+      <div class="st-item"><span class="st-lbl">Доход за месяц</span><span class="st-val green" id="s-rev-m">—</span></div>
       <!-- duplicate for seamless loop -->
-      <div class="st-item"><span class="st-lbl">Сегодня</span><span class="st-val" style="color:var(--gold)" id="s-today2">—</span></div>
-      <div class="st-item"><span class="st-lbl">На неделе</span><span class="st-val" id="s-week2">—</span></div>
-      <div class="st-item"><span class="st-lbl">Всего</span><span class="st-val" id="s-total2">—</span></div>
-      <div class="st-item"><span class="st-lbl">Ожидает</span><span class="st-val" style="color:var(--yellow)" id="s-pend2">—</span></div>
-      <div class="st-item"><span class="st-lbl">Клиентов</span><span class="st-val" id="s-clients2">—</span></div>
-      <div class="st-item"><span class="st-lbl">Доход сегодня</span><span class="st-val" style="color:var(--green)" id="s-rev-d2">—</span></div>
+      <div class="st-item"><span class="st-lbl">Сегодня</span><span class="st-val gold" id="s-today2">—</span></div>
+      <div class="st-item"><span class="st-lbl">На неделе</span><span class="st-val cyan" id="s-week2">—</span></div>
+      <div class="st-item"><span class="st-lbl">Всего</span><span class="st-val purple" id="s-total2">—</span></div>
+      <div class="st-item"><span class="st-lbl">Ожидает</span><span class="st-val" style="color:#fb923c;text-shadow:0 0 10px rgba(251,146,60,.35)" id="s-pend2">—</span></div>
+      <div class="st-item"><span class="st-lbl">Клиентов</span><span class="st-val gold" id="s-clients2">—</span></div>
+      <div class="st-item"><span class="st-lbl">Доход сегодня</span><span class="st-val green" id="s-rev-d2">—</span></div>
       <div class="st-item"><span class="st-lbl">Доход за месяц</span><span class="st-val" style="color:var(--green)" id="s-rev-m2">—</span></div>
     </div>
   </div>

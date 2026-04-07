@@ -215,11 +215,21 @@
     .post-card::after  { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
     .post-card:hover {
       border-color: rgba(212,175,55,.45);
-      box-shadow: 0 0 30px rgba(212,175,55,.08), 0 4px 40px rgba(0,0,0,.6), inset 0 0 40px rgba(212,175,55,.02);
-      transform: translateY(-2px);
+      box-shadow: 0 0 30px rgba(212,175,55,.1), 0 4px 40px rgba(0,0,0,.65), inset 0 0 40px rgba(212,175,55,.03);
+      transform: translateY(-3px);
     }
     .post-card:hover::before,
     .post-card:hover::after { width: 20px; height: 20px; }
+    /* shimmer on feed cards */
+    .post-card .pc-shimmer {
+      position: absolute; inset: 0; z-index: 1; pointer-events: none; border-radius: inherit;
+      background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,.05) 50%, transparent 70%);
+      transform: translateX(-120%); transition: transform 0s;
+    }
+    .post-card:hover .pc-shimmer {
+      transform: translateX(130%);
+      transition: transform .6s cubic-bezier(.4,0,.2,1);
+    }
 
     /* Top bar */
     .pc-bar {
@@ -424,6 +434,7 @@
     {% if posts %}
       {% for post in posts %}
       <article class="post-card">
+        <div class="pc-shimmer"></div>
         <div class="pc-bar">
           <div class="pc-badge">
             <span class="pc-dot"></span>
