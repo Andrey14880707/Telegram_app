@@ -1706,3 +1706,204 @@ span.flatpickr-weekday { color: var(--gray) !important; background: transparent 
   .feed-title::before, .feed-title::after { animation: none !important; }
   .reveal, .reveal-l, .reveal-r { transition: none !important; opacity: 1 !important; transform: none !important; }
 }
+
+/* ══════════════════════════════════════════════════════
+   CLIENT AUTH — Auth Gate, User Bar, Nav Badge
+   ══════════════════════════════════════════════════════ */
+
+/* ── Nav client badge ── */
+.nav-client-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  background: rgba(212,175,55,.1);
+  border: 1px solid rgba(212,175,55,.3);
+  border-radius: 99px;
+  padding: .35rem .85rem;
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: .5px;
+  color: var(--gold);
+  text-decoration: none;
+  transition: all var(--tr);
+}
+.nav-client-badge:hover {
+  background: rgba(212,175,55,.18);
+  border-color: rgba(212,175,55,.5);
+  transform: translateY(-1px);
+}
+.nav-client-icon { font-size: .75rem; }
+
+.nav-login-link {
+  display: inline-flex;
+  align-items: center;
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(212,175,55,.3);
+  padding-bottom: 1px;
+  transition: border-color var(--tr), opacity var(--tr);
+}
+.nav-login-link:hover { border-color: var(--gold); opacity: .8; }
+
+/* ── Booking Auth Gate ── */
+.bk-auth-gate {
+  max-width: 520px;
+  margin: 0 auto;
+  text-align: center;
+  background: rgba(14,14,20,.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(212,175,55,.18);
+  border-radius: 20px;
+  padding: 3rem 2.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.bk-auth-gate::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(212,175,55,.05) 0%, transparent 60%);
+  pointer-events: none;
+}
+.bk-auth-gate::after {
+  content: '';
+  position: absolute;
+  top: -1px; left: -1px;
+  width: 36px; height: 36px;
+  border-top: 2px solid var(--gold);
+  border-left: 2px solid var(--gold);
+  border-radius: 20px 0 0 0;
+}
+.bk-gate-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1.2rem;
+  opacity: .7;
+  filter: drop-shadow(0 0 12px rgba(212,175,55,.4));
+}
+.bk-gate-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: .7rem;
+  line-height: 1.2;
+}
+.bk-gate-desc {
+  font-size: .85rem;
+  color: rgba(255,255,255,.45);
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+.bk-gate-btns {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+.bk-gate-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  padding: .8rem 2rem;
+  background: var(--gold);
+  color: #05050a;
+  border-radius: 10px;
+  font-family: 'Poppins', sans-serif;
+  font-size: .85rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-decoration: none;
+  transition: all .25s;
+}
+.bk-gate-btn-primary:hover {
+  background: #e0c040;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(212,175,55,.3);
+}
+.bk-gate-btn-outline {
+  display: inline-flex;
+  align-items: center;
+  padding: .8rem 1.8rem;
+  border: 1px solid rgba(212,175,55,.4);
+  color: var(--gold);
+  border-radius: 10px;
+  font-family: 'Poppins', sans-serif;
+  font-size: .85rem;
+  font-weight: 500;
+  letter-spacing: .5px;
+  text-decoration: none;
+  transition: all .25s;
+}
+.bk-gate-btn-outline:hover {
+  border-color: var(--gold);
+  background: rgba(212,175,55,.06);
+}
+.bk-gate-perks {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  font-size: .72rem;
+  color: rgba(255,255,255,.3);
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: .5px;
+}
+
+/* ── Booking User Bar ── */
+.bk-user-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  background: rgba(212,175,55,.05);
+  border: 1px solid rgba(212,175,55,.15);
+  border-radius: 12px;
+  padding: .9rem 1.3rem;
+  margin-bottom: 1.5rem;
+}
+.bk-user-info {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+.bk-user-icon { font-size: 1.2rem; opacity: .8; }
+.bk-user-name {
+  font-size: .9rem;
+  font-weight: 500;
+  color: var(--white);
+}
+.bk-user-phone {
+  font-size: .72rem;
+  color: rgba(255,255,255,.35);
+  font-family: 'JetBrains Mono', monospace;
+  margin-top: .1rem;
+}
+.bk-user-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.bk-profile-link {
+  font-size: .78rem;
+  color: var(--gold);
+  text-decoration: none;
+  letter-spacing: .5px;
+  transition: opacity .2s;
+}
+.bk-profile-link:hover { opacity: .7; }
+.bk-logout-link {
+  background: none;
+  border: none;
+  font-size: .75rem;
+  color: rgba(255,255,255,.3);
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  transition: color .2s;
+  padding: 0;
+}
+.bk-logout-link:hover { color: #fca5a5; }

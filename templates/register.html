@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrieren — München Barber</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;1,400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+  <style>
+    .auth-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      position: relative;
+      z-index: 1;
+    }
+    .auth-card {
+      width: 100%;
+      max-width: 460px;
+      background: rgba(14, 14, 20, 0.75);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(212, 175, 55, 0.18);
+      border-radius: 20px;
+      padding: 2.8rem 2.4rem 2.4rem;
+      position: relative;
+      box-shadow: 0 0 60px rgba(212, 175, 55, 0.06), 0 30px 80px rgba(0,0,0,0.5);
+    }
+    .auth-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(212,175,55,.04) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .auth-card::after {
+      content: '';
+      position: absolute;
+      top: -1px; left: -1px;
+      width: 40px; height: 40px;
+      border-top: 2px solid var(--gold);
+      border-left: 2px solid var(--gold);
+      border-radius: 20px 0 0 0;
+      pointer-events: none;
+    }
+    .auth-corner-br {
+      position: absolute;
+      bottom: -1px; right: -1px;
+      width: 40px; height: 40px;
+      border-bottom: 2px solid var(--gold);
+      border-right: 2px solid var(--gold);
+      border-radius: 0 0 20px 0;
+    }
+    .auth-logo {
+      text-align: center;
+      margin-bottom: 1.8rem;
+    }
+    .auth-logomark {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 64px; height: 64px;
+      border: 1.5px solid rgba(212,175,55,.5);
+      border-radius: 50%;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 2px;
+      color: var(--gold);
+      background: rgba(212,175,55,.06);
+      box-shadow: 0 0 20px rgba(212,175,55,.12), inset 0 0 20px rgba(212,175,55,.04);
+      margin-bottom: .9rem;
+      position: relative;
+    }
+    .auth-logomark::before {
+      content: '';
+      position: absolute; inset: -6px;
+      border-radius: 50%;
+      border: 1px solid rgba(212,175,55,.12);
+    }
+    .auth-site-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: .72rem;
+      letter-spacing: 3px;
+      color: rgba(255,255,255,.35);
+      text-transform: uppercase;
+    }
+    .auth-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: var(--white);
+      text-align: center;
+      margin-bottom: .4rem;
+      line-height: 1.2;
+    }
+    .auth-sub {
+      font-size: .8rem;
+      color: rgba(255,255,255,.4);
+      text-align: center;
+      margin-bottom: 1.8rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .auth-sep {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(212,175,55,.2), transparent);
+      margin-bottom: 1.6rem;
+    }
+    .auth-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .9rem;
+    }
+    @media(max-width:480px) { .auth-row { grid-template-columns: 1fr; } }
+    .auth-field {
+      margin-bottom: 1rem;
+    }
+    .auth-field label {
+      display: block;
+      font-size: .7rem;
+      font-weight: 500;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.5);
+      margin-bottom: .4rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .auth-field label small {
+      font-size: .65rem;
+      color: rgba(255,255,255,.25);
+      letter-spacing: 0;
+      text-transform: none;
+    }
+    .auth-field input {
+      width: 100%;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 10px;
+      padding: .75rem 1rem;
+      color: var(--white);
+      font-family: 'Poppins', sans-serif;
+      font-size: .88rem;
+      transition: border-color .3s, box-shadow .3s, background .3s;
+      outline: none;
+    }
+    .auth-field input:focus {
+      border-color: rgba(212,175,55,.5);
+      background: rgba(212,175,55,.03);
+      box-shadow: 0 0 0 3px rgba(212,175,55,.08);
+    }
+    .auth-field input::placeholder { color: rgba(255,255,255,.22); }
+
+    /* password strength bar */
+    .pass-strength {
+      height: 3px;
+      border-radius: 2px;
+      background: rgba(255,255,255,.08);
+      margin-top: .4rem;
+      overflow: hidden;
+    }
+    .pass-strength-fill {
+      height: 100%;
+      width: 0;
+      border-radius: 2px;
+      transition: width .3s, background .3s;
+    }
+    .auth-hint { font-size: .7rem; color: rgba(255,255,255,.25); margin-top: .3rem; }
+
+    .auth-btn {
+      width: 100%;
+      margin-top: 1.4rem;
+      padding: .9rem 1.5rem;
+      background: var(--gold);
+      color: #05050a;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Poppins', sans-serif;
+      font-size: .88rem;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all .3s cubic-bezier(.4,0,.2,1);
+      position: relative;
+      overflow: hidden;
+    }
+    .auth-btn::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,.15) 0%, transparent 60%);
+    }
+    .auth-btn:hover {
+      background: #e0c040;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(212,175,55,.35);
+    }
+    .auth-btn:active { transform: translateY(0); }
+    .auth-btn:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+    .auth-err {
+      display: none;
+      background: rgba(220,38,38,.08);
+      border: 1px solid rgba(220,38,38,.3);
+      border-left: 3px solid #dc2626;
+      border-radius: 8px;
+      padding: .7rem 1rem;
+      font-size: .8rem;
+      color: #fca5a5;
+      margin-top: 1rem;
+    }
+    .auth-err.show { display: block; }
+    .auth-links {
+      text-align: center;
+      margin-top: 1.6rem;
+      font-size: .8rem;
+      color: rgba(255,255,255,.35);
+    }
+    .auth-links a { color: var(--gold); text-decoration: none; transition: opacity .2s; }
+    .auth-links a:hover { opacity: .75; }
+    .auth-back {
+      display: inline-flex;
+      align-items: center; gap: .4rem;
+      font-size: .72rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.3);
+      text-decoration: none;
+      font-family: 'JetBrains Mono', monospace;
+      transition: color .2s;
+      margin-bottom: 2rem;
+    }
+    .auth-back:hover { color: var(--gold); }
+    .auth-back-wrap { text-align: center; }
+    .auth-perks {
+      display: flex;
+      gap: .6rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.4rem;
+      justify-content: center;
+    }
+    .auth-perk {
+      font-size: .7rem;
+      padding: .3rem .7rem;
+      border: 1px solid rgba(212,175,55,.2);
+      border-radius: 99px;
+      color: rgba(212,175,55,.7);
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(212,175,55,.04);
+    }
+  </style>
+</head>
+<body>
+<div class="bg-pattern"></div>
+<div class="bg-frosted-glass"></div>
+<div class="neon-ambient"></div>
+
+<div class="auth-page">
+  <div style="width:100%;max-width:460px">
+
+    <div class="auth-back-wrap">
+      <a href="/" class="auth-back">← München Barber</a>
+    </div>
+
+    <div class="auth-card">
+      <div class="auth-corner-br"></div>
+
+      <div class="auth-logo">
+        <div class="auth-logomark">MB</div>
+        <div class="auth-site-name">München Barber</div>
+      </div>
+
+      <h1 class="auth-title">Konto erstellen</h1>
+      <p class="auth-sub">> Online buchen · Termine verwalten</p>
+
+      <div class="auth-perks">
+        <span class="auth-perk">✂ Online buchen</span>
+        <span class="auth-perk">📅 Termine sehen</span>
+        <span class="auth-perk">🔔 Erinnerungen</span>
+      </div>
+
+      <div class="auth-sep"></div>
+
+      <form id="regForm" novalidate>
+        <div class="auth-row">
+          <div class="auth-field">
+            <label>Name *</label>
+            <input type="text" id="rName" placeholder="Max Mustermann" autocomplete="name" required>
+          </div>
+          <div class="auth-field">
+            <label>Telefon *</label>
+            <input type="tel" id="rPhone" placeholder="+49 123 456 7890" autocomplete="tel" required>
+          </div>
+        </div>
+        <div class="auth-row">
+          <div class="auth-field">
+            <label>E-Mail <small>(optional)</small></label>
+            <input type="email" id="rEmail" placeholder="email@example.com" autocomplete="email">
+          </div>
+          <div class="auth-field">
+            <label>Telegram <small>(optional)</small></label>
+            <input type="text" id="rTelegram" placeholder="@username">
+          </div>
+        </div>
+        <div class="auth-field">
+          <label>Passwort *</label>
+          <input type="password" id="rPass" placeholder="Mindestens 6 Zeichen" autocomplete="new-password" required>
+          <div class="pass-strength"><div class="pass-strength-fill" id="passFill"></div></div>
+          <div class="auth-hint" id="passHint">Mindestens 6 Zeichen</div>
+        </div>
+        <div class="auth-field">
+          <label>Passwort bestätigen *</label>
+          <input type="password" id="rPassC" placeholder="Passwort wiederholen" autocomplete="new-password" required>
+        </div>
+
+        <button type="submit" class="auth-btn" id="regBtn">Registrieren & einloggen ✂</button>
+        <div class="auth-err" id="regErr"></div>
+      </form>
+
+      <div class="auth-links">
+        Bereits ein Konto? <a href="/login">Jetzt anmelden →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Password strength indicator
+  const passInput = document.getElementById('rPass');
+  const passFill  = document.getElementById('passFill');
+  const passHint  = document.getElementById('passHint');
+  passInput.addEventListener('input', () => {
+    const v = passInput.value;
+    let score = 0;
+    if (v.length >= 6)  score++;
+    if (v.length >= 10) score++;
+    if (/[A-Z]/.test(v)) score++;
+    if (/[0-9]/.test(v)) score++;
+    if (/[^a-zA-Z0-9]/.test(v)) score++;
+    const colors = ['#dc2626','#f97316','#eab308','#22c55e','#16a34a'];
+    const labels = ['Zu kurz','Schwach','Mittel','Stark','Sehr stark'];
+    const pct    = [20, 40, 60, 80, 100];
+    passFill.style.width      = pct[Math.min(score, 4)] + '%';
+    passFill.style.background = colors[Math.min(score, 4)];
+    passHint.textContent      = v.length < 6 ? 'Mindestens 6 Zeichen' : labels[Math.min(score, 4)];
+  });
+
+  document.getElementById('regForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('regBtn');
+    const err = document.getElementById('regErr');
+    err.classList.remove('show');
+    btn.disabled = true;
+    btn.textContent = 'Wird registriert...';
+
+    try {
+      const res  = await fetch('/api/client/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name:     document.getElementById('rName').value.trim(),
+          phone:    document.getElementById('rPhone').value.trim(),
+          email:    document.getElementById('rEmail').value.trim(),
+          telegram: document.getElementById('rTelegram').value.trim(),
+          password: document.getElementById('rPass').value,
+          confirm:  document.getElementById('rPassC').value,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        location.href = '/#termin';
+      } else {
+        err.textContent = '⚠ ' + data.error;
+        err.classList.add('show');
+        btn.disabled = false;
+        btn.textContent = 'Registrieren & einloggen ✂';
+      }
+    } catch {
+      err.textContent = '⚠ Verbindungsfehler — bitte erneut versuchen';
+      err.classList.add('show');
+      btn.disabled = false;
+      btn.textContent = 'Registrieren & einloggen ✂';
+    }
+  });
+</script>
+</body>
+</html>

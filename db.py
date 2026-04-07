@@ -89,6 +89,18 @@ def init_db():
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         ''')
+        conn.execute('''
+            CREATE TABLE IF NOT EXISTS client_accounts (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                phone TEXT NOT NULL UNIQUE,
+                email TEXT DEFAULT '',
+                telegram TEXT DEFAULT '',
+                password_hash TEXT NOT NULL,
+                created_at TEXT DEFAULT (datetime('now','localtime')),
+                last_login TEXT DEFAULT ''
+            )
+        ''')
         # Migrations
         for col in [
             "ALTER TABLE appointments ADD COLUMN reminder_2h_sent INTEGER DEFAULT 0",

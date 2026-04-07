@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, session
 from datetime import datetime, timedelta
 from db import get_db
 from notifications import send_telegram, send_to_n8n, sync_to_sheets
@@ -105,7 +105,14 @@ def availability():
 
 @bp.route('/api/book', methods=['POST'])
 def book():
-    data = request.get_json() or {}
+    data     = request.get_json() or {}
+    is_admin = data.get('source') == 'admin'
+
+    # Require client login for non-admin bookings
+    if not is_admin and not session.get('client_id'):
+        return jsonify({'success': False, 'error': 'auth_required',
+                        'redirect': '/login?next=/#termin'}), 401
+
     for f in ('name', 'phone', 'service', 'date', 'time'):
         if not data.get(f):
             return jsonify({'success': False, 'error': f'Feld «{f}» ist erforderlich'})

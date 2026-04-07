@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mein Konto — München Barber</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;1,400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+  <style>
+    /* ── Profile Layout ── */
+    .pf-wrap {
+      min-height: 100vh;
+      position: relative;
+      z-index: 1;
+      padding: 5rem 0 4rem;
+    }
+    .pf-con {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* ── Profile Header ── */
+    .pf-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+    .pf-brand {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .pf-logomark {
+      width: 48px; height: 48px;
+      border: 1.5px solid rgba(212,175,55,.4);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+      color: var(--gold);
+      background: rgba(212,175,55,.06);
+      flex-shrink: 0;
+    }
+    .pf-brand-text a {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: .85rem;
+      letter-spacing: 3px;
+      color: rgba(255,255,255,.4);
+      text-decoration: none;
+      display: block;
+      margin-bottom: .1rem;
+      transition: color .2s;
+    }
+    .pf-brand-text a:hover { color: var(--gold); }
+    .pf-brand-text span {
+      font-size: .7rem;
+      color: rgba(255,255,255,.25);
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 1px;
+    }
+    .pf-logout-btn {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 8px;
+      padding: .5rem 1.1rem;
+      color: rgba(255,255,255,.5);
+      font-family: 'Poppins', sans-serif;
+      font-size: .78rem;
+      cursor: pointer;
+      transition: all .25s;
+      letter-spacing: .5px;
+    }
+    .pf-logout-btn:hover {
+      border-color: rgba(220,38,38,.4);
+      color: #fca5a5;
+      background: rgba(220,38,38,.06);
+    }
+
+    /* ── Welcome card ── */
+    .pf-welcome {
+      background: rgba(14,14,20,.7);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(212,175,55,.18);
+      border-radius: 16px;
+      padding: 1.8rem 2rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .pf-welcome::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(212,175,55,.05) 0%, transparent 55%);
+      pointer-events: none;
+    }
+    .pf-welcome::after {
+      content: '';
+      position: absolute;
+      top: -1px; left: -1px;
+      width: 35px; height: 35px;
+      border-top: 2px solid var(--gold);
+      border-left: 2px solid var(--gold);
+      border-radius: 16px 0 0 0;
+    }
+    .pf-welcome-eyebrow {
+      font-size: .65rem;
+      letter-spacing: .3em;
+      color: var(--gold);
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      opacity: .8;
+      margin-bottom: .6rem;
+    }
+    .pf-welcome-eyebrow::before { content: '> '; opacity: .5; }
+    .pf-welcome-name {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.2;
+      margin-bottom: .5rem;
+    }
+    .pf-welcome-name em { color: var(--gold); font-style: italic; }
+    .pf-welcome-sub {
+      font-size: .82rem;
+      color: rgba(255,255,255,.4);
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: .5px;
+    }
+    .pf-book-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      margin-top: 1.2rem;
+      padding: .7rem 1.5rem;
+      background: var(--gold);
+      color: #05050a;
+      border-radius: 8px;
+      font-family: 'Poppins', sans-serif;
+      font-size: .82rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-decoration: none;
+      transition: all .25s;
+    }
+    .pf-book-btn:hover {
+      background: #e0c040;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(212,175,55,.3);
+    }
+
+    /* ── Stats row ── */
+    .pf-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    @media(max-width:540px) { .pf-stats { grid-template-columns: 1fr 1fr; } }
+    .pf-stat {
+      background: rgba(14,14,20,.6);
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 12px;
+      padding: 1.2rem 1rem;
+      text-align: center;
+      transition: border-color .25s;
+    }
+    .pf-stat:hover { border-color: rgba(212,175,55,.2); }
+    .pf-stat-val {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      letter-spacing: 2px;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: .3rem;
+    }
+    .pf-stat-lbl {
+      font-size: .68rem;
+      color: rgba(255,255,255,.35);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── Section headers ── */
+    .pf-sec-head {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .pf-sec-eyebrow {
+      font-size: .65rem;
+      letter-spacing: .3em;
+      color: var(--gold);
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      opacity: .75;
+    }
+    .pf-sec-eyebrow::before { content: '> '; opacity: .5; }
+    .pf-sec-count {
+      margin-left: auto;
+      font-size: .7rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: rgba(255,255,255,.25);
+    }
+
+    /* ── Booking cards ── */
+    .pf-bookings {
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+      margin-bottom: 2.5rem;
+    }
+    .pf-booking {
+      background: rgba(14,14,20,.6);
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 12px;
+      padding: 1.1rem 1.3rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      transition: border-color .25s, transform .2s;
+    }
+    .pf-booking:hover { border-color: rgba(212,175,55,.15); transform: translateX(2px); }
+    .pf-booking.upcoming {
+      border-left: 3px solid var(--gold);
+      background: rgba(212,175,55,.03);
+    }
+    .pf-booking-date {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: rgba(212,175,55,.06);
+      border: 1px solid rgba(212,175,55,.15);
+      border-radius: 8px;
+      padding: .5rem .8rem;
+      min-width: 54px;
+      flex-shrink: 0;
+    }
+    .pf-booking-day {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.3rem;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .pf-booking-mon {
+      font-size: .62rem;
+      color: rgba(212,175,55,.6);
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .pf-booking-info { flex: 1; min-width: 120px; }
+    .pf-booking-svc {
+      font-size: .9rem;
+      font-weight: 500;
+      color: var(--white);
+      margin-bottom: .2rem;
+    }
+    .pf-booking-meta {
+      font-size: .75rem;
+      color: rgba(255,255,255,.35);
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      gap: .8rem;
+      flex-wrap: wrap;
+    }
+    .pf-booking-price {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+      color: var(--gold);
+      flex-shrink: 0;
+    }
+    .pf-status {
+      font-size: .65rem;
+      padding: .25rem .65rem;
+      border-radius: 99px;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+    .pf-status.pending   { background: rgba(234,179,8,.1);  border: 1px solid rgba(234,179,8,.3);  color: #fde047; }
+    .pf-status.confirmed { background: rgba(22,163,74,.1);  border: 1px solid rgba(22,163,74,.3);  color: #86efac; }
+    .pf-status.completed { background: rgba(99,102,241,.1); border: 1px solid rgba(99,102,241,.3); color: #c4b5fd; }
+    .pf-status.cancelled { background: rgba(220,38,38,.08); border: 1px solid rgba(220,38,38,.25); color: #fca5a5; }
+
+    .pf-empty {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      color: rgba(255,255,255,.25);
+      font-size: .85rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .pf-empty-icon { font-size: 2rem; margin-bottom: .8rem; opacity: .4; }
+
+    /* ── Contact info card ── */
+    .pf-contact-card {
+      background: rgba(14,14,20,.6);
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 12px;
+      padding: 1.3rem 1.5rem;
+    }
+    .pf-contact-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: .5rem 0;
+      border-bottom: 1px solid rgba(255,255,255,.04);
+    }
+    .pf-contact-row:last-child { border-bottom: none; }
+    .pf-contact-lbl {
+      font-size: .68rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: rgba(255,255,255,.3);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      width: 80px;
+      flex-shrink: 0;
+    }
+    .pf-contact-val {
+      font-size: .85rem;
+      color: rgba(255,255,255,.7);
+    }
+    .pf-contact-val.empty { color: rgba(255,255,255,.2); font-style: italic; }
+
+    .pf-loading {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: rgba(255,255,255,.25);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .8rem;
+    }
+  </style>
+</head>
+<body>
+<div class="bg-pattern"></div>
+<div class="bg-frosted-glass"></div>
+<div class="neon-ambient"></div>
+
+<div class="pf-wrap">
+  <div class="pf-con">
+
+    <!-- Header -->
+    <div class="pf-header">
+      <div class="pf-brand">
+        <div class="pf-logomark">MB</div>
+        <div class="pf-brand-text">
+          <a href="/">MÜNCHEN BARBER</a>
+          <span>Mein Konto</span>
+        </div>
+      </div>
+      <button class="pf-logout-btn" id="logoutBtn">Abmelden</button>
+    </div>
+
+    <!-- Loading state -->
+    <div id="pfLoading" class="pf-loading">Lädt dein Profil...</div>
+
+    <!-- Main content (hidden until loaded) -->
+    <div id="pfContent" style="display:none">
+
+      <!-- Welcome card -->
+      <div class="pf-welcome">
+        <div class="pf-welcome-eyebrow">Mein Profil</div>
+        <div class="pf-welcome-name">Hallo, <em id="pfName">—</em></div>
+        <div class="pf-welcome-sub" id="pfSub">München Barber · Stammkunde</div>
+        <a href="/#termin" class="pf-book-btn">✂ Neuen Termin buchen</a>
+      </div>
+
+      <!-- Stats -->
+      <div class="pf-stats">
+        <div class="pf-stat">
+          <div class="pf-stat-val" id="statTotal">0</div>
+          <div class="pf-stat-lbl">Termine</div>
+        </div>
+        <div class="pf-stat">
+          <div class="pf-stat-val" id="statSpent">0€</div>
+          <div class="pf-stat-lbl">Ausgegeben</div>
+        </div>
+        <div class="pf-stat">
+          <div class="pf-stat-val" id="statUpcoming">0</div>
+          <div class="pf-stat-lbl">Bevorstehend</div>
+        </div>
+      </div>
+
+      <!-- Upcoming bookings -->
+      <div id="upcomingSection">
+        <div class="pf-sec-head">
+          <div class="pf-sec-eyebrow">Bevorstehende Termine</div>
+          <span class="pf-sec-count" id="upcomingCount"></span>
+        </div>
+        <div class="pf-bookings" id="upcomingList"></div>
+      </div>
+
+      <!-- Past bookings -->
+      <div id="pastSection">
+        <div class="pf-sec-head">
+          <div class="pf-sec-eyebrow">Vergangene Termine</div>
+          <span class="pf-sec-count" id="pastCount"></span>
+        </div>
+        <div class="pf-bookings" id="pastList"></div>
+      </div>
+
+      <!-- Contact info -->
+      <div class="pf-sec-head" style="margin-top:1rem">
+        <div class="pf-sec-eyebrow">Kontaktdaten</div>
+      </div>
+      <div class="pf-contact-card" id="contactCard"></div>
+
+    </div><!-- /pfContent -->
+  </div>
+</div>
+
+<script>
+const MONTHS = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+const STATUS_LABELS = {
+  pending:   'Ausstehend',
+  confirmed: 'Bestätigt',
+  completed: 'Abgeschlossen',
+  cancelled: 'Storniert',
+  deleted:   'Gelöscht',
+};
+
+function bookingCard(b, isUpcoming) {
+  const [y, m, d] = b.date.split('-');
+  const statusCls = ['pending','confirmed','completed','cancelled'].includes(b.status) ? b.status : 'cancelled';
+  return `
+    <div class="pf-booking${isUpcoming ? ' upcoming' : ''}">
+      <div class="pf-booking-date">
+        <div class="pf-booking-day">${d}</div>
+        <div class="pf-booking-mon">${MONTHS[parseInt(m)-1]}</div>
+      </div>
+      <div class="pf-booking-info">
+        <div class="pf-booking-svc">${b.service}</div>
+        <div class="pf-booking-meta">
+          <span>⏰ ${b.time}</span>
+          <span>📅 ${b.date}</span>
+          ${b.comment ? `<span title="${b.comment}">💬 Notiz</span>` : ''}
+        </div>
+      </div>
+      <div class="pf-booking-price">${b.price}€</div>
+      <span class="pf-status ${statusCls}">${STATUS_LABELS[b.status] || b.status}</span>
+    </div>`;
+}
+
+async function loadProfile() {
+  try {
+    const [meRes, bRes] = await Promise.all([
+      fetch('/api/client/me'),
+      fetch('/api/client/bookings'),
+    ]);
+    const me = await meRes.json();
+    const bd = await bRes.json();
+
+    if (!me.authenticated) {
+      location.href = '/login?next=/profile';
+      return;
+    }
+
+    document.getElementById('pfName').textContent = me.name;
+    document.getElementById('pfSub').textContent  = me.phone + ' · München Barber';
+
+    // Contact info
+    document.getElementById('contactCard').innerHTML = `
+      <div class="pf-contact-row">
+        <span class="pf-contact-lbl">Name</span>
+        <span class="pf-contact-val">${me.name}</span>
+      </div>
+      <div class="pf-contact-row">
+        <span class="pf-contact-lbl">Telefon</span>
+        <span class="pf-contact-val">${me.phone}</span>
+      </div>
+      <div class="pf-contact-row">
+        <span class="pf-contact-lbl">E-Mail</span>
+        <span class="pf-contact-val${me.email ? '' : ' empty'}">${me.email || 'Nicht angegeben'}</span>
+      </div>
+      <div class="pf-contact-row">
+        <span class="pf-contact-lbl">Telegram</span>
+        <span class="pf-contact-val${me.telegram ? '' : ' empty'}">${me.telegram || 'Nicht angegeben'}</span>
+      </div>`;
+
+    // Bookings
+    const bookings  = bd.bookings || [];
+    const today     = new Date().toISOString().slice(0,10);
+    const upcoming  = bookings.filter(b => b.date >= today && !['cancelled','deleted'].includes(b.status));
+    const past      = bookings.filter(b => b.date < today || ['cancelled','deleted','completed'].includes(b.status));
+
+    // Stats
+    const completed = bookings.filter(b => b.status === 'completed');
+    const spent     = completed.reduce((s, b) => s + (b.price || 0), 0);
+    document.getElementById('statTotal').textContent    = bookings.length;
+    document.getElementById('statSpent').textContent    = spent + '€';
+    document.getElementById('statUpcoming').textContent = upcoming.length;
+
+    // Upcoming
+    document.getElementById('upcomingCount').textContent = upcoming.length ? `(${upcoming.length})` : '';
+    document.getElementById('upcomingList').innerHTML = upcoming.length
+      ? upcoming.map(b => bookingCard(b, true)).join('')
+      : `<div class="pf-empty"><div class="pf-empty-icon">✂</div>Keine bevorstehenden Termine.<br>Jetzt buchen!</div>`;
+
+    // Past
+    document.getElementById('pastCount').textContent = past.length ? `(${past.length})` : '';
+    document.getElementById('pastList').innerHTML = past.length
+      ? past.slice(0,10).map(b => bookingCard(b, false)).join('')
+      : `<div class="pf-empty"><div class="pf-empty-icon">📅</div>Noch keine vergangenen Termine.</div>`;
+
+    document.getElementById('pfLoading').style.display  = 'none';
+    document.getElementById('pfContent').style.display  = 'block';
+
+  } catch(e) {
+    document.getElementById('pfLoading').textContent = 'Fehler beim Laden. Bitte Seite neu laden.';
+  }
+}
+
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+  await fetch('/api/client/logout', { method: 'POST' });
+  location.href = '/';
+});
+
+loadProfile();
+</script>
+</body>
+</html>

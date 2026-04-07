@@ -51,6 +51,8 @@
       <li><a href="/feed" class="line-draw" style="color:#d4af37" data-i18n="nav_feed">Feed</a></li>
     </ul>
     <div class="nav-right">
+      <!-- Client auth badge (filled by JS) -->
+      <div id="navClientArea"></div>
       <a href="https://www.instagram.com/munchen_barber?igsh=MW5ya2J2bzR3anE0bQ==" target="_blank" rel="noopener" class="nav-soc" title="Instagram">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
       </a>
@@ -198,7 +200,41 @@
 <section class="sec sec-dark" id="termin">
   <div class="con">
     <div class="eyebrow" style="margin-bottom:1.5rem" data-i18n="bk_eyebrow">TERMIN BUCHEN</div>
-    <div class="bk-wrap bk-wrap-solo">
+
+    <!-- Auth gate: shown when not logged in -->
+    <div class="bk-auth-gate" id="bkAuthGate" style="display:none">
+      <div class="bk-gate-icon">✂</div>
+      <h3 class="bk-gate-title">Anmeldung erforderlich</h3>
+      <p class="bk-gate-desc">Melde dich an oder erstelle ein kostenloses Konto, um online zu buchen und deine Termine zu verwalten.</p>
+      <div class="bk-gate-btns">
+        <a href="/login?next=/#termin" class="bk-gate-btn-primary">Anmelden</a>
+        <a href="/register" class="bk-gate-btn-outline">Konto erstellen →</a>
+      </div>
+      <div class="bk-gate-perks">
+        <span>✓ Online buchen</span>
+        <span>✓ Termine verwalten</span>
+        <span>✓ Erinnerungen</span>
+      </div>
+    </div>
+
+    <!-- Logged-in user bar: shown when authenticated -->
+    <div id="bkUserBar" style="display:none">
+      <div class="bk-user-bar">
+        <div class="bk-user-info">
+          <span class="bk-user-icon">👤</span>
+          <div>
+            <div class="bk-user-name" id="bkUserName"></div>
+            <div class="bk-user-phone" id="bkUserPhone"></div>
+          </div>
+        </div>
+        <div class="bk-user-actions">
+          <a href="/profile" class="bk-profile-link">Meine Termine →</a>
+          <button class="bk-logout-link" id="bkLogout">Abmelden</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="bk-wrap bk-wrap-solo" id="bkFormWrap" style="display:none">
       <form class="bk-form" id="bookForm" novalidate>
         <div class="bf-row">
           <div class="bf-g"><label data-i18n="f_name">Name *</label><input type="text" id="bName" placeholder="Max Mustermann" required></div>
@@ -237,7 +273,8 @@
         </div>
         <button type="submit" class="btn-primary btn-full" id="submitBtn" data-i18n="f_submit">Termin buchen ✂</button>
       </form>
-    </div>
+    </div><!-- /bk-wrap -->
+    </div><!-- /bkFormWrap -->
   </div>
 </section>
 

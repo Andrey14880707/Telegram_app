@@ -339,6 +339,8 @@ if (bookForm) {
         bookForm.reset();
         const grid = document.getElementById('timeGrid');
         if (grid) grid.innerHTML = '<div class="tg-hint">Erst Datum wählen</div>';
+      } else if (data.error === 'auth_required') {
+        location.href = '/login?next=/#termin';
       } else {
         showErr(data.error || 'Unbekannter Fehler');
       }
@@ -575,3 +577,74 @@ if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
 }
 
 // bg-pattern is position:fixed — no parallax needed
+
+// ── Client Auth ───────────────────────────────────────
+(async function initClientAuth() {
+  const gate     = document.getElementById('bkAuthGate');
+  const userBar  = document.getElementById('bkUserBar');
+  const formWrap = document.getElementById('bkFormWrap');
+  const navArea  = document.getElementById('navClientArea');
+  if (!gate) return; // not on main page
+
+  try {
+    const res  = await fetch('/api/client/me');
+    const data = await res.json();
+
+    if (data.authenticated) {
+      // Show the booking form
+      gate.style.display     = 'none';
+      userBar.style.display  = 'block';
+      formWrap.style.display = 'block';
+
+      // Fill user bar
+      const uName  = document.getElementById('bkUserName');
+      const uPhone = document.getElementById('bkUserPhone');
+      if (uName)  uName.textContent  = data.name;
+      if (uPhone) uPhone.textContent = data.phone;
+
+      // Pre-fill booking form fields
+      const fName     = document.getElementById('bName');
+      const fPhone    = document.getElementById('bPhone');
+      const fEmail    = document.getElementById('bEmail');
+      const fTelegram = document.getElementById('bTelegram');
+      if (fName     && !fName.value)     fName.value     = data.name;
+      if (fPhone    && !fPhone.value)    fPhone.value    = data.phone;
+      if (fEmail    && !fEmail.value)    fEmail.value    = data.email || '';
+      if (fTelegram && !fTelegram.value) fTelegram.value = data.telegram || '';
+
+      // Nav badge
+      if (navArea) {
+        navArea.innerHTML = `
+          <a href="/profile" class="nav-client-badge">
+            <span class="nav-client-icon">✂</span>
+            <span>${data.name.split(' ')[0]}</span>
+          </a>`;
+      }
+
+      // Logout button in user bar
+      const logoutBtn = document.getElementById('bkLogout');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', async () => {
+          await fetch('/api/client/logout', { method: 'POST' });
+          location.reload();
+        });
+      }
+
+    } else {
+      // Show auth gate, hide form
+      gate.style.display     = 'block';
+      userBar.style.display  = 'none';
+      formWrap.style.display = 'none';
+
+      // Nav: show login link
+      if (navArea) {
+        navArea.innerHTML = `<a href="/login?next=/#termin" class="nav-login-link">Anmelden</a>`;
+      }
+    }
+  } catch (e) {
+    // On error, show gate as fallback
+    if (gate)     gate.style.display     = 'block';
+    if (userBar)  userBar.style.display  = 'none';
+    if (formWrap) formWrap.style.display = 'none';
+  }
+})();

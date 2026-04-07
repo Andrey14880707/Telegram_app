@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anmelden — München Barber</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;1,400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+  <style>
+    .auth-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      position: relative;
+      z-index: 1;
+    }
+    .auth-card {
+      width: 100%;
+      max-width: 420px;
+      background: rgba(14, 14, 20, 0.75);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(212, 175, 55, 0.18);
+      border-radius: 20px;
+      padding: 2.8rem 2.4rem 2.4rem;
+      position: relative;
+      box-shadow: 0 0 60px rgba(212, 175, 55, 0.06), 0 30px 80px rgba(0,0,0,0.5);
+    }
+    .auth-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(212,175,55,.04) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    /* Corner accents */
+    .auth-card::after {
+      content: '';
+      position: absolute;
+      top: -1px; left: -1px;
+      width: 40px; height: 40px;
+      border-top: 2px solid var(--gold);
+      border-left: 2px solid var(--gold);
+      border-radius: 20px 0 0 0;
+      pointer-events: none;
+    }
+    .auth-corner-br {
+      position: absolute;
+      bottom: -1px; right: -1px;
+      width: 40px; height: 40px;
+      border-bottom: 2px solid var(--gold);
+      border-right: 2px solid var(--gold);
+      border-radius: 0 0 20px 0;
+    }
+    .auth-logo {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .auth-logomark {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 64px;
+      height: 64px;
+      border: 1.5px solid rgba(212,175,55,.5);
+      border-radius: 50%;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 2px;
+      color: var(--gold);
+      background: rgba(212,175,55,.06);
+      box-shadow: 0 0 20px rgba(212,175,55,.12), inset 0 0 20px rgba(212,175,55,.04);
+      margin-bottom: .9rem;
+      position: relative;
+    }
+    .auth-logomark::before {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      border: 1px solid rgba(212,175,55,.12);
+    }
+    .auth-site-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: .72rem;
+      letter-spacing: 3px;
+      color: rgba(255,255,255,.35);
+      text-transform: uppercase;
+    }
+    .auth-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: var(--white);
+      text-align: center;
+      margin-bottom: .4rem;
+      line-height: 1.2;
+    }
+    .auth-sub {
+      font-size: .8rem;
+      color: rgba(255,255,255,.4);
+      text-align: center;
+      margin-bottom: 2rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .auth-sep {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(212,175,55,.2), transparent);
+      margin-bottom: 1.8rem;
+    }
+    .auth-field {
+      margin-bottom: 1.1rem;
+    }
+    .auth-field label {
+      display: block;
+      font-size: .72rem;
+      font-weight: 500;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.5);
+      margin-bottom: .45rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .auth-field input {
+      width: 100%;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 10px;
+      padding: .8rem 1rem;
+      color: var(--white);
+      font-family: 'Poppins', sans-serif;
+      font-size: .9rem;
+      transition: border-color .3s, box-shadow .3s, background .3s;
+      outline: none;
+    }
+    .auth-field input:focus {
+      border-color: rgba(212,175,55,.5);
+      background: rgba(212,175,55,.03);
+      box-shadow: 0 0 0 3px rgba(212,175,55,.08);
+    }
+    .auth-field input::placeholder { color: rgba(255,255,255,.22); }
+    .auth-btn {
+      width: 100%;
+      margin-top: 1.4rem;
+      padding: .9rem 1.5rem;
+      background: var(--gold);
+      color: #05050a;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Poppins', sans-serif;
+      font-size: .88rem;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all .3s cubic-bezier(.4,0,.2,1);
+      position: relative;
+      overflow: hidden;
+    }
+    .auth-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,.15) 0%, transparent 60%);
+    }
+    .auth-btn:hover {
+      background: #e0c040;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(212,175,55,.35);
+    }
+    .auth-btn:active { transform: translateY(0); }
+    .auth-btn:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .auth-err {
+      display: none;
+      background: rgba(220,38,38,.08);
+      border: 1px solid rgba(220,38,38,.3);
+      border-left: 3px solid #dc2626;
+      border-radius: 8px;
+      padding: .7rem 1rem;
+      font-size: .8rem;
+      color: #fca5a5;
+      margin-top: 1rem;
+    }
+    .auth-err.show { display: block; }
+    .auth-links {
+      text-align: center;
+      margin-top: 1.6rem;
+      font-size: .8rem;
+      color: rgba(255,255,255,.35);
+    }
+    .auth-links a {
+      color: var(--gold);
+      text-decoration: none;
+      transition: opacity .2s;
+    }
+    .auth-links a:hover { opacity: .75; }
+    .auth-back {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      font-size: .72rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.3);
+      text-decoration: none;
+      font-family: 'JetBrains Mono', monospace;
+      transition: color .2s;
+      margin-bottom: 2rem;
+    }
+    .auth-back:hover { color: var(--gold); }
+    .auth-back-wrap { text-align: center; }
+  </style>
+</head>
+<body>
+<div class="bg-pattern"></div>
+<div class="bg-frosted-glass"></div>
+<div class="neon-ambient"></div>
+
+<div class="auth-page">
+  <div style="width:100%;max-width:420px">
+
+    <div class="auth-back-wrap">
+      <a href="/" class="auth-back">← München Barber</a>
+    </div>
+
+    <div class="auth-card">
+      <div class="auth-corner-br"></div>
+
+      <div class="auth-logo">
+        <div class="auth-logomark">MB</div>
+        <div class="auth-site-name">München Barber</div>
+      </div>
+
+      <h1 class="auth-title">Willkommen zurück</h1>
+      <p class="auth-sub">> Melde dich an, um zu buchen</p>
+      <div class="auth-sep"></div>
+
+      <form id="loginForm" novalidate>
+        <div class="auth-field">
+          <label>Telefonnummer</label>
+          <input type="tel" id="lPhone" placeholder="+49 123 456 7890" autocomplete="tel" required>
+        </div>
+        <div class="auth-field">
+          <label>Passwort</label>
+          <input type="password" id="lPass" placeholder="••••••••" autocomplete="current-password" required>
+        </div>
+        <button type="submit" class="auth-btn" id="loginBtn">Anmelden ✂</button>
+        <div class="auth-err" id="loginErr"></div>
+      </form>
+
+      <div class="auth-links">
+        Noch kein Konto? <a href="/register">Jetzt registrieren →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const next = new URLSearchParams(location.search).get('next') || '/';
+
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('loginBtn');
+    const err = document.getElementById('loginErr');
+    err.classList.remove('show');
+    btn.disabled = true;
+    btn.textContent = 'Wird geprüft...';
+
+    try {
+      const res  = await fetch('/api/client/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          phone:    document.getElementById('lPhone').value.trim(),
+          password: document.getElementById('lPass').value,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        location.href = next.startsWith('/') ? next : '/';
+      } else {
+        err.textContent = '⚠ ' + data.error;
+        err.classList.add('show');
+        btn.disabled = false;
+        btn.textContent = 'Anmelden ✂';
+      }
+    } catch {
+      err.textContent = '⚠ Verbindungsfehler — bitte erneut versuchen';
+      err.classList.add('show');
+      btn.disabled = false;
+      btn.textContent = 'Anmelden ✂';
+    }
+  });
+</script>
+</body>
+</html>
