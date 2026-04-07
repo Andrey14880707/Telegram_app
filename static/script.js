@@ -403,6 +403,7 @@ const LANGS = {
     f_comment:'Anmerkungen', f_submit:'Termin buchen ✂',
     modal_h3:'Termin bestätigt!', modal_msg:'Bis bald! Bestätigung kommt in Kürze.', modal_btn:'Perfekt!',
     float_btn:'✂ Termin buchen', wc_book:'Buchen ↗', nav_feed:'Feed', feed_all:'Alle Beiträge →',
+    feed_title:'Feed', feed_sub:'Neuigkeiten &amp; Arbeiten',
   },
   ru: {
     nav_ueber:'Обо мне', nav_services:'Услуги', nav_preise:'Цены', nav_termin:'Запись',
@@ -436,6 +437,7 @@ const LANGS = {
     f_comment:'Примечания', f_submit:'Записаться ✂',
     modal_h3:'Запись подтверждена!', modal_msg:'До скорого! Подтверждение придёт в ближайшее время.', modal_btn:'Отлично!',
     float_btn:'✂ Записаться', wc_book:'Записаться ↗', nav_feed:'Лента', feed_all:'Вся лента →',
+    feed_title:'Лента', feed_sub:'Новости &amp; Работы барбершопа',
   },
   uk: {
     nav_ueber:'Про мене', nav_services:'Послуги', nav_preise:'Ціни', nav_termin:'Запис',
@@ -469,6 +471,7 @@ const LANGS = {
     f_comment:'Примітки', f_submit:'Записатися ✂',
     modal_h3:'Запис підтверджено!', modal_msg:'До зустрічі! Підтвердження надійде незабаром.', modal_btn:'Чудово!',
     float_btn:'✂ Записатися', wc_book:'Записатися ↗', nav_feed:'Стрічка', feed_all:'Уся стрічка →',
+    feed_title:'Стрічка', feed_sub:'Новини &amp; Роботи барбершопу',
   }
 };
 
