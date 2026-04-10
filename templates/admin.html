@@ -840,6 +840,73 @@
     @media (max-width: 900px) { .an-top { grid-template-columns: 1fr 1fr; } .an-grid { grid-template-columns: 1fr; } .an-full { grid-column: 1; } }
     @media (max-width: 480px) { .an-top { grid-template-columns: 1fr 1fr; } }
 
+    /* ── Upload dropzone (Portfolio) ── */
+    .ph-upload { flex-direction: column; gap: 0; padding: 0 !important; }
+    .upload-dropzone {
+      position: relative; cursor: pointer;
+      border: 1.5px dashed rgba(212,175,55,.3);
+      border-bottom: none;
+      background: rgba(212,175,55,.025);
+      padding: 1.8rem 2rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color .25s, background .25s;
+    }
+    .upload-dropzone:hover, .upload-dropzone.drag-over {
+      border-color: rgba(212,175,55,.65);
+      background: rgba(212,175,55,.06);
+    }
+    .upload-dropzone input[type=file] {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+    }
+    .udz-body { display: flex; align-items: center; gap: 1rem; pointer-events: none; }
+    .udz-label {
+      font-size: .88rem; font-weight: 500; color: var(--text);
+      transition: color .2s;
+    }
+    .udz-hint { font-size: .72rem; color: var(--gray2); }
+    .udz-body { flex-direction: row; gap: 1.2rem; }
+    .ph-upload-meta {
+      display: flex; gap: .75rem; flex-wrap: wrap; align-items: center;
+      padding: 1rem 1.5rem;
+      background: rgba(6,6,16,.6);
+      border: 1.5px dashed rgba(212,175,55,.15);
+      border-top: 1px solid rgba(212,175,55,.15);
+    }
+    .upload-select, .upload-text-input {
+      background: var(--surface); border: 1px solid rgba(212,175,55,.2);
+      color: var(--text); padding: .55rem .9rem;
+      font-family: inherit; font-size: .82rem; outline: none;
+      border-radius: 8px; transition: border-color .2s;
+    }
+    .upload-select:focus, .upload-text-input:focus { border-color: var(--gold); }
+    .upload-text-input { width: 200px; }
+    .upload-submit-btn { min-width: 130px; }
+
+    /* ── Feed attach row ── */
+    .feed-attach-row {
+      display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; width: 100%;
+    }
+    .feed-attach-btn {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .55rem 1.1rem;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(212,175,55,.3);
+      border-radius: 8px;
+      color: var(--gold); font-size: .8rem; font-weight: 500;
+      cursor: pointer; letter-spacing: .5px;
+      transition: all .22s;
+    }
+    .feed-attach-btn:hover {
+      background: rgba(212,175,55,.08);
+      border-color: rgba(212,175,55,.6);
+      box-shadow: 0 0 14px rgba(212,175,55,.15);
+    }
+    .feed-file-names {
+      font-size: .75rem; color: var(--gray2);
+      max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .feed-file-names.has-files { color: var(--gold); }
+
     /* ── Email compose modal ── */
     .email-to-line { font-size: .82rem; color: var(--gray); padding: .6rem 0; border-bottom: 1px solid var(--border); margin-bottom: .5rem; }
 
@@ -1157,20 +1224,27 @@
   <!-- ── FOTOS TAB ── -->
   <div id="tab-fotos" class="tab-panel">
     <div class="ph-upload">
-      <div>
-        <label class="btn btn-gold" for="photoFile">+ Выбрать фото</label>
+      <!-- Drop zone -->
+      <div class="upload-dropzone" id="photoDropZone">
         <input type="file" id="photoFile" accept="image/*" onchange="previewPhoto(this)">
+        <div class="udz-body">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--gold);opacity:.7"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <span class="udz-label" id="photoPreviewName">Нажмите или перетащите фото</span>
+          <span class="udz-hint">JPG · PNG · WebP</span>
+        </div>
       </div>
-      <select id="photoCat" style="background:var(--card);border:1px solid var(--border);color:var(--text);padding:.55rem .9rem;font-family:inherit;font-size:.82rem;outline:none;cursor:pointer">
-        <option value="Fade">Fade / Skin Fade</option>
-        <option value="Classic">Classic Cut</option>
-        <option value="Bart">Борода & Бритьё</option>
-        <option value="FullLook">Full Look</option>
-        <option value="Sonstiges">Разное</option>
-      </select>
-      <input type="text" id="photoCap" placeholder="Подпись (необязательно)" style="background:var(--card);border:1px solid var(--border);color:var(--text);padding:.55rem .9rem;font-family:inherit;font-size:.82rem;outline:none;width:180px">
-      <button class="btn btn-ghost" id="photoUploadBtn" onclick="uploadPhoto()" style="display:none">Загрузить ↑</button>
-      <span id="photoPreviewName" style="font-size:.78rem;color:var(--gray);align-self:center"></span>
+      <!-- Meta fields -->
+      <div class="ph-upload-meta">
+        <select id="photoCat" class="upload-select">
+          <option value="Fade">Fade / Skin Fade</option>
+          <option value="Classic">Classic Cut</option>
+          <option value="Bart">Борода & Бритьё</option>
+          <option value="FullLook">Full Look</option>
+          <option value="Sonstiges">Разное</option>
+        </select>
+        <input type="text" id="photoCap" class="upload-text-input" placeholder="Подпись (необязательно)">
+        <button class="btn btn-gold upload-submit-btn" id="photoUploadBtn" onclick="uploadPhoto()" style="display:none">↑ Загрузить</button>
+      </div>
     </div>
     <!-- Category filter tabs -->
     <div class="ph-cats" id="phCats">
@@ -1220,14 +1294,17 @@
     <div class="bl-wrap">
       <!-- Create post form -->
       <div class="bl-add" style="flex-direction:column;align-items:flex-start;gap:1rem">
-        <div style="font-size:.8rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:.25rem">Новая публикация</div>
-        <textarea id="feedPostText" rows="4" placeholder="Текст поста..." style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.75rem 1rem;color:var(--text);font-family:inherit;font-size:.85rem;resize:vertical"></textarea>
-        <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
-          <label style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--gray);cursor:pointer">
-            <span>Фото / Видео</span>
-            <input type="file" id="feedPostFile" accept="image/*,video/*" multiple style="font-size:.8rem">
+        <div style="font-size:.7rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold)">Новая публикация</div>
+        <textarea id="feedPostText" rows="4" placeholder="Текст поста..." style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.75rem 1rem;color:var(--text);font-family:inherit;font-size:.85rem;resize:vertical;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor=''"></textarea>
+        <!-- File attach row -->
+        <div class="feed-attach-row">
+          <input type="file" id="feedPostFile" accept="image/*,video/*" multiple style="display:none" onchange="updateFeedFileNames(this)">
+          <label class="feed-attach-btn" for="feedPostFile">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+            Прикрепить фото / видео
           </label>
-          <button class="btn btn-gold" onclick="submitFeedPost()">Опубликовать</button>
+          <span class="feed-file-names" id="feedFileNames"></span>
+          <button class="btn btn-gold" style="margin-left:auto" onclick="submitFeedPost()">Опубликовать →</button>
         </div>
       </div>
       <!-- Posts list -->
@@ -2123,13 +2200,19 @@ let _activeCat = 'all';
 function previewPhoto(input) {
   _photoFile = input.files[0] || null;
   const btn  = document.getElementById('photoUploadBtn');
-  const name = document.getElementById('photoPreviewName');
+  const lbl  = document.getElementById('photoPreviewName');
   if (_photoFile) {
     btn.style.display = 'inline-flex';
-    name.textContent  = _photoFile.name;
+    lbl.textContent   = '✓ ' + _photoFile.name;
+    lbl.style.color   = 'var(--gold)';
+    document.getElementById('photoDropZone').style.borderColor = 'rgba(212,175,55,.65)';
+    document.getElementById('photoDropZone').style.background  = 'rgba(212,175,55,.06)';
   } else {
     btn.style.display = 'none';
-    name.textContent  = '';
+    lbl.textContent   = 'Нажмите или перетащите фото';
+    lbl.style.color   = '';
+    document.getElementById('photoDropZone').style.borderColor = '';
+    document.getElementById('photoDropZone').style.background  = '';
   }
 }
 async function uploadPhoto() {
@@ -2279,6 +2362,33 @@ async function removeBlocked(date) {
   if (d.success) { toast('✓ Дата освобождена', 'ok'); loadBlocked(); }
   else toast('Ошибка', 'err');
 }
+
+// ── Upload UX ────────────────────────────────────────────
+function updateFeedFileNames(input) {
+  const el = document.getElementById('feedFileNames');
+  if (!input.files.length) { el.textContent = ''; el.classList.remove('has-files'); return; }
+  const names = Array.from(input.files).map(f => f.name).join(', ');
+  el.textContent = `📎 ${input.files.length} файл${input.files.length > 1 ? 'а' : ''}: ${names}`;
+  el.classList.add('has-files');
+}
+
+// Drag & drop on photo dropzone
+(function() {
+  const zone = document.getElementById('photoDropZone');
+  if (!zone) return;
+  ['dragenter','dragover'].forEach(ev => zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.add('drag-over'); }));
+  ['dragleave','drop'].forEach(ev => zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.remove('drag-over'); }));
+  zone.addEventListener('drop', e => {
+    const files = e.dataTransfer?.files;
+    if (files && files[0]) {
+      const input = document.getElementById('photoFile');
+      const dt = new DataTransfer();
+      dt.items.add(files[0]);
+      input.files = dt.files;
+      previewPhoto(input);
+    }
+  });
+})();
 
 // ── Remind ──────────────────────────────────────────────
 async function remindApt(id) {
