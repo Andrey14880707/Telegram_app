@@ -278,6 +278,7 @@
 
     /* Filters */
     .filters { padding: .9rem 1.5rem; display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; border-bottom: 1px solid var(--border); background: var(--card); backdrop-filter: blur(15px); }
+    .filters input[type=text] { min-width: 160px; }
     .filters input, .filters select { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: .45rem .9rem; font-family: inherit; font-size: .82rem; outline: none; border-radius: 6px; transition: border-color var(--tr); }
     .filters input:focus, .filters select:focus { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(212,175,55,.12); }
     .f-right { margin-left: auto; display: flex; gap: .5rem; align-items: center; }
@@ -417,6 +418,18 @@
       .bl-wrap { padding: 1rem; }
       .ph-upload { padding: 1rem; }
       .stack-right { align-items: flex-end; text-align: right; }
+
+      /* Portfolio upload — stack and full-width */
+      .upload-dropzone { width: 100% !important; box-sizing: border-box; }
+      .ph-upload-meta { flex-direction: column !important; align-items: stretch !important; gap: .6rem; padding: .9rem 1rem; }
+      .upload-select, .upload-text-input { width: 100% !important; box-sizing: border-box; }
+      .upload-submit-btn { width: 100% !important; justify-content: center; }
+      .feed-attach-btn { flex: 1; justify-content: center; font-size: .75rem; }
+
+      /* Filters — stack to column on mobile */
+      .filters { flex-direction: column !important; align-items: stretch !important; padding: .75rem; }
+      .filters input, .filters select { width: 100% !important; box-sizing: border-box; }
+      .f-right { margin-left: 0 !important; width: 100% !important; justify-content: flex-end; }
     }
     @media (max-width: 480px) {
       .hr-row { grid-template-columns: 60px 1fr 58px 58px; gap: .4rem; }
@@ -601,6 +614,7 @@
       padding: .9rem 1.5rem; display: flex; flex-wrap: wrap; gap: .75rem;
       align-items: center; border-bottom: 1px solid var(--border); background: var(--card); backdrop-filter: blur(15px);
     }
+    .filters input[type=text] { min-width: 160px; }
     .filters input, .filters select {
       background: var(--surface); border: 1px solid var(--border); color: var(--text);
       padding: .5rem .9rem; font-family: inherit; font-size: .82rem; outline: none;
@@ -816,6 +830,21 @@
       .hr-row { grid-template-columns: 70px 1fr 65px 65px; gap: .5rem; }
       .bl-wrap { padding: 1rem; }
       .ph-upload { padding: 1rem; }
+
+      /* Portfolio upload — stack and full-width on mobile */
+      .upload-dropzone { width: 100% !important; box-sizing: border-box; }
+      .ph-upload-meta { flex-direction: column !important; align-items: stretch !important; gap: .6rem; padding: .9rem 1rem; }
+      .upload-select, .upload-text-input { width: 100% !important; box-sizing: border-box; }
+      .upload-submit-btn { width: 100% !important; justify-content: center; }
+
+      /* Feed attach row */
+      .feed-attach-row { gap: .5rem; }
+      .feed-attach-btn { flex: 1; justify-content: center; font-size: .75rem; padding: .55rem .7rem; }
+
+      /* Filters — full-width inputs on mobile */
+      .filters { flex-direction: column !important; align-items: stretch !important; padding: .75rem; }
+      .filters input, .filters select { width: 100% !important; box-sizing: border-box; }
+      .f-right { margin-left: 0 !important; width: 100% !important; justify-content: flex-end; }
     }
     @media (max-width: 480px) {
       .stats { grid-template-columns: 1fr 1fr; }
@@ -1110,7 +1139,7 @@
   <!-- ── TERMINE TAB ── -->
   <div id="tab-termine" class="tab-panel">
     <div class="filters">
-      <input type="text" id="fSearch" placeholder="🔍 Имя или телефон" oninput="debounce(loadTermine)" style="width:180px">
+      <input type="text" id="fSearch" placeholder="🔍 Имя или телефон" oninput="debounce(loadTermine)">
       <input type="date" id="fDate" onchange="loadTermine()">
       <select id="fStatus" onchange="loadTermine()">
         <option value="">Все статусы</option>
@@ -1144,7 +1173,7 @@
   <!-- ── KUNDEN TAB ── -->
   <div id="tab-kunden" class="tab-panel">
     <div class="filters">
-      <input type="text" id="cSearch" placeholder="🔍 Имя или телефон" oninput="debounce(()=>renderKunden(allClients))" style="width:220px">
+      <input type="text" id="cSearch" placeholder="🔍 Имя или телефон" oninput="debounce(()=>renderKunden(allClients))">
       <span class="f-ts" id="cTs">—</span>
       <div class="f-right">
         <span class="rec-cnt" id="cCnt" style="margin:0"></span>
