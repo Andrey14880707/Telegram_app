@@ -38,20 +38,7 @@ body {
   min-height: 100vh;
 }
 
-/* ── Scanlines ── */
-body::before {
-  content: '';
-  position: fixed; inset: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0,0,0,.05) 2px,
-    rgba(0,0,0,.05) 4px
-  );
-  pointer-events: none;
-  z-index: 9998;
-}
+
 
 /* ── Ambient neon blobs ── */
 .neon-ambient {
