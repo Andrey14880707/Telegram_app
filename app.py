@@ -41,8 +41,15 @@ def admin():
 from db import init_db
 from scheduler import start_scheduler
 
-init_db()
-start_scheduler()
+try:
+    init_db()
+except Exception as e:
+    print(f'[Boot] init_db failed: {e}')
+
+try:
+    start_scheduler()
+except Exception as e:
+    print(f'[Boot] start_scheduler failed: {e}')
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=8088)
