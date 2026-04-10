@@ -678,8 +678,8 @@ em { font-style: italic; color: var(--gold); }
 
 .work-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
   padding: 10px 0;
 }
 
@@ -1302,7 +1302,7 @@ em { font-style: italic; color: var(--gold); }
   .con { padding: 0 1.5rem; }
   .sec { padding: 5rem 0; }
   .hero { padding: 0 1.5rem; }
-  .work-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .work-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
   .wc { aspect-ratio: 2/3; height: auto; }
   .soc-cards { grid-template-columns: 1fr 1fr; }
 }
