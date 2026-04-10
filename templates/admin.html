@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     /* ── Pico overrides — gold barber theme ── */
     :root {
@@ -824,6 +825,23 @@
       .ph-grid { grid-template-columns: repeat(2, 1fr); }
       .kunden-grid { grid-template-columns: 1fr; }
     }
+
+    /* ── Analytics ── */
+    .an-wrap { padding: 1.5rem; }
+    .an-top { display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem; margin-bottom: 1.5rem; }
+    .an-kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem 1.5rem; backdrop-filter: blur(20px); }
+    .an-kpi-lbl { font-size: .6rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gray2); margin-bottom: .35rem; }
+    .an-kpi-val { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 1px; line-height: 1; }
+    .an-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    .an-full { grid-column: 1 / -1; }
+    .an-card { background: var(--surface); border: 1px solid var(--border); padding: 1.5rem; border-radius: 14px; backdrop-filter: blur(20px); }
+    .an-card-title { font-size: .65rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gray2); margin-bottom: 1.2rem; }
+    .an-canvas-wrap { position: relative; }
+    @media (max-width: 900px) { .an-top { grid-template-columns: 1fr 1fr; } .an-grid { grid-template-columns: 1fr; } .an-full { grid-column: 1; } }
+    @media (max-width: 480px) { .an-top { grid-template-columns: 1fr 1fr; } }
+
+    /* ── Email compose modal ── */
+    .email-to-line { font-size: .82rem; color: var(--gray); padding: .6rem 0; border-bottom: 1px solid var(--border); margin-bottom: .5rem; }
   </style>
 </head>
 <body>
@@ -894,6 +912,7 @@
     <button class="tab-btn" onclick="switchTab('zeiten', this)">Часы работы</button>
     <button class="tab-btn" onclick="switchTab('sperren', this)">Блокировка</button>
     <button class="tab-btn" onclick="switchTab('lenta', this)">Лента</button>
+    <button class="tab-btn" onclick="switchTab('analytics', this)">Аналитика</button>
   </div>
 
   <!-- ── ZEITPLAN TAB ── -->
@@ -1040,6 +1059,48 @@
     </div>
   </div>
 
+  <!-- ── ANALYTICS TAB ── -->
+  <div id="tab-analytics" class="tab-panel">
+    <div class="an-wrap">
+      <div class="an-top">
+        <div class="an-kpi">
+          <div class="an-kpi-lbl">Выручка за месяц</div>
+          <div class="an-kpi-val" id="anRevMonth" style="color:var(--gold)">—</div>
+        </div>
+        <div class="an-kpi">
+          <div class="an-kpi-lbl">Записей за месяц</div>
+          <div class="an-kpi-val" id="anBkMonth" style="color:var(--blue)">—</div>
+        </div>
+        <div class="an-kpi">
+          <div class="an-kpi-lbl">Средний чек</div>
+          <div class="an-kpi-val" id="anAvgCheck" style="color:var(--green)">—</div>
+        </div>
+        <div class="an-kpi">
+          <div class="an-kpi-lbl">Самая популярная услуга</div>
+          <div class="an-kpi-val" id="anTopSvc" style="color:var(--gold);font-size:1.1rem;padding-top:.5rem">—</div>
+        </div>
+      </div>
+      <div class="an-grid">
+        <div class="an-card an-full">
+          <div class="an-card-title">Выручка по месяцам (€)</div>
+          <div class="an-canvas-wrap" style="height:230px"><canvas id="chartMonthly"></canvas></div>
+        </div>
+        <div class="an-card an-full">
+          <div class="an-card-title">Записи за последние 30 дней</div>
+          <div class="an-canvas-wrap" style="height:190px"><canvas id="chartDaily"></canvas></div>
+        </div>
+        <div class="an-card">
+          <div class="an-card-title">Распределение услуг</div>
+          <div class="an-canvas-wrap" style="height:240px"><canvas id="chartServices"></canvas></div>
+        </div>
+        <div class="an-card">
+          <div class="an-card-title">Загруженность по часам</div>
+          <div class="an-canvas-wrap" style="height:240px"><canvas id="chartHours"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div><!-- /dash -->
 
 <!-- Client detail panel -->
@@ -1152,6 +1213,26 @@
     </div>
   </div>
 
+<!-- ── Email Compose Modal ── -->
+<div id="emailModal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-head">
+      <span>Написать клиенту</span>
+      <button class="m-close" onclick="closeModal('emailModal')">✕</button>
+    </div>
+    <div class="m-form">
+      <div class="email-to-line" id="emailModalTo"></div>
+      <div class="m-group">
+        <label class="m-label">Сообщение</label>
+        <textarea id="emailModalMsg" class="m-input" rows="6"
+          placeholder="Введите текст сообщения..."
+          style="resize:vertical;min-height:120px"></textarea>
+      </div>
+      <button class="btn btn-gold btn-full" onclick="doSendEmail()">✉ Отправить</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script>
@@ -1259,11 +1340,12 @@ function switchTab(name, btn) {
   document.getElementById('tab-' + name).classList.add('active');
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  if (name === 'kunden')  loadKunden();
-  if (name === 'fotos')   loadPhotos();
-  if (name === 'zeiten')  loadHours();
-  if (name === 'sperren') loadBlocked();
-  if (name === 'lenta')   loadFeedPosts();
+  if (name === 'kunden')    loadKunden();
+  if (name === 'fotos')     loadPhotos();
+  if (name === 'zeiten')    loadHours();
+  if (name === 'sperren')   loadBlocked();
+  if (name === 'lenta')     loadFeedPosts();
+  if (name === 'analytics') loadAnalytics();
 }
 
 // ── Feed / Лента ──────────────────────────────────────
@@ -1529,6 +1611,7 @@ function renderTermine(list) {
     if (a.status==='confirmed') {
       acts.push(`<button class="btn btn-sm" style="background:rgba(212,175,55,.15);color:var(--gold);border:1px solid rgba(212,175,55,.3)" onclick="setStatus(${a.id},'completed')" title="Клиент был, заказ выполнен">✓ Выполнено</button>`);
       acts.push(`<button class="btn btn-sm btn-ghost" title="Перенести" onclick="openReschedule(${a.id},'${a.date}','${a.time}')">🕒</button>`);
+      acts.push(`<button class="btn btn-sm btn-ghost" title="Отправить напоминание" onclick="remindApt(${a.id})">🔔</button>`);
       acts.push(`<button class="btn btn-sm btn-red" onclick="setStatus(${a.id},'cancelled')">✕</button>`);
     }
     if (a.status==='cancelled' || a.status==='completed') {
@@ -1724,15 +1807,24 @@ function cdBookNew() {
   openModal('bookModal');
 }
 
-async function cdSendEmail(email, name) {
-  const msg = prompt(`Email для ${name} (${email}):\n\nВведите сообщение:`);
-  if (!msg) return;
+let _emailTarget = { email: '', name: '' };
+function cdSendEmail(email, name) {
+  _emailTarget = { email, name };
+  document.getElementById('emailModalTo').innerHTML =
+    `<b style="color:var(--gold)">${esc(name)}</b> &nbsp;·&nbsp; ${esc(email)}`;
+  document.getElementById('emailModalMsg').value = '';
+  openModal('emailModal');
+}
+async function doSendEmail() {
+  const msg = document.getElementById('emailModalMsg').value.trim();
+  if (!msg) { toast('Введите сообщение', 'err'); return; }
   const r = await fetch('/api/admin/send-email', {
-    method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({email, name, message: msg})
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: _emailTarget.email, name: _emailTarget.name, message: msg })
   });
   const d = await r.json();
   toast(d.ok ? '✓ Email отправлен' : 'Ошибка: ' + d.error, d.ok ? 'ok' : 'err');
+  if (d.ok) { closeModal('emailModal'); document.getElementById('emailModalMsg').value = ''; }
 }
 
 async function cdDelete(phone) {
@@ -2010,6 +2102,130 @@ async function removeBlocked(date) {
   const d = await r.json();
   if (d.success) { toast('✓ Дата освобождена', 'ok'); loadBlocked(); }
   else toast('Ошибка', 'err');
+}
+
+// ── Remind ──────────────────────────────────────────────
+async function remindApt(id) {
+  const r = await fetch(`/api/admin/remind/${id}`, { method: 'POST' });
+  const d = await r.json();
+  toast(d.success ? '✓ ' + d.message : d.message || 'Нет контактов', d.success ? 'ok' : 'err');
+}
+
+// ── Analytics ────────────────────────────────────────────
+let _charts = {};
+async function loadAnalytics() {
+  try {
+    const r = await fetch('/api/admin/analytics');
+    if (!r.ok) return;
+    const d = await r.json();
+    renderAnalyticsKpi(d);
+    renderCharts(d);
+  } catch(e) { console.error('Analytics error', e); }
+}
+function renderAnalyticsKpi(d) {
+  const lastMonth = d.monthly[d.monthly.length - 1];
+  $('anRevMonth').textContent = lastMonth ? lastMonth.revenue + '€' : '0€';
+  $('anBkMonth').textContent  = lastMonth ? lastMonth.bookings : '0';
+  const totalRev = d.monthly.reduce((s, m) => s + m.revenue, 0);
+  const totalBk  = d.monthly.reduce((s, m) => s + m.bookings, 0);
+  $('anAvgCheck').textContent = totalBk ? Math.round(totalRev / totalBk) + '€' : '—';
+  $('anTopSvc').textContent   = d.services[0]?.service || '—';
+}
+function destroyChart(key) {
+  if (_charts[key]) { _charts[key].destroy(); delete _charts[key]; }
+}
+function mkTooltip() {
+  return { backgroundColor:'rgba(8,8,20,0.95)', borderColor:'rgba(212,175,55,0.3)', borderWidth:1, titleColor:'#d4af37', bodyColor:'#eee', padding:10 };
+}
+function mkScale() {
+  return { grid:{ color:'rgba(212,175,55,0.07)', drawBorder:false }, ticks:{ color:'rgba(255,255,255,0.38)', font:{size:11} } };
+}
+function renderCharts(d) {
+  const gold = '#d4af37', blue = '#3b82f6';
+  const SVC_COLORS = ['#d4af37','#3b82f6','#22c55e','#f59e0b','#a855f7','#ef4444','#06b6d4'];
+  const baseOpts = {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{display:false}, tooltip:mkTooltip() },
+    scales:{ x:mkScale(), y:mkScale() }
+  };
+
+  // Monthly revenue bar
+  destroyChart('monthly');
+  const ctxM = document.getElementById('chartMonthly').getContext('2d');
+  _charts['monthly'] = new Chart(ctxM, {
+    type: 'bar',
+    data: {
+      labels: d.monthly.map(m => m.month),
+      datasets: [{
+        label: 'Выручка €',
+        data: d.monthly.map(m => m.revenue),
+        backgroundColor: 'rgba(212,175,55,0.22)',
+        borderColor: gold, borderWidth: 2,
+        borderRadius: 6, hoverBackgroundColor:'rgba(212,175,55,0.5)'
+      }]
+    },
+    options: { ...baseOpts }
+  });
+
+  // Daily line chart
+  destroyChart('daily');
+  const ctxD = document.getElementById('chartDaily').getContext('2d');
+  const grd = ctxD.createLinearGradient(0,0,0,180);
+  grd.addColorStop(0,'rgba(59,130,246,0.28)'); grd.addColorStop(1,'rgba(59,130,246,0)');
+  _charts['daily'] = new Chart(ctxD, {
+    type: 'line',
+    data: {
+      labels: d.daily.map(m => m.date.slice(5)),
+      datasets: [{
+        label: 'Записи', data: d.daily.map(m => m.count),
+        borderColor: blue, borderWidth: 2,
+        fill: true, backgroundColor: grd,
+        tension: 0.42, pointBackgroundColor: blue,
+        pointRadius: 3, pointHoverRadius: 6
+      }]
+    },
+    options: { ...baseOpts }
+  });
+
+  // Services doughnut
+  destroyChart('services');
+  const ctxS = document.getElementById('chartServices').getContext('2d');
+  _charts['services'] = new Chart(ctxS, {
+    type: 'doughnut',
+    data: {
+      labels: d.services.map(s => s.service),
+      datasets: [{
+        data: d.services.map(s => s.count),
+        backgroundColor: SVC_COLORS,
+        borderColor: 'rgba(8,8,20,0.85)', borderWidth: 2, hoverOffset: 8
+      }]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false, cutout:'65%',
+      plugins:{
+        legend:{ display:true, position:'bottom', labels:{ color:'rgba(255,255,255,0.55)', font:{size:11}, padding:12, boxWidth:14 } },
+        tooltip: mkTooltip()
+      }
+    }
+  });
+
+  // Hours bar (heat-mapped by count)
+  destroyChart('hours');
+  const ctxH = document.getElementById('chartHours').getContext('2d');
+  const maxH = Math.max(...d.hours.map(h => h.count), 1);
+  _charts['hours'] = new Chart(ctxH, {
+    type: 'bar',
+    data: {
+      labels: d.hours.map(h => h.time),
+      datasets: [{
+        label: 'Записей',
+        data: d.hours.map(h => h.count),
+        backgroundColor: d.hours.map(h => `rgba(212,175,55,${(0.15 + (h.count/maxH)*0.65).toFixed(2)})`),
+        borderColor: gold, borderWidth: 1, borderRadius: 4
+      }]
+    },
+    options: { ...baseOpts }
+  });
 }
 
 // ── Init ─────────────────────────────────────────────────
