@@ -276,23 +276,113 @@
       word-break: break-word;
     }
 
-    /* Media */
-    .post-media { margin-top: .9rem; display: flex; flex-direction: column; gap: .5rem; }
-    .post-media img {
+    /* ── Single media (one item) ── */
+    .post-media-single { margin-top: .9rem; }
+    .post-media-single img {
       width: 100%; display: block;
       border-radius: 2px;
       border: 1px solid rgba(212,175,55,.1);
       transition: border-color .3s, box-shadow .3s;
     }
-    .post-media img:hover {
+    .post-media-single img:hover {
       border-color: rgba(212,175,55,.35);
       box-shadow: 0 0 20px rgba(212,175,55,.1);
     }
-    .post-media video {
+    .post-media-single video {
       width: 100%; display: block;
       border-radius: 2px;
       border: 1px solid rgba(0,229,255,.15);
       box-shadow: 0 0 15px rgba(0,229,255,.05);
+    }
+
+    /* ── Carousel ── */
+    .post-carousel {
+      position: relative;
+      margin-top: .9rem;
+      overflow: hidden;
+      border-radius: 2px;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: pan-y;
+    }
+    .pc-track {
+      display: flex;
+      transition: transform .35s cubic-bezier(.4,0,.2,1);
+      will-change: transform;
+    }
+    .pc-slide {
+      min-width: 100%;
+      flex-shrink: 0;
+    }
+    .pc-slide img {
+      width: 100%; display: block;
+      border: 1px solid rgba(212,175,55,.1);
+    }
+    .pc-slide video {
+      width: 100%; display: block;
+      border: 1px solid rgba(0,229,255,.15);
+    }
+
+    /* Arrow buttons */
+    .pc-btn {
+      position: absolute;
+      top: 50%; transform: translateY(-50%);
+      width: 34px; height: 34px;
+      background: rgba(5,5,15,.65);
+      border: 1px solid rgba(212,175,55,.25);
+      border-radius: 50%;
+      color: rgba(212,175,55,.8);
+      font-size: 1rem;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      z-index: 5;
+      transition: background .2s, border-color .2s, opacity .2s;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .post-carousel:hover .pc-btn { opacity: 1; pointer-events: auto; }
+    .pc-btn:hover { background: rgba(212,175,55,.15); border-color: rgba(212,175,55,.5); }
+    .pc-btn-prev { left: .55rem; }
+    .pc-btn-next { right: .55rem; }
+    .pc-btn:disabled { opacity: 0 !important; pointer-events: none; }
+
+    /* Dots */
+    .pc-dots {
+      position: absolute;
+      bottom: .6rem; left: 0; right: 0;
+      display: flex; align-items: center; justify-content: center;
+      gap: .35rem;
+      z-index: 5;
+      pointer-events: none;
+    }
+    .pc-dot-item {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.35);
+      transition: background .25s, transform .25s, width .25s;
+      cursor: pointer;
+      pointer-events: auto;
+    }
+    .pc-dot-item.active {
+      background: var(--neon-gold);
+      box-shadow: 0 0 6px rgba(212,175,55,.6);
+      width: 18px;
+      border-radius: 3px;
+    }
+
+    /* Counter badge (top-right) */
+    .pc-counter {
+      position: absolute;
+      top: .5rem; right: .6rem;
+      font-family: var(--mono);
+      font-size: .6rem;
+      color: rgba(255,255,255,.6);
+      background: rgba(0,0,0,.55);
+      padding: .2rem .5rem;
+      border-radius: 20px;
+      letter-spacing: .05em;
+      z-index: 5;
+      pointer-events: none;
     }
 
     /* ── Empty state ── */
@@ -491,15 +581,35 @@
       let mediaHtml = '';
       if (p.media_url) {
         const items = [{ url: p.media_url, type: p.media_type }];
-        try {
-          const extra = JSON.parse(p.media_extra || '[]');
-          items.push(...extra);
-        } catch(e) {}
-        mediaHtml = `<div class="post-media">${items.map(m =>
-          m.type === 'video'
-            ? `<video src="${m.url}" controls></video>`
-            : `<img src="${m.url}" alt="" loading="lazy">`
-        ).join('')}</div>`;
+        try { const extra = JSON.parse(p.media_extra || '[]'); items.push(...extra); } catch(e) {}
+
+        if (items.length === 1) {
+          const m = items[0];
+          mediaHtml = `<div class="post-media-single">${
+            m.type === 'video'
+              ? `<video src="${m.url}" controls></video>`
+              : `<img src="${m.url}" alt="" loading="lazy">`
+          }</div>`;
+        } else {
+          const slides = items.map(m =>
+            `<div class="pc-slide">${
+              m.type === 'video'
+                ? `<video src="${m.url}" controls></video>`
+                : `<img src="${m.url}" alt="" loading="lazy">`
+            }</div>`
+          ).join('');
+          const dots = items.map((_, j) =>
+            `<span class="pc-dot-item${j===0?' active':''}" data-idx="${j}"></span>`
+          ).join('');
+          mediaHtml = `
+            <div class="post-carousel" data-cur="0" data-total="${items.length}">
+              <div class="pc-track">${slides}</div>
+              <button class="pc-btn pc-btn-prev" aria-label="Zurück" disabled>&#8249;</button>
+              <button class="pc-btn pc-btn-next" aria-label="Weiter">&#8250;</button>
+              <div class="pc-dots">${dots}</div>
+              <span class="pc-counter">1 / ${items.length}</span>
+            </div>`;
+        }
       }
       return `<article class="post-card" style="animation-delay:${i * 0.07}s">
         <div class="pc-shimmer"></div>
@@ -513,6 +623,9 @@
         </div>
       </article>`;
     }).join('');
+
+    // Init carousels
+    document.querySelectorAll('.post-carousel').forEach(initCarousel);
   } catch(e) {
     col.innerHTML = `<div class="feed-empty">
       <div class="feed-empty-icon">✂</div>
@@ -520,6 +633,61 @@
     </div>`;
   }
 })();
+
+  // ── Carousel logic ──────────────────────────────────
+  function initCarousel(el) {
+    const track  = el.querySelector('.pc-track');
+    const dots   = el.querySelectorAll('.pc-dot-item');
+    const prev   = el.querySelector('.pc-btn-prev');
+    const next   = el.querySelector('.pc-btn-next');
+    const counter = el.querySelector('.pc-counter');
+    let cur   = 0;
+    const total = parseInt(el.dataset.total, 10);
+
+    function go(n) {
+      cur = Math.max(0, Math.min(n, total - 1));
+      track.style.transform = `translateX(-${cur * 100}%)`;
+      dots.forEach((d, i) => d.classList.toggle('active', i === cur));
+      if (counter) counter.textContent = `${cur + 1} / ${total}`;
+      prev.disabled = cur === 0;
+      next.disabled = cur === total - 1;
+      el.dataset.cur = cur;
+      // Pause videos not in view
+      el.querySelectorAll('video').forEach((v, i) => {
+        if (i !== cur) v.pause();
+      });
+    }
+
+    prev.addEventListener('click', () => go(cur - 1));
+    next.addEventListener('click', () => go(cur + 1));
+    dots.forEach(d => d.addEventListener('click', () => go(parseInt(d.dataset.idx, 10))));
+
+    // Touch swipe
+    let tx0 = 0, ty0 = 0, swiping = false;
+    el.addEventListener('touchstart', e => {
+      tx0 = e.touches[0].clientX;
+      ty0 = e.touches[0].clientY;
+      swiping = true;
+    }, { passive: true });
+    el.addEventListener('touchend', e => {
+      if (!swiping) return;
+      const dx = e.changedTouches[0].clientX - tx0;
+      const dy = e.changedTouches[0].clientY - ty0;
+      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 42) {
+        go(dx < 0 ? cur + 1 : cur - 1);
+      }
+      swiping = false;
+    }, { passive: true });
+
+    // Keyboard on focus
+    el.setAttribute('tabindex', '0');
+    el.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft')  go(cur - 1);
+      if (e.key === 'ArrowRight') go(cur + 1);
+    });
+
+    go(0);
+  }
 
   // Scroll progress
   const bar = document.getElementById('fpProgress');
