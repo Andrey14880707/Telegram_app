@@ -358,7 +358,7 @@
       <li><a href="#work" class="line-draw" data-i18n="nav_services">Arbeiten</a></li>
       <li><a href="#termin" class="line-draw" data-i18n="nav_termin">Termin</a></li>
       <li><a href="#hours" class="line-draw" data-i18n="oh_title">Öffnungszeiten</a></li>
-      <li><a href="/feed" class="line-draw" style="color:#d4af37" data-i18n="nav_feed">Feed</a></li>
+      <li><a href="/feed" class="line-draw" style="color:#c8843a" data-i18n="nav_feed">Feed</a></li>
     </ul>
     <div class="nav-right">
       <!-- Client auth badge (filled by JS) -->
@@ -386,7 +386,7 @@
       <li><a href="#work" onclick="closeMob()"><span>Arbeiten</span></a></li>
       <li><a href="#termin" onclick="closeMob()"><span data-i18n="nav_termin">Termin</span></a></li>
       <li><a href="#hours" onclick="closeMob()"><span data-i18n="oh_title">Öffnungszeiten</span></a></li>
-      <li><a href="/feed" onclick="closeMob()"><span style="color:#d4af37" data-i18n="nav_feed">Feed</span></a></li>
+      <li><a href="/feed" onclick="closeMob()"><span style="color:#c8843a" data-i18n="nav_feed">Feed</span></a></li>
     </ul>
     <div class="mob-soc">
       <a href="https://www.instagram.com/munchen_barber?igsh=MW5ya2J2bzR3anE0bQ==" target="_blank">@munchen_barber</a>
@@ -670,7 +670,7 @@
     const d = await r.json();
     const wrap = document.getElementById('feedScrollInner');
     if (!d.posts || d.posts.length === 0) {
-      wrap.innerHTML = '<p style="color:rgba(255,255,255,.3);text-align:center;padding:2rem">Пока нет публикаций</p>';
+      wrap.innerHTML = '<p style="color:rgba(237,227,204,.3);text-align:center;padding:2rem">Пока нет публикаций</p>';
       return;
     }
     wrap.innerHTML = d.posts.map(p => {
