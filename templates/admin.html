@@ -842,6 +842,182 @@
 
     /* ── Email compose modal ── */
     .email-to-line { font-size: .82rem; color: var(--gray); padding: .6rem 0; border-bottom: 1px solid var(--border); margin-bottom: .5rem; }
+
+    /* ══════════════════════════════════════════
+       DESIGN POLISH — Precision refinements
+       ══════════════════════════════════════════ */
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: rgba(2,2,10,.6); }
+    ::-webkit-scrollbar-thumb { background: rgba(212,175,55,.22); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(212,175,55,.48); }
+
+    /* Header — stronger presence */
+    .dash-head {
+      background: rgba(3,3,10,.96) !important;
+      border-bottom: 1px solid rgba(212,175,55,.22) !important;
+      box-shadow: 0 1px 0 rgba(212,175,55,.08), 0 4px 32px rgba(0,0,0,.75), 0 0 60px rgba(212,175,55,.02) !important;
+    }
+    /* Logo slow glow pulse */
+    .dh-logo { animation: logoGlow 4s ease-in-out infinite alternate; }
+    @keyframes logoGlow {
+      from { text-shadow: 0 0 12px rgba(212,175,55,.3), 0 0 24px rgba(212,175,55,.08); }
+      to   { text-shadow: 0 0 24px rgba(212,175,55,.6), 0 0 50px rgba(212,175,55,.2);  }
+    }
+    /* Live dot on Admin badge */
+    .dh-badge { position: relative; padding-left: 1.4rem !important; }
+    .dh-badge::before {
+      content: ''; position: absolute; left: .55rem; top: 50%; transform: translateY(-50%);
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--green); box-shadow: 0 0 6px var(--green);
+      animation: liveDot 2s ease-in-out infinite;
+    }
+    @keyframes liveDot {
+      0%,100% { opacity: 1; box-shadow: 0 0 5px var(--green); }
+      50%      { opacity: .5; box-shadow: 0 0 12px var(--green), 0 0 20px rgba(34,197,94,.3); }
+    }
+
+    /* Stats ticker — taller, edge fade */
+    .stats-ticker {
+      height: 44px !important;
+      border-bottom: 1px solid rgba(212,175,55,.18) !important;
+      background: linear-gradient(90deg, rgba(212,175,55,.03) 0%, transparent 12%, transparent 88%, rgba(212,175,55,.03) 100%),
+                  rgba(4,4,12,.88) !important;
+    }
+    .st-item { height: 44px !important; padding: 0 2rem !important; }
+    .st-val  { font-size: 1.15rem !important; }
+    .st-lbl  { font-size: .56rem !important; letter-spacing: 2px !important; }
+
+    /* Tabs — animated gold underline */
+    .tabs {
+      background: rgba(3,3,10,.78) !important;
+      border-bottom: 1px solid rgba(212,175,55,.16) !important;
+    }
+    .tab-btn { position: relative; }
+    .tab-btn::after {
+      content: '';
+      position: absolute; bottom: -1px; left: 50%; right: 50%; height: 2px;
+      background: var(--gold);
+      box-shadow: 0 0 10px rgba(212,175,55,.6), 0 0 22px rgba(212,175,55,.2);
+      border-radius: 2px 2px 0 0;
+      transition: left .3s cubic-bezier(.4,0,.2,1), right .3s cubic-bezier(.4,0,.2,1);
+    }
+    .tab-btn.active::after  { left: 0; right: 0; }
+    .tab-btn:hover:not(.active)::after { left: 35%; right: 35%; }
+    .tab-btn.active {
+      border-bottom-color: transparent !important;
+      background: linear-gradient(180deg, transparent, rgba(212,175,55,.055)) !important;
+    }
+
+    /* Table — gold left border reveal on row hover */
+    thead th {
+      background: rgba(4,4,12,.92) !important;
+      border-bottom: 1px solid rgba(212,175,55,.22) !important;
+      letter-spacing: 2.5px !important;
+    }
+    tbody tr td:first-child {
+      border-left: 2px solid transparent;
+      transition: border-color .18s ease;
+      padding-left: .85rem;
+    }
+    tbody tr:hover td:first-child { border-left-color: rgba(212,175,55,.45); }
+    tr:hover td { background: rgba(212,175,55,.02) !important; }
+
+    /* Schedule slots */
+    .sch-slot   { border-radius: 10px !important; }
+    .sch-booked {
+      background: rgba(212,175,55,.04) !important;
+      border-color: rgba(212,175,55,.24) !important;
+    }
+    .sch-booked .sch-time { text-shadow: 0 0 18px rgba(212,175,55,.5); }
+    .sch-blocked-slot { background: rgba(220,38,38,.04) !important; }
+
+    /* Client cards */
+    .kc { border-radius: 14px !important; }
+    .kc:hover {
+      box-shadow: 0 10px 38px rgba(0,0,0,.65), 0 0 28px rgba(212,175,55,.1),
+                  inset 0 1px 0 rgba(255,255,255,.05) !important;
+    }
+    .kc-av { box-shadow: 0 0 0 1.5px rgba(212,175,55,.3), 0 0 14px rgba(212,175,55,.12); }
+    .kc-stat { border-radius: 8px !important; }
+
+    /* Modal entrance */
+    .modal-overlay[style*="flex"] .modal {
+      animation: modalIn .3s cubic-bezier(.16,1,.3,1) both;
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(14px) scale(.96); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .modal { border-radius: 16px !important; }
+
+    /* Analytics KPI — left gold bar */
+    .an-kpi {
+      border-left: 2px solid rgba(212,175,55,.45) !important;
+      transition: transform .25s, box-shadow .25s;
+    }
+    .an-kpi:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0,0,0,.45), 0 0 20px rgba(212,175,55,.07) !important;
+    }
+    .an-card { transition: border-color .25s, box-shadow .25s; overflow: hidden; }
+    .an-card:hover { border-color: rgba(212,175,55,.22) !important; box-shadow: 0 6px 25px rgba(0,0,0,.35); }
+    /* Subtle top shimmer line on chart cards */
+    .an-card::after {
+      content: '';
+      display: block; height: 1px;
+      position: absolute; top: 0; left: 0; right: 0;
+      background: linear-gradient(90deg, transparent, rgba(212,175,55,.18), transparent);
+      pointer-events: none;
+    }
+    .an-card { position: relative; }
+
+    /* Badges */
+    .badge { letter-spacing: 1.5px !important; }
+    .badge-p { box-shadow: 0 0 10px rgba(245,158,11,.07), inset 0 0 6px rgba(245,158,11,.03); }
+    .badge-c { box-shadow: 0 0 10px rgba(34,197,94,.08),  inset 0 0 6px rgba(34,197,94,.03); }
+    .badge-x { box-shadow: 0 0 10px rgba(239,68,68,.07); }
+
+    /* List items */
+    .bl-item { border-radius: 10px !important; transition: all .22s !important; }
+    .bl-item:hover { background: rgba(212,175,55,.025) !important; border-color: rgba(212,175,55,.25) !important; }
+
+    /* Client history */
+    .cd-apt { border-radius: 12px !important; transition: border-color .2s, background .2s; }
+    .cd-apt:hover { border-color: rgba(212,175,55,.22) !important; background: rgba(212,175,55,.025) !important; }
+
+    /* Toast */
+    #toast { border-radius: 10px !important; letter-spacing: .25px; }
+
+    /* Photo card */
+    .ph-card { border-radius: 14px !important; transition: transform .25s, box-shadow .25s; }
+    .ph-card:hover { transform: scale(1.02); box-shadow: 0 10px 30px rgba(0,0,0,.5); }
+
+    /* Buttons press */
+    .btn { transition: all .22s cubic-bezier(.4,0,.2,1) !important; }
+    .btn:active { transform: scale(.96) !important; }
+    .btn-gold:active { transform: scale(.96) translateY(0) !important; }
+
+    /* Stagger fade-in for client card grid */
+    @keyframes kcFadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .kc { opacity: 0; animation: kcFadeUp .35s ease both; }
+    .kc:nth-child(1)  { animation-delay: .03s; }
+    .kc:nth-child(2)  { animation-delay: .07s; }
+    .kc:nth-child(3)  { animation-delay: .11s; }
+    .kc:nth-child(4)  { animation-delay: .15s; }
+    .kc:nth-child(5)  { animation-delay: .19s; }
+    .kc:nth-child(6)  { animation-delay: .23s; }
+    .kc:nth-child(7)  { animation-delay: .27s; }
+    .kc:nth-child(8)  { animation-delay: .31s; }
+    .kc:nth-child(n+9){ animation-delay: .35s; }
+
+    /* Hour/blocked table rows */
+    .hr-row { transition: background .2s; padding: .4rem .75rem; border-radius: 8px; }
+    .hr-row:hover { background: rgba(212,175,55,.03); }
   </style>
 </head>
 <body>
