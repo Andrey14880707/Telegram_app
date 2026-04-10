@@ -152,6 +152,51 @@ def stats():
     return jsonify(result)
 
 
+@bp.route('/api/admin/analytics')
+def analytics():
+    if err := _require_admin(): return err
+    with get_db() as conn:
+        monthly = conn.execute("""
+            SELECT strftime('%Y-%m', date) as month,
+                   COALESCE(SUM(price),0) as revenue,
+                   COUNT(*) as bookings
+            FROM appointments
+            WHERE status IN ('confirmed','completed')
+              AND date >= date('now','-6 months')
+            GROUP BY month ORDER BY month
+        """).fetchall()
+        daily = conn.execute("""
+            SELECT date, COUNT(*) as count
+            FROM appointments
+            WHERE status NOT IN ('cancelled','deleted')
+              AND date >= date('now','-30 days')
+            GROUP BY date ORDER BY date
+        """).fetchall()
+        services = conn.execute("""
+            SELECT service, COUNT(*) as count, COALESCE(SUM(price),0) as revenue
+            FROM appointments
+            WHERE status IN ('confirmed','completed')
+            GROUP BY service ORDER BY count DESC
+        """).fetchall()
+        hours = conn.execute("""
+            SELECT time, COUNT(*) as count
+            FROM appointments
+            WHERE status NOT IN ('cancelled','deleted')
+            GROUP BY time ORDER BY time
+        """).fetchall()
+        statuses = conn.execute("""
+            SELECT status, COUNT(*) as count
+            FROM appointments GROUP BY status
+        """).fetchall()
+    return jsonify({
+        'monthly':  [dict(r) for r in monthly],
+        'daily':    [dict(r) for r in daily],
+        'services': [dict(r) for r in services],
+        'hours':    [dict(r) for r in hours],
+        'statuses': [dict(r) for r in statuses],
+    })
+
+
 @bp.route('/api/admin/export')
 def export_csv():
     if err := _require_admin(): return err
