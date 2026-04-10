@@ -37,21 +37,21 @@
     }
     .pf-logomark {
       width: 48px; height: 48px;
-      border: 1.5px solid rgba(212,175,55,.4);
+      border: 1.5px solid rgba(200,132,58,.4);
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
       font-family: 'Bebas Neue', sans-serif;
       font-size: 1.1rem;
       letter-spacing: 2px;
       color: var(--gold);
-      background: rgba(212,175,55,.06);
+      background: rgba(200,132,58,.06);
       flex-shrink: 0;
     }
     .pf-brand-text a {
       font-family: 'Bebas Neue', sans-serif;
       font-size: .85rem;
       letter-spacing: 3px;
-      color: rgba(255,255,255,.4);
+      color: rgba(237,227,204,.42);
       text-decoration: none;
       display: block;
       margin-bottom: .1rem;
@@ -60,7 +60,7 @@
     .pf-brand-text a:hover { color: var(--gold); }
     .pf-brand-text span {
       font-size: .7rem;
-      color: rgba(255,255,255,.25);
+      color: rgba(237,227,204,.28);
       font-family: 'JetBrains Mono', monospace;
       letter-spacing: 1px;
     }
@@ -69,7 +69,7 @@
       border: 1px solid rgba(255,255,255,.1);
       border-radius: 8px;
       padding: .5rem 1.1rem;
-      color: rgba(255,255,255,.5);
+      color: rgba(237,227,204,.52);
       font-family: 'Poppins', sans-serif;
       font-size: .78rem;
       cursor: pointer;
@@ -84,9 +84,9 @@
 
     /* ── Welcome card ── */
     .pf-welcome {
-      background: rgba(14,14,20,.7);
+      background: rgba(14,8,4,.7);
       backdrop-filter: blur(20px);
-      border: 1px solid rgba(212,175,55,.18);
+      border: 1px solid rgba(200,132,58,.18);
       border-radius: 16px;
       padding: 1.8rem 2rem;
       margin-bottom: 1.5rem;
@@ -96,7 +96,7 @@
     .pf-welcome::before {
       content: '';
       position: absolute; inset: 0;
-      background: linear-gradient(135deg, rgba(212,175,55,.05) 0%, transparent 55%);
+      background: linear-gradient(135deg, rgba(200,132,58,.05) 0%, transparent 55%);
       pointer-events: none;
     }
     .pf-welcome::after {
@@ -129,7 +129,7 @@
     .pf-welcome-name em { color: var(--gold); font-style: italic; }
     .pf-welcome-sub {
       font-size: .82rem;
-      color: rgba(255,255,255,.4);
+      color: rgba(237,227,204,.42);
       font-family: 'JetBrains Mono', monospace;
       letter-spacing: .5px;
     }
@@ -140,7 +140,7 @@
       margin-top: 1.2rem;
       padding: .7rem 1.5rem;
       background: var(--gold);
-      color: #05050a;
+      color: #060403;
       border-radius: 8px;
       font-family: 'Poppins', sans-serif;
       font-size: .82rem;
@@ -152,7 +152,7 @@
     .pf-book-btn:hover {
       background: #e0c040;
       transform: translateY(-1px);
-      box-shadow: 0 4px 16px rgba(212,175,55,.3);
+      box-shadow: 0 4px 16px rgba(200,132,58,.3);
     }
 
     /* ── Stats row ── */
@@ -164,14 +164,14 @@
     }
     @media(max-width:540px) { .pf-stats { grid-template-columns: 1fr 1fr; } }
     .pf-stat {
-      background: rgba(14,14,20,.6);
+      background: rgba(14,8,4,.6);
       border: 1px solid rgba(255,255,255,.07);
       border-radius: 12px;
       padding: 1.2rem 1rem;
       text-align: center;
       transition: border-color .25s;
     }
-    .pf-stat:hover { border-color: rgba(212,175,55,.2); }
+    .pf-stat:hover { border-color: rgba(200,132,58,.2); }
     .pf-stat-val {
       font-family: 'Bebas Neue', sans-serif;
       font-size: 2rem;
@@ -182,7 +182,7 @@
     }
     .pf-stat-lbl {
       font-size: .68rem;
-      color: rgba(255,255,255,.35);
+      color: rgba(237,227,204,.38);
       letter-spacing: 1.5px;
       text-transform: uppercase;
       font-family: 'JetBrains Mono', monospace;
@@ -208,7 +208,7 @@
       margin-left: auto;
       font-size: .7rem;
       font-family: 'JetBrains Mono', monospace;
-      color: rgba(255,255,255,.25);
+      color: rgba(237,227,204,.28);
     }
 
     /* ── Booking cards ── */
@@ -219,7 +219,7 @@
       margin-bottom: 2.5rem;
     }
     .pf-booking {
-      background: rgba(14,14,20,.6);
+      background: rgba(14,8,4,.6);
       border: 1px solid rgba(255,255,255,.07);
       border-radius: 12px;
       padding: 1.1rem 1.3rem;
@@ -229,17 +229,17 @@
       flex-wrap: wrap;
       transition: border-color .25s, transform .2s;
     }
-    .pf-booking:hover { border-color: rgba(212,175,55,.15); transform: translateX(2px); }
+    .pf-booking:hover { border-color: rgba(200,132,58,.15); transform: translateX(2px); }
     .pf-booking.upcoming {
       border-left: 3px solid var(--gold);
-      background: rgba(212,175,55,.03);
+      background: rgba(200,132,58,.03);
     }
     .pf-booking-date {
       display: flex;
       flex-direction: column;
       align-items: center;
-      background: rgba(212,175,55,.06);
-      border: 1px solid rgba(212,175,55,.15);
+      background: rgba(200,132,58,.06);
+      border: 1px solid rgba(200,132,58,.15);
       border-radius: 8px;
       padding: .5rem .8rem;
       min-width: 54px;
@@ -253,7 +253,7 @@
     }
     .pf-booking-mon {
       font-size: .62rem;
-      color: rgba(212,175,55,.6);
+      color: rgba(200,132,58,.6);
       font-family: 'JetBrains Mono', monospace;
       text-transform: uppercase;
       letter-spacing: 1px;
@@ -267,7 +267,7 @@
     }
     .pf-booking-meta {
       font-size: .75rem;
-      color: rgba(255,255,255,.35);
+      color: rgba(237,227,204,.38);
       font-family: 'JetBrains Mono', monospace;
       display: flex;
       gap: .8rem;
@@ -297,7 +297,7 @@
     .pf-empty {
       text-align: center;
       padding: 2.5rem 1rem;
-      color: rgba(255,255,255,.25);
+      color: rgba(237,227,204,.28);
       font-size: .85rem;
       font-family: 'JetBrains Mono', monospace;
     }
@@ -305,7 +305,7 @@
 
     /* ── Contact info card ── */
     .pf-contact-card {
-      background: rgba(14,14,20,.6);
+      background: rgba(14,8,4,.6);
       border: 1px solid rgba(255,255,255,.07);
       border-radius: 12px;
       padding: 1.3rem 1.5rem;
@@ -321,7 +321,7 @@
     .pf-contact-lbl {
       font-size: .68rem;
       font-family: 'JetBrains Mono', monospace;
-      color: rgba(255,255,255,.3);
+      color: rgba(237,227,204,.32);
       letter-spacing: 1.5px;
       text-transform: uppercase;
       width: 80px;
@@ -329,14 +329,14 @@
     }
     .pf-contact-val {
       font-size: .85rem;
-      color: rgba(255,255,255,.7);
+      color: rgba(237,227,204,.75);
     }
-    .pf-contact-val.empty { color: rgba(255,255,255,.2); font-style: italic; }
+    .pf-contact-val.empty { color: rgba(237,227,204,.22); font-style: italic; }
 
     .pf-loading {
       text-align: center;
       padding: 3rem 1rem;
-      color: rgba(255,255,255,.25);
+      color: rgba(237,227,204,.28);
       font-family: 'JetBrains Mono', monospace;
       font-size: .8rem;
     }
