@@ -23,14 +23,27 @@ def get_hours_api():
 def save_hours():
     if err := _require_admin(): return err
     data = request.get_json() or {}
-    with get_db() as conn:
-        for h in data.get('hours', []):
-            conn.execute(
-                'UPDATE working_hours SET is_open=?,open_hour=?,close_hour=? WHERE weekday=?',
-                (1 if h.get('is_open') else 0, h.get('open_hour', 10), h.get('close_hour', 20), h['weekday'])
-            )
-        conn.commit()
-    return jsonify({'success': True})
+    hours = data.get('hours', [])
+    if not hours:
+        return jsonify({'success': False, 'error': 'No hours data'}), 400
+    try:
+        with get_db() as conn:
+            # ensure rows exist (upsert)
+            for h in hours:
+                conn.execute(
+                    '''INSERT INTO working_hours (weekday, is_open, open_hour, close_hour)
+                       VALUES (?,?,?,?)
+                       ON CONFLICT(weekday) DO UPDATE SET
+                         is_open=excluded.is_open,
+                         open_hour=excluded.open_hour,
+                         close_hour=excluded.close_hour''',
+                    (h['weekday'], 1 if h.get('is_open') else 0,
+                     h.get('open_hour', 10), h.get('close_hour', 20))
+                )
+            conn.commit()
+        return jsonify({'success': True})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 
 @bp.route('/api/admin/blocked', methods=['GET'])

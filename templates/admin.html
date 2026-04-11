@@ -2166,18 +2166,33 @@ function toggleHrRow(wd) {
   lbl.textContent = cb.checked ? 'Открыто' : 'Закрыто';
 }
 async function saveHours() {
-  const hours = _hoursData.map(h => ({
-    weekday:    h.weekday,
-    is_open:    document.getElementById(`hr-open-${h.weekday}`).checked,
-    open_hour:  parseInt(document.getElementById(`hr-oh-${h.weekday}`).value) || 10,
-    close_hour: parseInt(document.getElementById(`hr-ch-${h.weekday}`).value) || 20,
-  }));
-  const r = await fetch('/api/admin/hours', {
-    method: 'POST', headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({hours})
-  });
-  const d = await r.json();
-  toast(d.success ? '✓ Часы сохранены' : 'Ошибка', d.success ? 'ok' : 'err');
+  if (!_hoursData.length) { toast('Сначала откройте вкладку', 'err'); return; }
+  const hours = _hoursData.map(h => {
+    const el = document.getElementById(`hr-open-${h.weekday}`);
+    if (!el) return null;
+    return {
+      weekday:    h.weekday,
+      is_open:    el.checked,
+      open_hour:  parseInt(document.getElementById(`hr-oh-${h.weekday}`).value) || 10,
+      close_hour: parseInt(document.getElementById(`hr-ch-${h.weekday}`).value) || 20,
+    };
+  }).filter(Boolean);
+  try {
+    const r = await fetch('/api/admin/hours', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({hours})
+    });
+    if (r.status === 401) { toast('Сессия истекла — войдите снова', 'err'); return; }
+    const d = await r.json();
+    if (d.success) {
+      toast('✓ Часы сохранены', 'ok');
+      await loadHours(); // reload to confirm saved values
+    } else {
+      toast('Ошибка: ' + (d.error || 'неизвестная'), 'err');
+    }
+  } catch(e) {
+    toast('Ошибка сети: ' + e.message, 'err');
+  }
 }
 
 // ── Blocked dates ─────────────────────────────────────
