@@ -6,9 +6,280 @@
   <title>München Barber — Fades & Style</title>
   <meta name="description" content="Professional Barber in München. Fades, Classic Cuts, Beard Care. Book online.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Mono:wght@400;500&family=Figtree:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <style>
+    /* ═══════════════════════════════════════════════════
+       INDEX POLISH — precision overrides
+       ═══════════════════════════════════════════════════ */
+
+    /* ── Hero: CTA row ───────────────────────────────── */
+    .hero-actions {
+      display: flex; align-items: center; gap: 1rem;
+      justify-content: center; flex-wrap: wrap;
+      margin: 2.2rem 0 0;
+      opacity: 0;
+      animation: lineReveal .7s cubic-bezier(.16,1,.3,1) .85s forwards;
+    }
+    .hero-cta-main {
+      display: inline-flex; align-items: center; gap: .55rem;
+      padding: .95rem 2.4rem;
+      background: #111111;
+      color: #FFFFFF;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.15rem; letter-spacing: 3px;
+      border-radius: 4px;
+      text-decoration: none;
+      position: relative; overflow: hidden;
+      transition: transform .3s cubic-bezier(.4,0,.2,1), box-shadow .3s;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+    .hero-cta-main:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(0,0,0,0.22);
+      background: #333333;
+    }
+    .hero-cta-ghost {
+      display: inline-flex; align-items: center; gap: .45rem;
+      padding: .95rem 2rem;
+      border: 1px solid rgba(17,17,17,.25);
+      color: rgba(17,17,17,.6);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.15rem; letter-spacing: 3px;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: border-color .3s, color .3s, background .3s, transform .3s;
+    }
+    .hero-cta-ghost:hover {
+      border-color: rgba(17,17,17,.5);
+      color: #111111;
+      background: rgba(17,17,17,.05);
+      transform: translateY(-2px);
+    }
+
+    /* ── Hero: Stats strip ───────────────────────────── */
+    .hero-stats-strip {
+      display: flex; align-items: stretch; justify-content: center;
+      flex-wrap: wrap; margin-top: 2.8rem;
+      border-top: 1px solid rgba(17,17,17,.1);
+      padding-top: 1.6rem;
+      gap: 0;
+      opacity: 0;
+      animation: lineReveal .7s cubic-bezier(.16,1,.3,1) 1.05s forwards;
+    }
+    .hss-item {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 0 2.8rem;
+      border-right: 1px solid rgba(17,17,17,.08);
+    }
+    .hss-item:last-child { border-right: none; }
+    .hss-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.75rem; letter-spacing: 3px; line-height: 1;
+      color: #111111;
+    }
+    .hss-lbl {
+      font-family: 'DM Mono', monospace;
+      font-size: .58rem; letter-spacing: 2px;
+      color: rgba(17,17,17,.3); text-transform: uppercase;
+      margin-top: .35rem;
+    }
+
+    /* ── Work category buttons ───────────────────────── */
+    .work-cats { display: flex !important; gap: .45rem; flex-wrap: wrap; margin-bottom: 1.75rem; }
+    .wcat {
+      background: rgba(0,0,0,.03) !important;
+      border: 1px solid rgba(0,0,0,.1) !important;
+      border-radius: 2px !important;
+      color: rgba(17,17,17,.45) !important;
+      font-family: 'DM Mono', monospace !important;
+      font-size: .62rem !important; letter-spacing: 2px !important;
+      text-transform: uppercase !important;
+      padding: .38rem .9rem !important;
+      cursor: pointer !important;
+      transition: all .22s !important;
+    }
+    .wcat.active, .wcat:hover {
+      background: #111111 !important;
+      border-color: #111111 !important;
+      color: #FFFFFF !important;
+    }
+
+    /* ── Auth gate ──────────────────────────────────── */
+    .bk-auth-gate {
+      max-width: 520px !important; margin: 0 auto !important;
+      text-align: center !important;
+      background: #FAFAFA !important;
+      border: 1px solid #E5E5E5 !important;
+      border-top: 2px solid #111111 !important;
+      border-radius: 8px !important;
+      padding: 3.2rem 2.8rem !important;
+      backdrop-filter: none !important;
+      position: relative !important; overflow: hidden !important;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.07) !important;
+    }
+    .bk-gate-icon {
+      font-size: 2.6rem !important; margin-bottom: 1.3rem !important;
+      display: block;
+      filter: none !important;
+    }
+    .bk-gate-title {
+      font-family: 'Cormorant Garamond', serif !important;
+      font-size: 1.75rem !important; font-weight: 700 !important;
+      margin-bottom: .7rem !important; color: #111111 !important;
+    }
+    .bk-gate-desc {
+      font-size: .85rem !important; line-height: 1.75 !important;
+      color: rgba(17,17,17,.5) !important; margin-bottom: 2rem !important;
+    }
+    .bk-gate-btns { display: flex; gap: .8rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1.6rem !important; }
+    .bk-gate-btn-primary {
+      display: inline-flex !important; align-items: center !important;
+      padding: .9rem 2.2rem !important;
+      background: #111111 !important; color: #FFFFFF !important;
+      font-family: 'Bebas Neue', sans-serif !important;
+      font-size: 1.05rem !important; letter-spacing: 3px !important;
+      border-radius: 4px !important; text-decoration: none !important;
+      transition: transform .25s, background .25s !important;
+    }
+    .bk-gate-btn-primary:hover { transform: translateY(-1px) !important; background: #333333 !important; }
+    .bk-gate-btn-outline {
+      display: inline-flex !important; align-items: center !important;
+      padding: .9rem 1.8rem !important;
+      border: 1px solid rgba(17,17,17,.28) !important;
+      color: #111111 !important;
+      font-family: 'DM Mono', monospace !important;
+      font-size: .72rem !important; letter-spacing: 1.5px !important;
+      border-radius: 4px !important; text-decoration: none !important;
+      transition: border-color .25s, background .25s !important;
+    }
+    .bk-gate-btn-outline:hover { border-color: #111111 !important; background: rgba(17,17,17,.05) !important; }
+    .bk-gate-perks {
+      display: flex !important; gap: 1.5rem !important; justify-content: center !important; flex-wrap: wrap !important;
+      font-family: 'DM Mono', monospace !important;
+      font-size: .63rem !important; letter-spacing: 1px !important;
+      color: rgba(17,17,17,.3) !important;
+    }
+
+    /* ── User bar (logged in) ─────────────────────────── */
+    .bk-user-bar {
+      background: #F5F4F2 !important;
+      border: 1px solid #E5E5E5 !important;
+      border-radius: 8px !important; padding: 1rem 1.5rem !important;
+      margin-bottom: 2rem !important;
+      display: flex !important; align-items: center !important;
+      justify-content: space-between !important; flex-wrap: wrap !important; gap: 1rem !important;
+    }
+    .bk-user-info { display: flex !important; align-items: center !important; gap: .9rem !important; }
+    .bk-user-icon {
+      font-size: 1.3rem !important; width: 42px !important; height: 42px !important;
+      background: #EEEEEE !important; border-radius: 50% !important;
+      display: flex !important; align-items: center !important; justify-content: center !important;
+      border: 1px solid #E0E0E0 !important; flex-shrink: 0 !important;
+    }
+    .bk-user-name { font-size: .95rem !important; font-weight: 600 !important; color: #111111 !important; margin-bottom: .1rem !important; }
+    .bk-user-phone { font-size: .72rem !important; color: rgba(17,17,17,.4) !important; font-family: 'DM Mono', monospace !important; }
+    .bk-user-actions { display: flex !important; align-items: center !important; gap: 1rem !important; }
+    .bk-profile-link {
+      font-family: 'DM Mono', monospace !important;
+      font-size: .7rem !important; letter-spacing: 1px !important;
+      color: #111111 !important; text-decoration: none !important;
+      border: 1px solid rgba(17,17,17,.25) !important;
+      padding: .4rem .9rem !important; border-radius: 4px !important;
+      transition: border-color .2s, background .2s !important;
+    }
+    .bk-profile-link:hover { border-color: #111111 !important; background: rgba(17,17,17,.05) !important; }
+    .bk-logout-link {
+      background: none !important; border: none !important;
+      font-size: .72rem !important; color: rgba(17,17,17,.35) !important;
+      cursor: pointer !important; letter-spacing: .5px !important;
+      transition: color .2s !important; font-family: inherit !important;
+    }
+    .bk-logout-link:hover { color: rgba(220,38,38,.7) !important; }
+
+    /* ── Hours card ──────────────────────────────────── */
+    .hours-card {
+      border-left: 2px solid #E5E5E5 !important;
+      border-right: none !important;
+    }
+    .hrow { transition: padding-left .2s !important; }
+    .hrow:not(.hrow-closed):hover { padding-left: .5rem !important; }
+    .hours-maps {
+      display: block !important; margin-top: 1.5rem !important;
+      font-family: 'DM Mono', monospace !important;
+      font-size: .72rem !important; color: rgba(17,17,17,.4) !important;
+      letter-spacing: 1px !important; text-align: center !important;
+      transition: color .25s !important; text-decoration: none !important;
+      border-top: 1px solid #E5E5E5 !important;
+      padding-top: 1.25rem !important;
+    }
+    .hours-maps:hover { color: #111111 !important; }
+
+    /* ── Homepage feed block cards ───────────────────── */
+    .idx-feed-card {
+      background: #FAFAFA;
+      border: 1px solid #E5E5E5;
+      border-left: 2px solid #CCCCCC;
+      border-radius: 6px; padding: 1.1rem 1.3rem;
+      position: relative;
+      backdrop-filter: none;
+      transition: border-left-color .25s, background .25s, transform .25s;
+    }
+    .idx-feed-card:hover {
+      background: #F5F4F2;
+      border-left-color: #111111;
+      transform: translateX(3px);
+    }
+    .idx-feed-date {
+      font-family: 'DM Mono', monospace;
+      font-size: .62rem; color: rgba(17,17,17,.3);
+      position: absolute; top: .9rem; right: 1.2rem; letter-spacing: .5px;
+    }
+    .idx-feed-text {
+      font-size: .87rem; line-height: 1.75;
+      color: rgba(17,17,17,.75); white-space: pre-wrap;
+      padding-right: 5rem; margin: 0;
+    }
+    .idx-feed-img {
+      width: 100%; border-radius: 4px; margin-top: .9rem;
+      max-height: 260px; object-fit: cover;
+      border: 1px solid #E5E5E5;
+    }
+    #feedScroll {
+      max-height: 540px !important; overflow-y: auto !important;
+      padding-right: .5rem !important;
+      scrollbar-width: thin !important;
+      scrollbar-color: rgba(17,17,17,.2) transparent !important;
+    }
+
+    /* ── Footer ──────────────────────────────────────── */
+    .footer {
+      border-top: 1px solid #E5E5E5 !important;
+    }
+    .footer::before { display: none; }
+
+    /* ── Service strip chips ─────────────────────────── */
+    .svc-chip {
+      transition: border-color .25s, background .25s, transform .25s !important;
+    }
+    .svc-chip:hover { transform: translateY(-2px) !important; }
+
+    /* ── Section headings ────────────────────────────── */
+    .work-head h2, #termin h2 { letter-spacing: .02em; }
+
+    /* ── Nav feed link ───────────────────────────────── */
+    .nav-links a[href="/feed"] { color: rgba(17,17,17,.55) !important; }
+
+    /* ── Mobile responsive ───────────────────────────── */
+    @media (max-width: 600px) {
+      .hero-actions { gap: .75rem; }
+      .hero-cta-main, .hero-cta-ghost { font-size: 1rem !important; padding: .85rem 1.6rem !important; }
+      .hss-item { padding: 0 1.4rem; }
+      .hss-num { font-size: 1.4rem; }
+      .bk-auth-gate { padding: 2.2rem 1.6rem !important; }
+    }
+  </style>
 </head>
 <body>
 
@@ -31,14 +302,8 @@
   </div>
 </div>
 
-<!-- ── PATTERN BACKGROUND ── -->
-<div class="bg-pattern"></div>
-<div class="bg-frosted-glass"></div>
-<div class="neon-ambient"></div>
 
 <!-- ── CURSOR ── -->
-<div class="cursor" id="cursor"></div>
-<div class="cursor-ring" id="cursorRing"></div>
 
 <!-- ── NAVBAR ── -->
 <nav class="nav" id="nav">
@@ -104,9 +369,31 @@
       <span class="ht-line barber-pole" style="--d:.5s">BARBER</span>
     </h1>
     <p class="hero-tag"><em data-i18n="hero_tag">Ich mache deinen Look besser</em></p>
-    <div class="hero-clock-inline">
+    <div class="hero-clock-inline" style="justify-content:center">
       <span class="hci-time" id="heroTime">—:—:—</span>
       <span class="hci-label">MÜNCHEN TIME</span>
+    </div>
+
+    <!-- CTA buttons -->
+    <div class="hero-actions">
+      <a href="#termin" class="hero-cta-main">Termin buchen ✂</a>
+      <a href="#work" class="hero-cta-ghost">Portfolio →</a>
+    </div>
+
+    <!-- Social proof stats -->
+    <div class="hero-stats-strip">
+      <div class="hss-item">
+        <span class="hss-num">200+</span>
+        <span class="hss-lbl">Stammkunden</span>
+      </div>
+      <div class="hss-item">
+        <span class="hss-num">★ 5.0</span>
+        <span class="hss-lbl">Bewertung</span>
+      </div>
+      <div class="hss-item">
+        <span class="hss-num">4+ J.</span>
+        <span class="hss-lbl">München</span>
+      </div>
     </div>
   </div>
 
@@ -322,7 +609,7 @@
       <div class="eyebrow" data-i18n="feed_eyebrow">AKTUELLE POSTS</div>
       <h2 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,5vw,3.5rem);letter-spacing:.12em;margin-bottom:0" data-i18n="nav_feed">Feed</h2>
     </div>
-    <div id="feedScroll" style="max-height:520px;overflow-y:auto;display:flex;flex-direction:column;gap:1rem;padding-right:.5rem;scrollbar-width:thin;scrollbar-color:rgba(200,132,58,.3) transparent">
+    <div id="feedScroll" style="display:flex;flex-direction:column;gap:1rem">
       <div id="feedScrollInner" style="display:flex;flex-direction:column;gap:1rem"></div>
     </div>
     <div style="text-align:center;margin-top:1.5rem">
@@ -344,12 +631,12 @@
     wrap.innerHTML = d.posts.map(p => {
       const date = p.created_at ? p.created_at.slice(0,10) : '';
       const media = p.media_url ? (p.media_type === 'video'
-        ? `<video src="${p.media_url}" controls style="width:100%;border-radius:8px;margin-top:.75rem;max-height:300px"></video>`
-        : `<img src="${p.media_url}" alt="" loading="lazy" style="width:100%;border-radius:8px;margin-top:.75rem;max-height:300px;object-fit:cover">`)
+        ? `<video src="${p.media_url}" controls style="width:100%;border-radius:6px;margin-top:.85rem;max-height:280px"></video>`
+        : `<img src="${p.media_url}" alt="" loading="lazy" class="idx-feed-img">`)
         : '';
-      return `<div style="background:#0d0803;border:1px solid rgba(200,132,58,.15);border-left:3px solid #c8843a;border-radius:10px;padding:1rem 1.25rem;position:relative">
-        <span style="position:absolute;top:.75rem;right:1rem;font-size:.7rem;color:rgba(237,227,204,.4)">${date}</span>
-        ${p.text ? `<p style="margin:0;padding-right:5rem;font-size:.88rem;line-height:1.7;color:rgba(237,227,204,.88);white-space:pre-wrap">${p.text}</p>` : ''}
+      return `<div class="idx-feed-card">
+        <span class="idx-feed-date">${date}</span>
+        ${p.text ? `<p class="idx-feed-text">${p.text}</p>` : ''}
         ${media}
       </div>`;
     }).join('');
