@@ -1866,11 +1866,12 @@ async function openCd(phone) {
   done.forEach(h => svcCount[h.service] = (svcCount[h.service]||0)+1);
   const topSvc = Object.entries(svcCount).sort((a,b)=>b[1]-a[1])[0]?.[0] || '—';
 
+  const tgHandle = telegram ? telegram.replace(/^@/, '') : '';
   document.getElementById('cdInfo').innerHTML =
     `<strong style="color:#fff">${esc(name)}</strong><br>` +
-    `📞 ${esc(phone)}` +
+    `📞 <a href="tel:${esc(phone)}" style="color:inherit;text-decoration:underline dotted">${esc(phone)}</a>` +
     (email    ? `<br>📧 ${esc(email)}` : '') +
-    (telegram ? `<br>📱 ${esc(telegram)}` : '') +
+    (telegram ? `<br>📱 <a href="https://t.me/${esc(tgHandle)}" target="_blank" style="color:inherit;text-decoration:underline dotted">${esc(telegram)}</a>` : '') +
     `<br><br>` +
     `Визитов: <strong>${done.length}</strong> &nbsp;·&nbsp; Потрачено: <strong style="color:var(--green)">${spent}€</strong><br>` +
     `Любимая услуга: <strong>${esc(topSvc)}</strong><br>` +
