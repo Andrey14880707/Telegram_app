@@ -11,6 +11,30 @@ def _require_admin():
     return None
 
 
+@bp.route('/api/hours', methods=['GET'])
+def get_hours_public():
+    """Public endpoint — no auth required. Returns working hours for display."""
+    _DEFAULT = [
+        {'weekday': 0, 'is_open': 0, 'open_hour': 10, 'close_hour': 20},
+        {'weekday': 1, 'is_open': 1, 'open_hour': 10, 'close_hour': 20},
+        {'weekday': 2, 'is_open': 1, 'open_hour': 10, 'close_hour': 20},
+        {'weekday': 3, 'is_open': 1, 'open_hour': 10, 'close_hour': 20},
+        {'weekday': 4, 'is_open': 1, 'open_hour': 10, 'close_hour': 20},
+        {'weekday': 5, 'is_open': 1, 'open_hour': 9,  'close_hour': 18},
+        {'weekday': 6, 'is_open': 0, 'open_hour': 10, 'close_hour': 20},
+    ]
+    try:
+        with get_db() as conn:
+            rows = conn.execute(
+                'SELECT weekday, is_open, open_hour, close_hour FROM working_hours ORDER BY weekday'
+            ).fetchall()
+        if rows:
+            return jsonify({'hours': [dict(r) for r in rows]})
+    except Exception:
+        pass
+    return jsonify({'hours': _DEFAULT})
+
+
 @bp.route('/api/admin/hours', methods=['GET'])
 def get_hours_api():
     if err := _require_admin(): return err

@@ -66,24 +66,92 @@ function updateClock() {
 updateClock();
 setInterval(updateClock, 1000);
 
+// ── Working hours (fetched from API) ─────────────────
+let _publicHours = null; // map: dbWeekday(0=Mon) → {is_open, open_hour, close_hour}
+
+function renderHoursGrid() {
+  const grid = document.getElementById('hoursGrid');
+  if (!grid || !_publicHours) return;
+  const lang = localStorage.getItem('lang') || 'de';
+  const DAYS = {
+    de: ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'],
+    ru: ['Понедельник','Вторник','Среда','Четверг','Пятница','Суббота','Воскресенье'],
+    uk: ['Понеділок','Вівторок','Середа','Четвер','П\'ятниця','Субота','Неділя'],
+  };
+  const DAYS_SH = {
+    de: ['Mo','Di','Mi','Do','Fr','Sa','So'],
+    ru: ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'],
+    uk: ['Пн','Вт','Ср','Чт','Пт','Сб','Нд'],
+  };
+  const CLOSED   = {de:'Geschlossen', ru:'Закрыто', uk:'Зачинено'}[lang] || 'Geschlossen';
+  const dayFull  = DAYS[lang]    || DAYS.de;
+  const dayShort = DAYS_SH[lang] || DAYS_SH.de;
+  const list = [0,1,2,3,4,5,6].map(wd =>
+    _publicHours[wd] || {weekday: wd, is_open: 0, open_hour: 10, close_hour: 20}
+  );
+  // Group consecutive days with identical open/close values
+  const groups = [];
+  let i = 0;
+  while (i < 7) {
+    const cur = list[i];
+    let j = i + 1;
+    while (j < 7 &&
+           list[j].is_open    === cur.is_open    &&
+           list[j].open_hour  === cur.open_hour  &&
+           list[j].close_hour === cur.close_hour) j++;
+    groups.push({start: i, end: j - 1, ...cur});
+    i = j;
+  }
+  grid.innerHTML = groups.map(g => {
+    let lbl;
+    if      (g.start === g.end)        lbl = dayFull[g.start];
+    else if (g.end - g.start === 1)    lbl = `${dayShort[g.start]}, ${dayShort[g.end]}`;
+    else                               lbl = `${dayShort[g.start]} — ${dayShort[g.end]}`;
+    if (!g.is_open) {
+      return `<div class="hrow hrow-closed"><span>${lbl}</span><span>${CLOSED}</span></div>`;
+    }
+    const oh = String(g.open_hour).padStart(2, '0') + ':00';
+    const ch = String(g.close_hour).padStart(2, '0') + ':00';
+    return `<div class="hrow"><span>${lbl}</span><span class="gold">${oh} — ${ch}</span></div>`;
+  }).join('');
+}
+
+async function loadPublicHours() {
+  try {
+    const r = await fetch('/api/hours');
+    const d = await r.json();
+    _publicHours = {};
+    (d.hours || []).forEach(h => { _publicHours[h.weekday] = h; });
+    renderHoursGrid();
+    checkStatus();
+  } catch(e) {}
+}
+
 // ── Open/Closed status ────────────────────────────────
 function checkStatus() {
   const el = document.getElementById('bkStatus');
   if (!el) return;
-  const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Berlin' }));
-  const wd = now.getDay();   // 0=Sun
-  const h  = now.getHours() + now.getMinutes() / 60;
+  const now   = new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Berlin' }));
+  const jsDay = now.getDay(); // 0=Sun in JS
+  const dbWd  = (jsDay + 6) % 7; // convert → DB weekday 0=Mon
+  const h     = now.getHours() + now.getMinutes() / 60;
   let open = false;
-  // Mon(1): closed, Tue-Fri(2-5): 10-20, Sat(6): 9-18, Sun(0): closed
-  if (wd >= 2 && wd <= 5) open = h >= 10 && h < 20;
-  else if (wd === 6)       open = h >= 9  && h < 18;
-  const lang = localStorage.getItem('lang') || 'de';
+  if (_publicHours) {
+    const hr = _publicHours[dbWd];
+    open = !!(hr && hr.is_open && h >= hr.open_hour && h < hr.close_hour);
+  } else {
+    // Fallback defaults while API loads
+    if (jsDay >= 2 && jsDay <= 5) open = h >= 10 && h < 20;
+    else if (jsDay === 6)          open = h >= 9  && h < 18;
+  }
+  const lang     = localStorage.getItem('lang') || 'de';
   const openTxt  = {de:'🟢 Jetzt geöffnet',  ru:'🟢 Сейчас открыто',  uk:'🟢 Зараз відкрито'}[lang]  || '🟢 Jetzt geöffnet';
   const closeTxt = {de:'🔴 Aktuell geschlossen', ru:'🔴 Сейчас закрыто', uk:'🔴 Зараз зачинено'}[lang] || '🔴 Aktuell geschlossen';
-  el.className = 'bk-status ' + (open ? 'open' : 'closed');
+  el.className   = 'bk-status ' + (open ? 'open' : 'closed');
   el.textContent = open ? openTxt : closeTxt;
 }
 checkStatus();
+loadPublicHours();
 
 // ── Counter animation ─────────────────────────────────
 function animateCounter(el) {
@@ -493,6 +561,8 @@ function setLang(lang) {
   );
   document.documentElement.lang = lang;
   localStorage.setItem('lang', lang);
+  renderHoursGrid();
+  checkStatus();
 }
 
 document.querySelectorAll('.lang-sw button').forEach(b =>

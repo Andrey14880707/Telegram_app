@@ -583,11 +583,8 @@
         <div class="eyebrow" data-i18n="oh_title">ÖFFNUNGSZEITEN</div>
         <div id="bkStatus" class="bk-status"></div>
       </div>
-      <div class="hours-grid">
-        <div class="hrow hrow-closed"><span data-i18n="oh_mon">Montag</span><span data-i18n="oh_closed">Geschlossen</span></div>
-        <div class="hrow"><span data-i18n="oh_di">Di — Fr</span><span class="gold">10:00 — 20:00</span></div>
-        <div class="hrow"><span data-i18n="oh_sat">Samstag</span><span class="gold">9:00 — 18:00</span></div>
-        <div class="hrow hrow-closed"><span data-i18n="oh_sun">Sonntag</span><span data-i18n="oh_closed">Geschlossen</span></div>
+      <div class="hours-grid" id="hoursGrid">
+        <!-- populated dynamically from /api/hours -->
       </div>
       <a href="https://www.google.com/maps/search/?api=1&query=Seidlstra%C3%9Fe+2A%2C+M%C3%BCnchen%2C+80335" target="_blank" rel="noopener" class="hours-maps">
         Seidlstraße 2A, München 80335 ↗
