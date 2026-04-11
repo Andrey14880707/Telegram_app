@@ -38,13 +38,54 @@ def admin():
     return render_template('admin.html')
 
 # ── Boot ──────────────────────────────────────────────────────────────────────
-from db import init_db
+from db import init_db, get_db
 from scheduler import start_scheduler
 
 try:
     init_db()
 except Exception as e:
     print(f'[Boot] init_db failed: {e}')
+
+def migrate_uploads():
+    """
+    On each deploy Render recreates the container from git.
+    Any photos tracked in git live in <app>/uploads/ but the app
+    serves from UPLOAD_FOLDER (e.g. /data/uploads/).
+    This function copies missing files and registers them in the DB.
+    """
+    import shutil, pathlib
+    git_dir    = pathlib.Path(__file__).parent / 'uploads'
+    target_dir = pathlib.Path(UPLOAD_FOLDER)
+    target_dir.mkdir(parents=True, exist_ok=True)
+
+    if git_dir.resolve() == target_dir.resolve():
+        return  # same directory, nothing to do
+
+    ALLOWED = {'jpg', 'jpeg', 'png', 'gif', 'webp'}
+    try:
+        with get_db() as conn:
+            for src in git_dir.iterdir():
+                if src.suffix.lower().lstrip('.') not in ALLOWED:
+                    continue
+                dst = target_dir / src.name
+                if not dst.exists():
+                    shutil.copy2(src, dst)
+                    print(f'[Boot] copied {src.name} → {target_dir}')
+                # Register in photos table if missing
+                if not conn.execute('SELECT id FROM photos WHERE filename=?', (src.name,)).fetchone():
+                    conn.execute(
+                        "INSERT INTO photos (filename, caption, category) VALUES (?,?,?)",
+                        (src.name, '', 'Portfolio')
+                    )
+                    print(f'[Boot] registered {src.name} in photos table')
+            conn.commit()
+    except Exception as e:
+        print(f'[Boot] migrate_uploads failed: {e}')
+
+try:
+    migrate_uploads()
+except Exception as e:
+    print(f'[Boot] migrate_uploads outer failed: {e}')
 
 try:
     start_scheduler()

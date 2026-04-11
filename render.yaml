@@ -9,6 +9,8 @@ services:
       mountPath: /data
       sizeGB: 1
     envVars:
+      - key: SECRET_KEY
+        generateValue: true        # stable across deploys — keeps sessions alive
       - key: ADMIN_PASSWORD
         value: barber123
       - key: N8N_WEBHOOK
