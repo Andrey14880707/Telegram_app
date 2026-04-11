@@ -6,8 +6,10 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 
 def get_db():
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(DB_PATH, timeout=30)
     conn.row_factory = sqlite3.Row
+    conn.execute('PRAGMA journal_mode=WAL')
+    conn.execute('PRAGMA busy_timeout=10000')
     return conn
 
 
@@ -120,6 +122,13 @@ def init_db():
                 [(0,0,10,20),(1,1,10,20),(2,1,10,20),(3,1,10,20),(4,1,10,20),(5,1,9,18),(6,0,10,20)]
             )
         conn.commit()
+
+        # Diagnostic: log record counts at every startup
+        apts     = conn.execute('SELECT COUNT(*) FROM appointments').fetchone()[0]
+        clients  = conn.execute('SELECT COUNT(*) FROM client_accounts').fetchone()[0]
+        photos   = conn.execute('SELECT COUNT(*) FROM photos').fetchone()[0]
+        hours_ok = conn.execute('SELECT COUNT(*) FROM working_hours').fetchone()[0]
+        print(f'[DB] appointments={apts}  clients={clients}  photos={photos}  working_hours={hours_ok}')
 
 
 def get_setting(key, default=''):
