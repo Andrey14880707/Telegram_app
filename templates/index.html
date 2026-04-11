@@ -58,33 +58,8 @@
       transform: translateY(-2px);
     }
 
-    /* ── Hero: Stats strip ───────────────────────────── */
-    .hero-stats-strip {
-      display: flex; align-items: stretch; justify-content: center;
-      flex-wrap: wrap; margin-top: 2.8rem;
-      border-top: 1px solid rgba(17,17,17,.1);
-      padding-top: 1.6rem;
-      gap: 0;
-      opacity: 0;
-      animation: lineReveal .7s cubic-bezier(.16,1,.3,1) 1.05s forwards;
-    }
-    .hss-item {
-      display: flex; flex-direction: column; align-items: center;
-      padding: 0 2.8rem;
-      border-right: 1px solid rgba(17,17,17,.08);
-    }
-    .hss-item:last-child { border-right: none; }
-    .hss-num {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.75rem; letter-spacing: 3px; line-height: 1;
-      color: #111111;
-    }
-    .hss-lbl {
-      font-family: 'DM Mono', monospace;
-      font-size: .58rem; letter-spacing: 2px;
-      color: rgba(17,17,17,.3); text-transform: uppercase;
-      margin-top: .35rem;
-    }
+    /* Stats strip — removed */
+    .hero-stats-strip { display: none !important; }
 
     /* ── Work category buttons ───────────────────────── */
     .work-cats { display: flex !important; gap: .45rem; flex-wrap: wrap; margin-bottom: 1.75rem; }
@@ -279,6 +254,40 @@
       .hss-num { font-size: 1.4rem; }
       .bk-auth-gate { padding: 2.2rem 1.6rem !important; }
     }
+
+    /* ── Flatpickr: force light theme ───────────────────── */
+    .flatpickr-calendar {
+      background: #FFFFFF !important;
+      border: 1px solid #E5E5E5 !important;
+      border-radius: 8px !important;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.10) !important;
+      color: #111111 !important;
+      font-family: 'Figtree', sans-serif !important;
+    }
+    .flatpickr-calendar.arrowTop::before,
+    .flatpickr-calendar.arrowTop::after { border-bottom-color: #E5E5E5 !important; }
+    .flatpickr-months { background: #FFFFFF !important; border-bottom: 1px solid #E5E5E5 !important; }
+    .flatpickr-months .flatpickr-month,
+    .flatpickr-current-month,
+    .flatpickr-current-month .cur-month,
+    .flatpickr-current-month input.cur-year { background: #FFFFFF !important; color: #111111 !important; fill: #111111 !important; }
+    .flatpickr-prev-month, .flatpickr-next-month { color: #111111 !important; fill: #111111 !important; }
+    .flatpickr-prev-month:hover svg, .flatpickr-next-month:hover svg { fill: #111111 !important; }
+    span.flatpickr-weekday { background: #FFFFFF !important; color: rgba(17,17,17,.45) !important; }
+    .flatpickr-weekdays { background: #FFFFFF !important; }
+    .flatpickr-day { color: #111111 !important; border-radius: 6px !important; }
+    .flatpickr-day:hover { background: #F5F5F5 !important; border-color: #E5E5E5 !important; color: #111111 !important; }
+    .flatpickr-day.selected,
+    .flatpickr-day.selected:hover { background: #111111 !important; border-color: #111111 !important; color: #FFFFFF !important; }
+    .flatpickr-day.today { border-color: #111111 !important; }
+    .flatpickr-day.today:hover { background: #111111 !important; color: #FFFFFF !important; }
+    .flatpickr-day.flatpickr-disabled,
+    .flatpickr-day.flatpickr-disabled:hover { color: rgba(17,17,17,.25) !important; background: transparent !important; border-color: transparent !important; }
+    .flatpickr-day.prevMonthDay,
+    .flatpickr-day.nextMonthDay { color: rgba(17,17,17,.25) !important; }
+    .numInputWrapper span { border-color: #E5E5E5 !important; }
+    .numInputWrapper span svg { fill: #111111 !important; }
+    .flatpickr-innerContainer, .flatpickr-rContainer { background: #FFFFFF !important; }
   </style>
 </head>
 <body>
@@ -380,21 +389,6 @@
       <a href="#work" class="hero-cta-ghost">Portfolio →</a>
     </div>
 
-    <!-- Social proof stats -->
-    <div class="hero-stats-strip">
-      <div class="hss-item">
-        <span class="hss-num">200+</span>
-        <span class="hss-lbl">Stammkunden</span>
-      </div>
-      <div class="hss-item">
-        <span class="hss-num">★ 5.0</span>
-        <span class="hss-lbl">Bewertung</span>
-      </div>
-      <div class="hss-item">
-        <span class="hss-num">4+ J.</span>
-        <span class="hss-lbl">München</span>
-      </div>
-    </div>
   </div>
 
   <div class="hero-scroll">
