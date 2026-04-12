@@ -47,14 +47,21 @@ def admin():
 def ping():
     from flask import jsonify
     from db import get_db
+    from config import DB_PATH
     try:
         with get_db() as conn:
             apts    = conn.execute('SELECT COUNT(*) FROM appointments').fetchone()[0]
             clients = conn.execute('SELECT COUNT(*) FROM client_accounts').fetchone()[0]
             photos  = conn.execute('SELECT COUNT(*) FROM photos').fetchone()[0]
-        from config import DB_PATH
+            statuses = dict(conn.execute(
+                "SELECT status, COUNT(*) FROM appointments GROUP BY status"
+            ).fetchall())
+            sample = [dict(r) for r in conn.execute(
+                "SELECT id, name, phone, status FROM appointments LIMIT 3"
+            ).fetchall()]
         return jsonify({'ok': True, 'appointments': apts, 'client_accounts': clients,
-                        'photos': photos, 'db_path': DB_PATH})
+                        'photos': photos, 'db_path': DB_PATH,
+                        'statuses': statuses, 'sample': sample})
     except Exception as e:
         return jsonify({'ok': False, 'error': str(e)}), 500
 
@@ -66,6 +73,17 @@ try:
     init_db()
 except Exception as e:
     print(f'[Boot] init_db failed: {e}')
+
+# Force WAL checkpoint so new process sees all committed data from previous instance
+try:
+    from db import get_db as _gdb
+    with _gdb() as _c:
+        _c.execute('PRAGMA wal_checkpoint(FULL)')
+        _apts = _c.execute('SELECT COUNT(*) FROM appointments').fetchone()[0]
+        _statuses = dict(_c.execute('SELECT status, COUNT(*) FROM appointments GROUP BY status').fetchall())
+        print(f'[Boot] WAL checkpoint done. appointments={_apts} statuses={_statuses}')
+except Exception as e:
+    print(f'[Boot] WAL checkpoint failed: {e}')
 
 def migrate_uploads():
     """
