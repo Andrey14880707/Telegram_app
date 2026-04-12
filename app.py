@@ -41,7 +41,12 @@ def index():
 
 @app.route('/admin')
 def admin():
-    return render_template('admin.html')
+    from flask import make_response
+    resp = make_response(render_template('admin.html'))
+    resp.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    resp.headers['Pragma'] = 'no-cache'
+    resp.headers['Expires'] = '0'
+    return resp
 
 @app.route('/api/ping')
 def ping():
@@ -50,20 +55,33 @@ def ping():
     from config import DB_PATH
     try:
         with get_db() as conn:
-            apts    = conn.execute('SELECT COUNT(*) FROM appointments').fetchone()[0]
-            clients = conn.execute('SELECT COUNT(*) FROM client_accounts').fetchone()[0]
-            photos  = conn.execute('SELECT COUNT(*) FROM photos').fetchone()[0]
+            apts     = conn.execute('SELECT COUNT(*) FROM appointments').fetchone()[0]
+            ca       = conn.execute('SELECT COUNT(*) FROM client_accounts').fetchone()[0]
+            photos   = conn.execute('SELECT COUNT(*) FROM photos').fetchone()[0]
             statuses = dict(conn.execute(
                 "SELECT status, COUNT(*) FROM appointments GROUP BY status"
             ).fetchall())
-            sample = [dict(r) for r in conn.execute(
+            sample   = [dict(r) for r in conn.execute(
                 "SELECT id, name, phone, status FROM appointments LIMIT 3"
             ).fetchall()]
-        return jsonify({'ok': True, 'appointments': apts, 'client_accounts': clients,
-                        'photos': photos, 'db_path': DB_PATH,
-                        'statuses': statuses, 'sample': sample})
+            # Run the exact same query as /api/admin/clients
+            clients_rows = conn.execute('''
+                SELECT phone, MAX(name) AS name, COUNT(*) AS total_bookings,
+                       MAX(date) AS last_date
+                FROM appointments
+                GROUP BY phone
+                ORDER BY total_bookings DESC
+            ''').fetchall()
+            clients_check = [dict(r) for r in clients_rows]
+        return jsonify({
+            'ok': True, 'appointments': apts, 'client_accounts': ca,
+            'photos': photos, 'db_path': DB_PATH,
+            'statuses': statuses, 'sample': sample,
+            'clients_query_result': clients_check
+        })
     except Exception as e:
-        return jsonify({'ok': False, 'error': str(e)}), 500
+        import traceback
+        return jsonify({'ok': False, 'error': str(e), 'trace': traceback.format_exc()}), 500
 
 # ── Boot ──────────────────────────────────────────────────────────────────────
 from db import init_db, get_db
