@@ -64,10 +64,19 @@ def uploaded_file(filename):
 
 @bp.route('/api/photos')
 def list_photos():
-    with get_db() as conn:
-        rows = conn.execute(
-            'SELECT * FROM photos ORDER BY sort_order, created_at DESC'
-        ).fetchall()
+    try:
+        with get_db() as conn:
+            try:
+                rows = conn.execute(
+                    'SELECT * FROM photos ORDER BY sort_order, created_at DESC'
+                ).fetchall()
+            except Exception:
+                # sort_order column may be missing on old DB — fallback
+                rows = conn.execute(
+                    'SELECT * FROM photos ORDER BY created_at DESC'
+                ).fetchall()
+    except Exception as e:
+        return jsonify({'photos': [], 'error': str(e)})
     photos = []
     for r in rows:
         d = dict(r)

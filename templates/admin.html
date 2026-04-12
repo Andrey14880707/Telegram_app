@@ -1574,7 +1574,13 @@ function startClock() {
 async function loadStats() {
   const r = await fetch('/api/admin/stats');
   if (!r.ok) {
-    if (r.status === 401) toast('Сессия истекла — войдите снова', 'err');
+    if (r.status === 401) {
+      // Session expired — force re-login
+      document.getElementById('dashboard').style.display = 'none';
+      document.getElementById('loginScreen').style.display = '';
+      document.getElementById('loginErr').textContent = 'Сессия истекла — войдите снова';
+      document.getElementById('loginErr').style.display = 'block';
+    }
     return;
   }
   const d = await r.json();

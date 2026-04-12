@@ -109,6 +109,7 @@ def init_db():
             "ALTER TABLE appointments ADD COLUMN followup_sent INTEGER DEFAULT 0",
             "ALTER TABLE appointments ADD COLUMN google_event_id TEXT DEFAULT ''",
             "ALTER TABLE photos ADD COLUMN category TEXT DEFAULT 'Sonstiges'",
+            "ALTER TABLE photos ADD COLUMN sort_order INTEGER DEFAULT 0",
             "ALTER TABLE posts ADD COLUMN media_extra TEXT DEFAULT '[]'",
         ]:
             try:
