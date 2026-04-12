@@ -1,9 +1,13 @@
 from flask import Flask, render_template
 from config import SECRET_KEY, UPLOAD_FOLDER
+from datetime import timedelta
 import os
 
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # ── Blueprints ────────────────────────────────────────────────────────────────
