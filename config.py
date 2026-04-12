@@ -22,9 +22,12 @@ GOOGLE_REDIRECT_URI  = os.getenv('GOOGLE_REDIRECT_URI', '')
 GOOGLE_CALENDAR_ID   = os.getenv('GOOGLE_CALENDAR_ID', 'primary')
 GCAL_SCOPES = ['https://www.googleapis.com/auth/calendar.events']
 
+# DB_PATH and UPLOAD_FOLDER are set explicitly via env vars in render.yaml
+# to avoid race condition where disk is not yet mounted during zero-downtime deploy
 _BASE         = '/data' if os.path.isdir('/data') else os.path.dirname(os.path.abspath(__file__))
 DB_PATH       = os.getenv('DB_PATH')       or os.path.join(_BASE, 'barber.db')
 UPLOAD_FOLDER = os.getenv('UPLOAD_FOLDER') or os.path.join(_BASE, 'uploads')
+os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
 
 print(f'[Config] DB_PATH={DB_PATH}  UPLOAD_FOLDER={UPLOAD_FOLDER}')
 ALLOWED_EXT   = {'png', 'jpg', 'jpeg', 'gif', 'webp'}

@@ -27,3 +27,7 @@ services:
         sync: false
       - key: SMTP_PASS
         sync: false
+      - key: DB_PATH
+        value: /data/barber.db
+      - key: UPLOAD_FOLDER
+        value: /data/uploads
