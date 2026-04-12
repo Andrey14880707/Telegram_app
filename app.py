@@ -26,6 +26,16 @@ from blueprints.client_auth   import bp as client_auth_bp
 for bp in (auth_bp, booking_bp, admin_apts_bp, admin_clients_bp, photos_bp, hours_bp, gcal_bp, feed_bp, client_auth_bp):
     app.register_blueprint(bp)
 
+# Disable caching for all API and admin responses
+from flask import request as _req
+@app.after_request
+def no_cache(response):
+    if _req.path.startswith('/api/') or _req.path.startswith('/admin'):
+        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
+    return response
+
 import json as _json
 @app.template_filter('fromjson')
 def fromjson_filter(s):
