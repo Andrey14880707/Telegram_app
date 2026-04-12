@@ -9,6 +9,7 @@ app.secret_key = SECRET_KEY
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+print(f'[Boot] SECRET_KEY prefix={SECRET_KEY[:6]}  len={len(SECRET_KEY)}')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # ── Blueprints ────────────────────────────────────────────────────────────────
@@ -41,6 +42,21 @@ def index():
 @app.route('/admin')
 def admin():
     return render_template('admin.html')
+
+@app.route('/api/ping')
+def ping():
+    from flask import jsonify
+    from db import get_db
+    try:
+        with get_db() as conn:
+            apts    = conn.execute('SELECT COUNT(*) FROM appointments').fetchone()[0]
+            clients = conn.execute('SELECT COUNT(*) FROM client_accounts').fetchone()[0]
+            photos  = conn.execute('SELECT COUNT(*) FROM photos').fetchone()[0]
+        from config import DB_PATH
+        return jsonify({'ok': True, 'appointments': apts, 'client_accounts': clients,
+                        'photos': photos, 'db_path': DB_PATH})
+    except Exception as e:
+        return jsonify({'ok': False, 'error': str(e)}), 500
 
 # ── Boot ──────────────────────────────────────────────────────────────────────
 from db import init_db, get_db
