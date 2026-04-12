@@ -250,7 +250,7 @@ function buildWork() {
   if (_workFiltered.length) {
     grid.innerHTML = _workFiltered.map((p, i) => `
       <div class="wc" style="--i:${i}">
-        <img src="/uploads/${p.filename}" alt="${p.caption || ''}" loading="lazy">
+        <img src="${p.url}" alt="${p.caption || ''}" loading="lazy" onerror="this.style.opacity='.3'">
         <div class="wc-bottom">
           <span class="wc-t">${p.category}</span>
           <span class="wc-sub">${p.caption || 'Haircut & Design'}</span>
