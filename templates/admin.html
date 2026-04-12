@@ -1573,7 +1573,10 @@ function startClock() {
 // ── Stats ──────────────────────────────────────────────
 async function loadStats() {
   const r = await fetch('/api/admin/stats');
-  if (!r.ok) return;
+  if (!r.ok) {
+    if (r.status === 401) toast('Сессия истекла — войдите снова', 'err');
+    return;
+  }
   const d = await r.json();
   $('s-today').textContent = $('s-today2').textContent = d.today;
   $('s-week').textContent  = $('s-week2').textContent  = d.week;
@@ -1690,7 +1693,10 @@ async function loadTermine() {
   body.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:2rem"><div class="spinner"></div></td></tr>`;
 
   const r = await fetch('/api/admin/appointments?' + p);
-  if (!r.ok) return;
+  if (!r.ok) {
+    body.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:2rem;color:#f87171">${r.status === 401 ? '🔒 Сессия истекла — <a href="/admin" style="color:#f87171">войдите снова</a>' : 'Ошибка загрузки (' + r.status + ')'}</td></tr>`;
+    return;
+  }
   const d = await r.json();
   const visible = d.appointments.filter(a => a.status !== 'deleted');
   renderTermine(visible);
@@ -1752,7 +1758,10 @@ async function loadKunden() {
   const grid = document.getElementById('kGrid');
   grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:2rem"><div class="spinner"></div></div>`;
   const r = await fetch('/api/admin/clients');
-  if (!r.ok) return;
+  if (!r.ok) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:2rem;color:#f87171">${r.status === 401 ? '🔒 Сессия истекла — <a href="/admin" style="color:#f87171">войдите снова</a>' : 'Ошибка загрузки (' + r.status + ')'}</div>`;
+    return;
+  }
   const d = await r.json();
   allClients = d.clients;
   renderKunden(allClients);
@@ -2274,7 +2283,10 @@ let _charts = {};
 async function loadAnalytics() {
   try {
     const r = await fetch('/api/admin/analytics');
-    if (!r.ok) return;
+    if (!r.ok) {
+      if (r.status === 401) toast('Сессия истекла — войдите снова', 'err');
+      return;
+    }
     const d = await r.json();
     renderAnalyticsKpi(d);
     renderCharts(d);

@@ -13,6 +13,7 @@ def admin_check():
 def admin_login():
     data = request.get_json() or {}
     if data.get('password') == ADMIN_PASSWORD:
+        session.permanent = True
         session['admin'] = True
         return jsonify({'success': True})
     return jsonify({'success': False, 'error': 'Falsches Passwort'})
