@@ -141,10 +141,13 @@ def migrate_uploads():
             for src in git_dir.iterdir():
                 if src.suffix.lower().lstrip('.') not in ALLOWED:
                     continue
-                if src.name in deleted_set:
-                    print(f'[Boot] skipping {src.name} (was deleted by admin)')
-                    continue
                 dst = target_dir / src.name
+                if src.name in deleted_set:
+                    # Admin deleted this — remove from disk too if it crept back
+                    if dst.exists():
+                        dst.unlink()
+                        print(f'[Boot] removed {src.name} from disk (deleted by admin)')
+                    continue
                 if not dst.exists():
                     shutil.copy2(src, dst)
                     print(f'[Boot] copied {src.name} → {target_dir}')
