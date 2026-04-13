@@ -27,7 +27,10 @@ GCAL_SCOPES = ['https://www.googleapis.com/auth/calendar.events']
 _BASE         = '/data' if os.path.isdir('/data') else os.path.dirname(os.path.abspath(__file__))
 DB_PATH       = os.getenv('DB_PATH')       or os.path.join(_BASE, 'barber.db')
 UPLOAD_FOLDER = os.getenv('UPLOAD_FOLDER') or os.path.join(_BASE, 'uploads')
-os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+try:
+    os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+except PermissionError:
+    pass  # /data is created by Render when disk is mounted, not by the app
 
 print(f'[Config] DB_PATH={DB_PATH}  UPLOAD_FOLDER={UPLOAD_FOLDER}')
 ALLOWED_EXT   = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
