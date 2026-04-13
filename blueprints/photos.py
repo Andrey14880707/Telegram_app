@@ -134,6 +134,17 @@ def delete_photo(photo_id):
                     os.remove(os.path.join(UPLOAD_FOLDER, fname))
                 except OSError:
                     pass
+                # Remember this filename so migrate_uploads() won't re-import it
+                import json as _json
+                cur = conn.execute("SELECT value FROM admin_settings WHERE key='deleted_uploads'").fetchone()
+                blocked = _json.loads(cur['value'] if cur else '[]')
+                if fname not in blocked:
+                    blocked.append(fname)
+                conn.execute(
+                    "INSERT INTO admin_settings (key,value) VALUES ('deleted_uploads',?) "
+                    "ON CONFLICT(key) DO UPDATE SET value=excluded.value",
+                    (_json.dumps(blocked),)
+                )
             conn.execute('DELETE FROM photos WHERE id=?', (photo_id,))
             conn.commit()
     return jsonify({'success': True})

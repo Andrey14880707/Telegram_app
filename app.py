@@ -132,9 +132,17 @@ def migrate_uploads():
 
     ALLOWED = {'jpg', 'jpeg', 'png', 'gif', 'webp'}
     try:
+        import json as _json
         with get_db() as conn:
+            # Load list of filenames explicitly deleted by admin
+            _row = conn.execute("SELECT value FROM admin_settings WHERE key='deleted_uploads'").fetchone()
+            deleted_set = set(_json.loads(_row['value'] if _row else '[]'))
+
             for src in git_dir.iterdir():
                 if src.suffix.lower().lstrip('.') not in ALLOWED:
+                    continue
+                if src.name in deleted_set:
+                    print(f'[Boot] skipping {src.name} (was deleted by admin)')
                     continue
                 dst = target_dir / src.name
                 if not dst.exists():
