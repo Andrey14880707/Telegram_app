@@ -780,7 +780,7 @@ em { font-style: italic; color: var(--gold); }
 .wc-price-tag {
   position: absolute; top: 1.25rem; right: 1.25rem;
   background: var(--gold);
-  color: #000;
+  color: #fff;
   font-family: 'Bebas Neue', sans-serif;
   font-size: 1rem; padding: 0.25rem 0.75rem;
   border-radius: 4px;
