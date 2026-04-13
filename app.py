@@ -62,8 +62,12 @@ def admin():
 def ping():
     from flask import jsonify
     from db import get_db
-    from config import DB_PATH
+    import config as _cfg
+    import os
     try:
+        raw_env   = os.getenv('DB_PATH', '(not set)')
+        data_dir  = os.path.isdir('/data')
+        db_exists = os.path.isfile(_cfg.DB_PATH)
         with get_db() as conn:
             apts     = conn.execute('SELECT COUNT(*) FROM appointments').fetchone()[0]
             ca       = conn.execute('SELECT COUNT(*) FROM client_accounts').fetchone()[0]
@@ -71,23 +75,21 @@ def ping():
             statuses = dict(conn.execute(
                 "SELECT status, COUNT(*) FROM appointments GROUP BY status"
             ).fetchall())
-            sample   = [dict(r) for r in conn.execute(
-                "SELECT id, name, phone, status FROM appointments LIMIT 3"
-            ).fetchall()]
-            # Run the exact same query as /api/admin/clients
             clients_rows = conn.execute('''
-                SELECT phone, MAX(name) AS name, COUNT(*) AS total_bookings,
-                       MAX(date) AS last_date
-                FROM appointments
-                GROUP BY phone
-                ORDER BY total_bookings DESC
+                SELECT phone, MAX(name) AS name, COUNT(*) AS total_bookings
+                FROM appointments GROUP BY phone ORDER BY total_bookings DESC
             ''').fetchall()
-            clients_check = [dict(r) for r in clients_rows]
         return jsonify({
-            'ok': True, 'appointments': apts, 'client_accounts': ca,
-            'photos': photos, 'db_path': DB_PATH,
-            'statuses': statuses, 'sample': sample,
-            'clients_query_result': clients_check
+            'ok': True,
+            'db_path': _cfg.DB_PATH,
+            'db_path_env': raw_env,
+            'data_dir_exists': data_dir,
+            'db_file_exists': db_exists,
+            'appointments': apts,
+            'client_accounts': ca,
+            'photos': photos,
+            'statuses': statuses,
+            'clients_from_db': [dict(r) for r in clients_rows],
         })
     except Exception as e:
         import traceback
